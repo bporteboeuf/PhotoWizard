@@ -7,16 +7,17 @@
 import sys
 sys.path.insert(0,'utils/')
 
-import display,helpm,inputs
+import display,helpm
 
 from config import *
+from tools import *
 
 
 
 def main(args):
 
     display.greetings()
-    action = str(inputs.getInput("\n   h - help      q - quit\n"))
+    action = str(getInput("\n   h - help      q - quit\n"))
 
     ok = False
     while not ok:
@@ -29,7 +30,7 @@ def main(args):
             sys.exit(0)
         else:
             print("PhotoWizard Error: Unexpected input value")
-            action = str(inputs.getInput("\n   h - help      q - quit\n"))
+            action = str(getInput("\n   h - help      q - quit\n"))
 
 
     

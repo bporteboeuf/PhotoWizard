@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0,'utils/')
 
 from PIL import Image
+from tools import *
 
 
 def resize(img,size): # Resizes an image to a given size and returns an Image.Image object
@@ -15,7 +16,7 @@ def resize(img,size): # Resizes an image to a given size and returns an Image.Im
     if type(img) != Image.Image:
         try:
             img = str(img)
-            img = Image.open(img)
+            img = openf(img)
         except:
             raise NameError('PhotoWizard Error: Unable to load the object')
             img = None

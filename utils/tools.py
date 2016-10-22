@@ -4,9 +4,12 @@
 
 # -*- coding: utf-8 -*-
 
-# This module checks the integrity of the input values
+# This module contains several useful tools
 
-import sys,re
+
+import sys,re,os
+from PIL import Image
+
 
 
 def getInput(message): # Message is a message to display
@@ -24,4 +27,34 @@ def getInput(message): # Message is a message to display
 
 
 
+def explore(path,options): # Explores a folder
+
+
+    return
+
+
+
+
+
+def openf(path): # Opens a image and returns an Image.Image object
+
+
+    return
+
+
+
+
+def unzip(paths): # Extracts an archive file
+
+
+    return
+
+
+
+
+
+def zip(paths): # Compresses files into an archive
+
+
+    return
 
