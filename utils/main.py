@@ -9,8 +9,9 @@ sys.path.insert(0,'utils/')
 
 import display,helpm,inputs
 
+from config import *
 
-LANG = "EN" # Language
+
 
 def main(args):
 
