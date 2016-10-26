@@ -11,111 +11,174 @@ class History: # Each time a file is opened, a History object is created
 
     def __init__(self):
         self.name = name
-        self.branch = [newBranch()]
-        self.currentstate = None
+        self.events = {}
+        self.currentLeaf = None
+        self.currentState = None
     return
 
 
-    def newBranch(branch): # Creates a new history branch
+    def getCurrentState(self):
+        return self.currentState
 
-        return
-
-
-    def removeBranch(branch): # Suppresses a history branch
-
-        return
-
-
-    def undo(): # Undoes the last action
-
-        return
-
-
-    def redo(): # Redoes the last action
-
-        return
-
-
-    def restore(branch,index): # Restores the current state to a previous history version, in a given branch and at a given index
-
-        return
-
-
-    def getCurrentState(branch): # Gets current state of a given history branch
-
-        return
-
-
-    def getHistory(branch): # Returns the full history of the given branch
-
-        return
-
-
-    def insertEvent(branch,index,event): # Inserts a new event in a given branch, at a given index
-
-        return
-
-
-    def removeEvent(branch,index,event): # Deletes an event in a given branch, at a given index
-
-        return
-
-
-    def search(ID): # Locates an event by its ID, returns its branch and its index
-
-        return
-
-
-
-
-
-
-class HistoryBranch: # A history branch is created when there is a fork in the history of an image
     
-    def __init__(self,name):
-
-
+    def setCurrentState(self,ID):
+        self.currentState = ID
         return
 
-    def insertEvent(event,index) : # Inserts an event
 
-        return
+    def getCurrentLeaf(self):
+        return self.currentLeaf
 
-    def removeEvent(event,index):
-        
-        return
     
+    def setCurrentLeaf(self,ID):
+        self.currentLeaf = ID
+        return
+
+
+    def getEvent(self,ID):
+        return self.events[ID]
+
+
+    def findLeaf(self,ID):
+        if ID is not None:
+            nextEvent = self.getEvent(ID).getNext()
+            if nextEvent is None: # Leaf reached
+                return ID
+            elif len(nextEvent)==1: # Only one possible next event
+                return findLeaf(nextEvent)
+            else: # Several possible next events lead to ambiguity
+                return None
+        else:
+            return None
+
+
+    def getLeaf(self,ID):
+        return findLeaf(ID)
+
+
+    def undo(self): # Undoes the last action
+        return self.getEvent(self.getCurrentState()).getPrevious()
+
+
+    def redo(self): # Redoes the last action
+        nextEvent = self.getEvent(self.getCurrentState()).getNext()
+        if nextEvent is not None:
+            if len(nextEvent) == 1:
+                return nextEvent.getID()
+            else:
+                return None # Several next possible events lead to ambiguity
+        else: # Leaf already reached
+            return None
+
+
+    def rebase(self,ID): # Restores the current state to a previous history version, in a given branch and at a given index
+        self.currentState = ID
+        self.currentLeaf = self.getLeaf(ID)
+        return
+
+
+    def explore(self,ID): # Explores the history, search in deep first, returns a list of lists of ID
+        tree = list()
+        nextEvents = self.getEvent(ID).getNext()
+        if nextEvents is not None:
+            if len(nextEvents) == 1:
+                tree.append(node)
+            else:
+                for event in nextEvent:
+                    tree.append(explore(event.getID()))
+        else:      
+            return tree
+
+
+    def toString(self,tree,index): # Converts a tree from a list of lists to a printable string
+        string = ""
+        for elt in tree:
+            if type(elt) is not list:
+                string+="---"+str(elt)
+                index += 4
+            else:
+                string+="\n"+" "*index+"\\"+str(toString(elt,index))
+        return string
+
+
+
+    def getHistory(self): # Returns the full history as a string
+        tree = self.explore([],1)
+        tree = self.toString(tree,0)
+        return tree
+
+
+
+    def add(self,content,label): # adds a new event
+        newEvent = Event(len(self.events)+1,self.currentState,content,label)
+        currentState = self.getEvent(self.currentState)
+        currentState.setNext(newEvent.getID())
+        if len(currentState.getNext())>1:
+            self.setCurrentLeaf(newEvent.getID())
+        return
+
+
+    def clearHistory(self): # Deletes all events
+        self.events = {}
+        return
+
+
+
+
+
+
 
 
 
 class Event: # Each action creates an event object, which is part of a history branch
 
-    def __init__(self,ID,branch,parent,state):
+    def __init__(self,ID,previous,content,label):
         self.id = ID
-        self.branch = branch
-        self.next = None
-        self.previous = parent
-        self.state = state
+        self.next = {}
+        self.previous = previous
+        self.content = content
+        self.label = label
         return
 
 
-    def getNext():
+    def getID(self):
+        return self.ID
+
+
+    def getNext(self):
         return self.next
 
 
-    def getPrevious():
+    def setNext(self,ID):
+        self.next[ID] = ID
+        return
+ 
+
+    def getPrevious(self):
         return self.previous
 
-
-    def setNext(nextEvent):
-        self.next = nextEvent
-        return
     
-    def setPrevious(previousEvent):
-        self.previous = previousEvent
+    def setPrevious(self,ID):
+        self.previous = ID
+        return
+
+   
+    def getContent(self):
+        return self.content
+
+
+    def setContent(self,content):
+        self.content = content
         return
 
 
+    def getLabel(self):
+        return self.label
+
+
+    def setLabel(self,label):
+        self.label = label
+        return
 
 
 

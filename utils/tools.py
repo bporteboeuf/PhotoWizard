@@ -7,8 +7,30 @@
 # This module contains several useful tools
 
 
-import sys,re,os
+import sys,re,os,numpy
 from PIL import Image
+
+
+class Picture:
+
+    def __init__(self,ID):
+        self.ID = ID
+        self.History = None
+        self.EXIF = {}
+        self.Image = None
+        return
+
+
+    def asImage(self):
+        return self.Image
+
+
+    def asArray(self):
+        return numpy.asarray(self.Image)
+
+
+
+
 
 
 
