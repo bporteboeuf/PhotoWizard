@@ -16,7 +16,7 @@ from tools import *
 
 def main(args):
 
-    display.greetings()
+    display.greetings(LANG)
     action = str(getInput("\n   h - help      q - quit\n"))
 
     ok = False
@@ -25,7 +25,7 @@ def main(args):
             display.disp(helpm.help("idle",LANG))
             ok = True
         elif action == "q":
-            display.bye()
+            display.bye(LANG)
             ok = True
             sys.exit(0)
         else:

@@ -20,7 +20,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
     elif str(language) == "DE" :
         hmess = "Hilfe"
     elif str(language) == "JA" :
-        hmess = "Tasuketekure"
+        hmess = "てつだいましょうか？"
     else :
         raise NameError('PhotoWizard Error: Unsupported language')
     
