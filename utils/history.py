@@ -9,8 +9,8 @@
 
 class History: # Each time a file is opened, a History object is created
 
-    def __init__(self):
-        self.name = name
+    def __init__(self,ID):
+        self.name = ID
         self.events = {}
         self.currentLeaf = None
         self.currentState = None
@@ -22,7 +22,10 @@ class History: # Each time a file is opened, a History object is created
 
     
     def setCurrentState(self,ID):
-        self.currentState = ID
+        if (type(ID) is int) and (ID > 0):
+            self.currentState = ID
+        else:
+            raise NameError('PhotoWizardError: Wrong argument format in class History')
         return
 
 
@@ -31,7 +34,10 @@ class History: # Each time a file is opened, a History object is created
 
     
     def setCurrentLeaf(self,ID):
-        self.currentLeaf = ID
+         if (type(ID) is int) and (ID > 0):
+            self.currentLeaf = ID
+        else:
+            raise NameError('PhotoWizardError: Wrong argument format in class History')
         return
 
 
@@ -57,13 +63,16 @@ class History: # Each time a file is opened, a History object is created
 
 
     def undo(self): # Undoes the last action
-        return self.getEvent(self.getCurrentState()).getPrevious()
+        state = self.getEvent(self.getCurrentState()).getPrevious()
+        self.setCurrentState(state.getID())
+        return state 
 
 
     def redo(self): # Redoes the last action
         nextEvent = self.getEvent(self.getCurrentState()).getNext()
         if nextEvent is not None:
             if len(nextEvent) == 1:
+                self.setCurrentState(nextEvent.getID())
                 return nextEvent.getID()
             else:
                 return None # Several next possible events lead to ambiguity
@@ -72,8 +81,11 @@ class History: # Each time a file is opened, a History object is created
 
 
     def rebase(self,ID): # Restores the current state to a previous history version, in a given branch and at a given index
-        self.currentState = ID
-        self.currentLeaf = self.getLeaf(ID)
+        if (type(ID) is int) and (ID > 0):
+            self.currentState = ID
+            self.currentLeaf = self.getLeaf(ID)
+        else:
+            raise NameError('PhotoWizardError: Wrong argument format in class History')
         return
 
 
@@ -102,10 +114,19 @@ class History: # Each time a file is opened, a History object is created
 
 
 
-    def getHistory(self): # Returns the full history as a string
+    def getFullHistory(self): # Returns the full history as a string
         tree = self.explore([],1)
         tree = self.toString(tree,0)
         return tree
+
+
+    def getHistory(self): # Returns the list of events in the current history - used for export
+        hist = []
+        tmp = self.getEvent(self.currentState)
+        while tmp is not None:
+            hist.append(tmp)
+            tmp = self.getEvent(tmp.getPrevious())
+        return hist[::-1]
 
 
 
@@ -133,11 +154,17 @@ class History: # Each time a file is opened, a History object is created
 class Event: # Each action creates an event object, which is part of a history branch
 
     def __init__(self,ID,previous,content,label):
-        self.id = ID
-        self.next = {}
-        self.previous = previous
-        self.content = content
-        self.label = label
+        if (type(ID) is int) and ((previous is None) or ((type(previous) is int) and (previous > 0))) and (type(content) is tuple) and (type(label) is str):
+            if (ID > 0) and (len(content)==2) and (type(content[0]) is str) and (type(content[1]) is list):
+                self.id = ID
+                self.next = {}
+                self.previous = previous
+                self.content = content
+                self.label = label
+            else:
+                raise NameError('PhotoWizard Error: Wrong argument format in class Event')
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument format in class Event')
         return
 
 
@@ -150,7 +177,10 @@ class Event: # Each action creates an event object, which is part of a history b
 
 
     def setNext(self,ID):
-        self.next[ID] = ID
+        if (type(ID) is int) and (ID > 0):
+            self.next[ID] = ID
+        else:
+            raise NameError('PhotoWizardError: Wrong argument format in class Event')
         return
  
 
@@ -159,7 +189,10 @@ class Event: # Each action creates an event object, which is part of a history b
 
     
     def setPrevious(self,ID):
-        self.previous = ID
+        if (type(ID) is int) and (ID > 0):
+            self.previous = ID
+        else:
+            raise NameError('PhotoWizardError: Wrong argument format in class Event')
         return
 
    
@@ -168,7 +201,10 @@ class Event: # Each action creates an event object, which is part of a history b
 
 
     def setContent(self,content):
-        self.content = content
+        if (type(content) is tuple) and (len(content) == 2) and (type(content[0]) is str) and (type(content[1]) is list):
+            self.content = content
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument format in class Event')
         return
 
 
@@ -177,7 +213,10 @@ class Event: # Each action creates an event object, which is part of a history b
 
 
     def setLabel(self,label):
-        self.label = label
+        if type(label) is str:
+            self.label = label
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument format in class Event')
         return
 
 

@@ -13,22 +13,79 @@ from PIL import Image
 
 class Picture:
 
-    def __init__(self,ID):
+    def __init__(self,ID,name):
         self.ID = ID
-        self.History = None
+        self.History = History(ID)
         self.EXIF = {}
-        self.Image = None
+        self.pic = None
+        if os.path.exist(name):
+            try:
+                self.pic = Image.open(name)
+            except:
+                raise NameError('PhotoWizard Error: Unable to load file')
+        else:
+            raise NameError('PhotoWizard Error: Unable to find file')
+        if self.pic is not None :
+            self.smallpic = self.pic.resize((30,30),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
+        else :
+            self.smallpic = None
+
         return
 
 
     def asImage(self):
-        return self.Image
+        return self.pic
 
 
     def asArray(self):
-        return numpy.asarray(self.Image)
+        return numpy.asarray(self.pic)
 
 
+    def smallAsImage(self):
+        return self.smallpic
+
+
+    def smallAsArray(self):
+        return numpy.asarray(self.smallpic)
+
+
+    def resizeSmall(self,size): # Resizes the working miniature picture according to a given relative size (range 1/100 to 100)
+        if type(size) is not tuple :
+            raise NameError('PhotoWizard Error: Wrong argument type, must be tuple')
+        else:
+            if len(size) != 2 :
+                raise NameError('PhotoWizard Error: Wrong argument size, must be of length 2')
+            else :
+                a = 1,b = 1
+                try:
+                    a = int(size[0])
+                    b = int(size[1])
+                except:
+                    raise NameError('PhotoWizard Error: Wrong argument type, must be integers')
+
+                if (1<100*a<100*100)&&(1<=100*b<=100*100)):
+                    self.smallpic = tools.resize(self,(a,b))
+                else:
+                    raise NameError('PhotoWizard Error: Wrong argument range, must be between 1/100 and 100')
+        return
+
+
+    def reCompute(self): # Recompute the miniature image according to the current history
+        hist = self.History.getHistory()
+        for event in hist:
+            action = event.getContent()
+            self.smallpic = everyFunction(self,action)
+            
+        return
+
+
+    def export(self,path):
+        hist = self.History.getHistory()
+        for event in hist:
+            action = event.getContent()
+            self.pic = everyFunction(self,action)
+        self.pic.save(name)            
+        return
 
 
 
@@ -56,12 +113,20 @@ def explore(path,options): # Explores a folder
 
 
 
+def everyFunction(picture,action): # Maps the action in the history to the real image editing functions
+    f = action[0]
+    params = action[1]
 
+    """
+    if f == "":
 
-def openf(path): # Opens a image and returns an Image.Image object
+    elif f == "":
 
+    else:
+    """
 
     return
+
 
 
 
