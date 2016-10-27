@@ -186,6 +186,16 @@ def highPass(filterType,parameters): # Generates a high-pass filter
 
 
 
+def edgeDetection(mat,filterType,radius,threshold):
+    return mat
+
+
+
+def edgeEnhancement(mat,filterType,radius,threshold,gain):
+    return mat
+
+
+
 
 def rotate(mat,theta): # Rotates a 2D matrix by an angle theta in degrees
     if (type(theta) is int) and (type(mat) is numpy.array):
@@ -211,8 +221,11 @@ def rotate(mat,theta): # Rotates a 2D matrix by an angle theta in degrees
 
 
 """
-def cubicSpline(oldCoordinates,matrix,newCoordinates): # Interpolation of a 2D matrix using piecewise cubic spline interpolation
+def cubicSpline(Xref,Yref,matrix,Xnew,Ynew): # Interpolation of a 2D matrix using cubic interpolation
 
+    f = interpolate.interp2d(Xref,Yref,matrix,'cubic')
+
+    matrix = f(Xnew,Ynew)
 
     return matrix
 
@@ -223,11 +236,12 @@ def cubicSpline(oldCoordinates,matrix,newCoordinates): # Interpolation of a 2D m
 def rotate(mat,theta): # Rotates a 2D matrix mat by an angle theta in radians
     if (type(theta) is int) and (type(mat) is numpy.array):
         # First, we calculate the rotation matrix
-        rotation = numpy.asarray([[math.cos(theta) -math.sin(theta)],[math.sin(theta) math.cos(theta)]],dtype=numpy.float32)
+        #rotation = numpy.asarray([[math.cos(theta) -math.sin(theta)],[math.sin(theta) math.cos(theta)]],dtype=numpy.float32)
         a = mat.shape[0]
         b = mat.shape[1]
 
         # Then we compute the old and new coordinates of the values to interpolate, thanks to the rotation matrix
+        """
         coordinates = numpy.zeros((a,b,2),dtype=numpy.float32)
         newCoordinates = numpy.array(coordinates)
         for i in range(1,a):
@@ -238,9 +252,19 @@ def rotate(mat,theta): # Rotates a 2D matrix mat by an angle theta in radians
                 XY = numpy.array([[x],[y]],dtype=numpy.float32)
                 XY = numpy.multiply(rotation,XY)
                 newCoordinates[,i-1,j-1] = [XY[0],XY[1]]
+        """
+        Ycoord = numpy.zeros((1,a))
+        Xcoord = numpy.zeros((1,b))
+        
+        for i in range(1,a):
+            Ycoord[i-1] = (i-a/2)
+        for j in range(1,b):
+            Xcoord[j-1] = (j-b/2)
+        Xnew = numpy.multiply(Xcoord,numpy.asarray([math.cos(theta)]))
+        Ynew = numpy.multiply(Ycoord,numpy.asarray([math.sin(theta)]))
 
         # Now we can interpolate the matrix at the new coordinates
-        mat = cubicSpline(coordinates,mat,newCoordinates)
+        mat = cubicSpline(Xcoord,Ycoord,mat,Xnew,Ynew)
         
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in rotate function')
