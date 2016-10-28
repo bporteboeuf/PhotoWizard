@@ -56,14 +56,15 @@ class Picture:
             if len(size) != 2 :
                 raise NameError('PhotoWizard Error: Wrong argument size, must be of length 2')
             else :
-                a = 1,b = 1
+                a = 1
+                b = 1
                 try:
                     a = int(size[0])
                     b = int(size[1])
                 except:
                     raise NameError('PhotoWizard Error: Wrong argument type, must be integers')
 
-                if (1<100*a<100*100)&&(1<=100*b<=100*100)):
+                if (1<100*a<100*100) and (1<=100*b<=100*100):
                     self.smallpic = tools.resize(self,(a,b))
                 else:
                     raise NameError('PhotoWizard Error: Wrong argument range, must be between 1/100 and 100')
@@ -106,24 +107,63 @@ def getInput(message): # Message is a message to display
 
 
 
-def explore(path,options): # Explores a folder
+
+def resize(img,size): # Resizes an image to a given size and returns an Image.Image object
+
+    if type(img) != Image.Image:
+        try:
+            img = str(img)
+            img = openf(img)
+        except:
+            raise NameError('PhotoWizard Error: Unable to load the object')
+            img = None
+    try:
+        W = int(size[0])
+        H = int(size[1])
+    except:
+        raise NameError('PhotoWizard Error: Wrong size format')
+        W = 0
+        H = 0
+        
+    img = img.resize((W,H),Image.ANTIALIAS)
+
+    return img
 
 
-    return
+
+def crop(image,parameters): # Crops an image
+    return image
 
 
 
-def everyFunction(picture,action): # Maps the action in the history to the real image editing functions
-    f = action[0]
-    params = action[1]
 
-    """
-    if f == "":
+def everyFunction(image,action): # Maps the action in the history to the real image editing functions
+    if (type(Image) is Image.Image) and (type(action) is list):
+        try:
+            f = action[0]
+            params = action[1]
+        except:
+            raise NameError('PhotoWizard Error: Wrong argument format in everyFunction')
+            f = ""
+            params = []
+        """
+        if f == "":
 
-    elif f == "":
+        elif f == "":
+
+        else:
+        """
 
     else:
-    """
+        raise NameError('PhotoWizard Error: Wrong argument type in everyFunction')
+
+    return image
+
+
+
+
+def explore(path,options): # Explores a folder
+
 
     return
 
