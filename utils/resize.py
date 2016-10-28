@@ -20,18 +20,15 @@ def resize(img,size): # Resizes an image to a given size and returns an Image.Im
         except:
             raise NameError('PhotoWizard Error: Unable to load the object')
             img = None
-
-        try:
-            W = int(size[0])
-            H = int(size[1])
-        except:
-            raise NameError('PhotoWizard Error: Wrong size format')
-            W = 0
-            H = 0
+    try:
+        W = int(size[0])
+        H = int(size[1])
+    except:
+        raise NameError('PhotoWizard Error: Wrong size format')
+        W = 0
+        H = 0
         
-        
-        img = img.resize((W,H),Image.ANTIALIAS)
-
+    img = img.resize((W,H),Image.ANTIALIAS)
 
     return img
 
