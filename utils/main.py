@@ -17,29 +17,53 @@ from tools import *
 def main(args):
 
     display.greetings(LANG)
-    action = str(getInput("\n   h - help      q - quit\n"))
+    quitFlag = False
+    First = True
 
-    ok = False
-    while not ok:
-        if action == "h":
-            display.disp(helpm.help("idle",LANG))
-            ok = True
-        elif action == "q":
-            display.bye(LANG)
-            ok = True
-            sys.exit(0)
-        else:
-            print("PhotoWizard Error: Unexpected input value")
+    while not quitFlag:
+        
+        if First :
+            #action = str(getInput(display.action(LANG)))
             action = str(getInput("\n   h - help      q - quit\n"))
+            First = False
+        else:
+            action = str(getInput(""))
+        
+        ok = False
+        while not ok:
+            ok = True
+            if action == "h" or action == "help":
+                display.disp(helpm.help("idle",LANG))
+            elif action == "q" or action == "quit":
+                quitFlag = True
+            elif action == "open":
+                print("open file")
+            elif action == "close":
+                print("close file")
+            elif action == "load":
+                print("load xmp")
+            elif action == "save":
+                print("save xmp")
+            elif action == "export":
+                print("export")
+            elif action == "switch":
+                print("switch")
+            elif action == "histogram":
+                print("histogram")
+            elif action == "preview":
+                print("preview")
+            else:
+                print("PhotoWizard Error: Unexpected input value")
+                ok = False
+                #try:
+                #    everyFunction()
+                #except:
+                #    action = str(getInput(display.action(LANG)))
+                action = str(getInput("\n   h - help      q - quit\n"))
 
 
-    
-
-    if len(args) > 1 :
-
-        print(args)
-
-    
+    display.bye(LANG)    
+    sys.exit(0)
 
     return
 
