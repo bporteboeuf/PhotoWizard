@@ -24,11 +24,19 @@ def main(args):
         
         if First :
             #action = str(getInput(display.action(LANG)))
-            action = str(getInput("\n   h - help      q - quit\n"))
+            try:
+                action = str(getInput("\n   h - help      q - quit\n"))
+            except:
+                action = ""
+                next
             First = False
         else:
-            action = str(getInput(""))
-        
+            try:
+                action = str(getInput(""))
+            except:
+                action = ""
+                next
+
         ok = False
         while not ok:
             ok = True
@@ -59,8 +67,11 @@ def main(args):
                 #    everyFunction()
                 #except:
                 #    action = str(getInput(display.action(LANG)))
-                action = str(getInput("\n   h - help      q - quit\n"))
-
+                try:
+                    action = str(getInput("\n   h - help      q - quit\n"))
+                except:
+                    action = ""
+                    next
 
     display.bye(LANG)    
     sys.exit(0)
