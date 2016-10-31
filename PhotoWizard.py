@@ -21,6 +21,8 @@ if __name__ == "__main__" :
     # -c : Console mode
     # -g : Graphical User Interface mode
 
+    launched = False
+    
     if len(sys.argv) > 1 :
         try:
             options = str(sys.argv[1:])
@@ -28,36 +30,41 @@ if __name__ == "__main__" :
             raise NameError('PhotoWizard Error: Wrong format for launching options')
             options = ""
 
-        launched = False
+        start = False
         for elt in options:
-            if elt == "v":
-                try:
-                    print("Current Version of PhotoWizard: "+str(VER))
-                except:
-                    raise NameError('PhotoWizard Error: Wrong version format in config')
-                launched = True
-
-            elif elt == "h":
-                print(helpm.help("idle",LANG))
-                launched = True
-
-            elif elt == "c":
-                main.main(sys.argv)
-                launched = True
-
-            elif elt == "g":
-                print("PhotoWizard Error: Graphical User Interface not implemented yet")
-                main.main(sys.argv)
-                launched = True
-
-
-        if not launched:
-            if MODE == "g":
-                print("PhotoWizard Error: Graphical User Interface not implemented yet")
-                main.main(sys.argv)
-            elif MODE == "c":
-                main.main(sys.argv)
-            else:
-                raise NameError('PhotoWizard Error: Unknown default launching mode in config')
             
+            if elt == "-":
+                start = True
+            
+            if start:
+                if elt == "v":
+                    try:
+                        print("Current Version of PhotoWizard: "+str(VER))
+                    except:
+                        raise NameError('PhotoWizard Error: Wrong version format in config')
+                    launched = True
+
+                elif elt == "h":
+                    print(helpm.help("idle",LANG))
+                    launched = True
+
+                elif elt == "c":
+                    main.main(sys.argv)
+                    launched = True
+
+                elif elt == "g":
+                    print("PhotoWizard Error: Graphical User Interface not implemented yet")
+                    main.main(sys.argv)
+                    launched = True
+
+
+    if not launched:
+        if MODE == "g":
+            print("PhotoWizard Error: Graphical User Interface not implemented yet")
+            main.main(sys.argv)
+        elif MODE == "c":
+            main.main(sys.argv)
+        else:
+            raise NameError('PhotoWizard Error: Unknown default launching mode in config')
+        
 
