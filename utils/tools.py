@@ -110,7 +110,7 @@ def getInput(message): # Message is a message to display
 
 def resize(img,size): # Resizes an image to a given size and returns an Image.Image object
 
-    if type(img) != Image.Image:
+    if img is not Image.Image:
         try:
             img = str(img)
             img = openf(img)
@@ -137,8 +137,8 @@ def crop(image,parameters): # Crops an image
 
 
 
-def everyFunction(image,action): # Maps the action in the history to the real image editing functions
-    if (type(Image) is Image.Image) and (type(action) is list):
+def everyFunction(image,action): # Maps the action in the main or history to the real image editing functions
+    if (image is Image.Image) and (type(action) is list):
         try:
             f = action[0]
             params = action[1]
@@ -146,13 +146,47 @@ def everyFunction(image,action): # Maps the action in the history to the real im
             raise NameError('PhotoWizard Error: Wrong argument format in everyFunction')
             f = ""
             params = []
-        """
-        if f == "":
-
-        elif f == "":
-
+        if f == "levels":
+            print(f)
+            #image = levels(image,params)
+        elif f == "curves":
+            print(f)
+            #image = curves(image,params)
+        elif f == "normHist":
+            print(f)
+            #image = normalizeHistogram(image,params)
+        elif f == "eqHist":
+            print(f)
+            #image = equalizeHistogram(image,params)
+        elif f == "expHist":
+            print(f)
+            #image = expHistogram(image,params)
+        elif f == "logHist":
+            print(f)
+            #image = logHistogram(image,params)
+        elif f == "lowPass":    
+            print(f)
+            #image = filterz(image,lowPass(params))
+        elif f == "highPass":
+            print(f)
+            #image = filterz(image,lowPass(params))
+        elif f == "detectEdges":
+            print(f)
+            #image = edgeDetection(image,params)
+        elif f == "enhanceEdges":
+            print(f)
+            #image = edgeEnhancement(image,params)
+        elif f == "rotate":
+            print(f)
+            #image = rotate(image,params)
+        elif f == "crop":
+            print(f)
+            #image = crop(image,params)
+        elif f == "resize":
+            print(f)
+            #image = resize(image,params)
         else:
-        """
+            raise NameError('PhotoWizard Error: Unknown function in everyFunction')
 
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in everyFunction')

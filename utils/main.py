@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0,'utils/')
 
 import display,helpm
+from PIL import Image
 
 from config import *
 from tools import *
@@ -60,18 +61,28 @@ def main(args):
                 print("histogram")
             elif action == "preview":
                 print("preview")
+            elif action == "undo":
+                print("undo")
+            elif action == "redo":
+                print("redo")
+            elif action == "rebase":
+                print(rebase)
+            elif action == "history":
+                print("history")
             else:
-                print("PhotoWizard Error: Unexpected input value")
-                ok = False
-                #try:
-                #    everyFunction()
-                #except:
-                #    action = str(getInput(display.action(LANG)))
                 try:
-                    action = str(getInput("\n   h - help      q - quit\n"))
+                    # We try to compute the resized copy of the picture
+                    image = Image.Image
+                    function = action
+                    parameters = ""
+                    everyFunction(image,[function,[parameters]])
                 except:
-                    action = ""
-                    next
+                    ok = False
+                    print("PhotoWizard Error: Unexpected input value")
+                    try:
+                        action = str(getInput(helpm.help("idle",LANG)))
+                    except:
+                        action = ""
 
     display.bye(LANG)    
     sys.exit(0)
