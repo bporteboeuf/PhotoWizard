@@ -20,7 +20,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += "\nAn histogram can be displayed thanks to the histogram command, and a preview pop-up window appears with the preview command."
             hmess += "\n\nYou can have more informations on how to use the functionalities by typing [moduleName] -h or [moduleName] --help."
             hmess += "\n\nList of modules availables:\n\n"
-            hmess += " -*- ".join(["blur","sharpen","enhanceedges","levels","curves","contrast","exposition","edges","blackandwhite","histogram","preview","history"])
+            hmess += " -*- ".join(["lowPass","highPass","detectEdges","enhanceEdges","levels","curves","contrast","exposure","blackandwhite","histogram","rotate","crop","resize","normHist","eqHist","expHist","logHist","preview","history"])
             hmess += "\n"
         else:
             hmess = "Help"
