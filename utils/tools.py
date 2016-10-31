@@ -89,6 +89,10 @@ class Picture:
         return
 
 
+    def close(self):
+        return
+
+
 
 
 
