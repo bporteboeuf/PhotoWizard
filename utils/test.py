@@ -8,6 +8,8 @@
 
 try:
     import filters,helpm,history,levels,main,tools
+    from tools import Picture
+    from history import History, Event
     from config import *
     import sys,numpy,scipy,math
     from PIL import Image
@@ -15,34 +17,240 @@ except:
    raise NameError('PhotoWizard Error: unable to load dependencies')
 
 
-###***--- THE PICTURE CLASS ---***###
-def pictureClass():
-
-    # Init
-
-    # Class methods
-
-    return 0
-
 
 ###***--- THE EVENT CLASS ---***###
 def eventClass():
 
+    score = 0
+
     # Init
+    try:
+        eventA = Event(1,None,('action',['parameters']),'eventA')
+        eventB = Event(2,1,('action',['parameters']),'eventB')
+        eventC = Event(3,None,('action',['parameters']),'eventC')
+        score+=1
+    except Exception as exception:
+        print(exception)
 
     # Class methods
+    try:
+        eventA.getID()
+        score+=1
+    except Exception as exception:
+        print(exception)
 
-    return 0
+    try:
+        eventA.getNext()
+        score+=1
+    except Exception as exception:
+        print(exception)
+    
+    try:
+        eventA.setNext(3)
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        eventC.getPrevious()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        eventC.setPrevious(1)
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        eventB.getContent()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        eventB.setContent(('action2',['params2']))
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        eventB.getLabel()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        eventB.setLabel('EVENTB')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
+    return round(1000*score/10)/10
+
+
 
 
 ###***--- THE HISTORY CLASS ---***###
 def historyClass():
 
+    score = 0
+
     # Init
+    try:
+        hist = History(1)
+        score+=1
+    except Exception as exceptio:
+        print(exception)
 
     # Class methods
+    try:
+        hist.add(('action',['parameters']),'eventA')
+        hist.add(('action',['parameters']),'eventB')
+        score+=1
+    except Exception as exception:
+        print(exception)
 
-    return 0
+    try:
+        hist.getCurrentState()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.setCurrentState(2)
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.getEvent(1)
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.undo()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.redo()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.rebase(1)
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.getHistory()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.getFullHistory()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        hist.clearHistory()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
+    return round(1000*score/11)/10
+
+
+
+
+###***--- THE PICTURE CLASS ---***###
+def pictureClass():
+
+    score = 0
+
+    # Init
+    try:
+        image = Picture(1,"pic/test1.jpg")
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    # Class methods
+    try:
+        (isinstance(image.asImage(),Image.Image))
+        score+=1
+    except Exception as exception:
+        print(exception)
+    
+    try:
+        image.asArray()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        (isinstance(image.smallAsImage(),Image.Image))
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        image.smallAsArray()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        image.resizeSmall((20,30))
+        score+=1
+    except Exception as exception:
+        print(exception)
+    
+    try:
+        image.getHistory()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        image.setHistory(image.getHistory())
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        image.reCompute()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        image.export('pic/test1-2.jpg')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        image.close()
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
+    return round(1000*score/11)/10
+
+
+
 
 
 ###***--- THE FILTERS FILE ---***###
@@ -60,12 +268,16 @@ def filtersTest():
     return 0
 
 
+
+
 ###***--- THE HELPM FILE ---***###
 def helpmTest():
 
     # User cases
 
     return 0
+
+
 
 
 ###***--- THE LEVELS FILE ---***###
@@ -78,11 +290,6 @@ def levelsTest():
     return 0
 
 
-###***--- THE MAIN FILE ---***###
-def mainTest():
-
-
-    return 0
 
 
 ###***--- THE TOOLS FILE ---***###
@@ -109,6 +316,8 @@ def userCase2():
 def userCase3():
 
     return 0
+
+
 
 
 
@@ -147,28 +356,36 @@ if len(sys.argv) > 1:
 else:
     # We run all tests
     print('\n\n   ### PhotoWizard TestBench ###\n\n')
-    res = pictureClass()
-    print('Picture class - score: '+str(res*100)+"%\n")
+    print('Event Class Tests')
     res = eventClass()
-    print('Event class - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('History Class Tests')
     res = historyClass()
-    print('History class - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('Picture Class Tests')
+    res = pictureClass()
+    print('   - score: '+str(res)+"%\n")
+    print('Filters Module Tests')
     res = filtersTest()
-    print('Filters module - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('Help Module Tests')
     res = helpmTest()
-    print('Help module - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('Levels Module Tests')
     res = levelsTest()
-    print('Levels module - score: '+str(res*100)+"%\n")
-    res = mainTest()
-    print('Main module - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('Tools Module Tests')
     res = toolsTest()
-    print('Tools module - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('User Case 1')
     res = userCase1()
-    print('User case 1 - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('User Case 2')
     res = userCase2()
-    print('USer case 2 - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
+    print('User Case 3')
     res = userCase3()
-    print('User case 3 - score: '+str(res*100)+"%\n")
+    print('   - score: '+str(res)+"%\n")
     print('Done.')
 
     

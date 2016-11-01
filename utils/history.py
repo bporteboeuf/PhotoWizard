@@ -12,9 +12,9 @@ class History: # Each time a file is opened, a History object is created
     def __init__(self,ID):
         self.name = ID
         self.events = {}
-        self.currentLeaf = None
         self.currentState = None
-    return
+        self.redoState = None
+        return
 
 
     def getCurrentState(self):
@@ -28,62 +28,50 @@ class History: # Each time a file is opened, a History object is created
             raise NameError('PhotoWizardError: Wrong argument format in class History')
         return
 
+    def getRedoState(self):
+        return self.redoState
 
-    def getCurrentLeaf(self):
-        return self.currentLeaf
-
-    
-    def setCurrentLeaf(self,ID):
-         if (type(ID) is int) and (ID > 0):
-            self.currentLeaf = ID
-        else:
-            raise NameError('PhotoWizardError: Wrong argument format in class History')
+    def setRedoState(self,ID):
+        if (type(ID) is int) and (ID > 0):
+            self.redoState = ID
         return
 
 
     def getEvent(self,ID):
-        return self.events[ID]
-
-
-    def findLeaf(self,ID):
         if ID is not None:
-            nextEvent = self.getEvent(ID).getNext()
-            if nextEvent is None: # Leaf reached
-                return ID
-            elif len(nextEvent)==1: # Only one possible next event
-                return findLeaf(nextEvent)
-            else: # Several possible next events lead to ambiguity
-                return None
+            return self.events[ID]
         else:
             return None
 
 
-    def getLeaf(self,ID):
-        return findLeaf(ID)
-
-
     def undo(self): # Undoes the last action
+        self.setRedoState(self.getCurrentState())
         state = self.getEvent(self.getCurrentState()).getPrevious()
-        self.setCurrentState(state.getID())
+        self.setCurrentState(state)
         return state 
 
 
     def redo(self): # Redoes the last action
-        nextEvent = self.getEvent(self.getCurrentState()).getNext()
-        if nextEvent is not None:
-            if len(nextEvent) == 1:
-                self.setCurrentState(nextEvent.getID())
-                return nextEvent.getID()
-            else:
-                return None # Several next possible events lead to ambiguity
-        else: # Leaf already reached
-            return None
+        if self.getRedoState() is not None:
+            tmp = self.getRedoState()
+            self.setCurrentState(tmp)
+            self.setRedoState(None)
+            return tmp
+        else:
+            nextEvent = self.getEvent(self.getCurrentState()).getNext()
+            if nextEvent is not None:
+                if len(nextEvent) == 1:
+                    self.setCurrentState(nextEvent)
+                    return nextEvent
+                else:
+                    return None # Several next possible events lead to ambiguity
+            else: # Leaf already reached
+                return None
 
 
     def rebase(self,ID): # Restores the current state to a previous history version, in a given branch and at a given index
         if (type(ID) is int) and (ID > 0):
             self.currentState = ID
-            self.currentLeaf = self.getLeaf(ID)
         else:
             raise NameError('PhotoWizardError: Wrong argument format in class History')
         return
@@ -94,9 +82,9 @@ class History: # Each time a file is opened, a History object is created
         nextEvents = self.getEvent(ID).getNext()
         if nextEvents is not None:
             if len(nextEvents) == 1:
-                tree.append(node)
+                tree.append(nextEvents)
             else:
-                for event in nextEvent:
+                for event in nextEvents:
                     tree.append(explore(event.getID()))
         else:      
             return tree
@@ -104,25 +92,26 @@ class History: # Each time a file is opened, a History object is created
 
     def toString(self,tree,index): # Converts a tree from a list of lists to a printable string
         string = ""
-        for elt in tree:
-            if type(elt) is not list:
-                string+="---"+str(elt)
-                index += 4
-            else:
-                string+="\n"+" "*index+"\\"+str(toString(elt,index))
+        if tree is not None:
+            for elt in tree:
+                if type(elt) is not list:
+                    string+="---"+str(elt)
+                    index += 4
+                else:
+                    string+="\n"+" "*index+"\\"+str(toString(elt,index))
         return string
 
 
 
     def getFullHistory(self): # Returns the full history as a string
-        tree = self.explore([],1)
+        tree = self.explore(1)
         tree = self.toString(tree,0)
         return tree
 
 
     def getHistory(self): # Returns the list of events in the current history - used for export
         hist = []
-        tmp = self.getEvent(self.currentState)
+        tmp = self.getEvent(self.getCurrentState())
         while tmp is not None:
             hist.append(tmp)
             tmp = self.getEvent(tmp.getPrevious())
@@ -132,10 +121,11 @@ class History: # Each time a file is opened, a History object is created
 
     def add(self,content,label): # adds a new event
         newEvent = Event(len(self.events)+1,self.currentState,content,label)
-        currentState = self.getEvent(self.currentState)
-        currentState.setNext(newEvent.getID())
-        if len(currentState.getNext())>1:
-            self.setCurrentLeaf(newEvent.getID())
+        self.events[newEvent.getID()] = newEvent
+        if self.getCurrentState() is not None:
+            currentState = self.getEvent(self.getCurrentState())
+            currentState.setNext(newEvent.getID())
+        self.setCurrentState(newEvent.getID())
         return
 
 
@@ -169,7 +159,7 @@ class Event: # Each action creates an event object, which is part of a history b
 
 
     def getID(self):
-        return self.ID
+        return self.id
 
 
     def getNext(self):

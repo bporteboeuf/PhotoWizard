@@ -8,6 +8,7 @@
 
 
 import sys,re,os,numpy
+from history import History
 from PIL import Image
 
 
@@ -18,7 +19,7 @@ class Picture:
         self.History = History(ID)
         self.EXIF = {}
         self.pic = None
-        if os.path.exist(name):
+        if os.path.exists(name):
             try:
                 self.pic = Image.open(name)
             except:
@@ -26,7 +27,8 @@ class Picture:
         else:
             raise NameError('PhotoWizard Error: Unable to find file')
         if self.pic is not None :
-            self.smallpic = self.pic.resize((30,30),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
+            self.smallpic = self.pic
+            self.smallpic = self.smallpic.resize((30,30),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
         else :
             self.smallpic = None
 
@@ -65,14 +67,26 @@ class Picture:
                     raise NameError('PhotoWizard Error: Wrong argument type, must be integers')
 
                 if (1<100*a<100*100) and (1<=100*b<=100*100):
-                    self.smallpic = tools.resize(self,(a,b))
+                    self.smallpic = resize(self.smallAsImage(),(a,b))
                 else:
                     raise NameError('PhotoWizard Error: Wrong argument range, must be between 1/100 and 100')
         return
 
+    
+    def getHistory(self):
+        return self.History
+
+
+    def setHistory(self,hist):
+        if isinstance(hist,History):
+            self.History = hist
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument type in setHistory')
+        return
+
 
     def reCompute(self): # Recompute the miniature image according to the current history
-        hist = self.History.getHistory()
+        hist = self.getHistory().getHistory()
         for event in hist:
             action = event.getContent()
             self.smallpic = everyFunction(self,action)
@@ -81,11 +95,14 @@ class Picture:
 
 
     def export(self,path):
-        hist = self.History.getHistory()
+        hist = self.getHistory().getHistory()
         for event in hist:
             action = event.getContent()
             self.pic = everyFunction(self,action)
-        self.pic.save(name)            
+        try:
+            self.pic.save(path)            
+        except:
+            raise NameError('PhotoWizard Error: Unable to save file in export')
         return
 
 
@@ -113,8 +130,7 @@ def getInput(message): # Message is a message to display
 
 
 def resize(img,size): # Resizes an image to a given size and returns an Image.Image object
-
-    if img is not Image.Image:
+    if not isinstance(img, Image.Image):
         try:
             img = str(img)
             img = openf(img)
@@ -142,7 +158,7 @@ def crop(image,parameters): # Crops an image
 
 
 def everyFunction(image,action): # Maps the action in the main or history to the real image editing functions
-    if (image is Image.Image) and (type(action) is list):
+    if (isinstance(image,Image.Image)) and (type(action) is list):
         try:
             f = action[0]
             params = action[1]
