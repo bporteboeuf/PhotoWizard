@@ -125,7 +125,7 @@ def normalizeHistogram(image,channel): # Automatic contrast adjustment
 
 
 def equalizeHistogram(image,channel): # Automatic contrast adjustment
-     if (type(image) is Image.Image):
+    if (type(image) is Image.Image):
         precision = 4
         inputs = numpy.linspace(0,255,math.round(256/precision))
         outputs = numpy.log(inputs)
@@ -149,7 +149,7 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
 
 
 def logHistogram(image,channel): # Automatic contrast adjustment recover details in low values
-      if (type(image) is Image.Image):
+    if (type(image) is Image.Image):
         precision = 4
         inputs = numpy.linspace(0,255,math.round(256/precision))
         outputs = numpy.log(inputs)
@@ -170,7 +170,7 @@ def logHistogram(image,channel): # Automatic contrast adjustment recover details
 
 
 def expHistogram(image,channel): # Automatic contrast adjustment to recover details in high values
-      if (type(image) is Image.Image):
+    if (type(image) is Image.Image):
         precision = 4
         inputs = numpy.linspace(0,255,math.round(256/precision))
         outputs = numpy.exp(inputs)

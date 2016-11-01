@@ -25,7 +25,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
     try:
         filterType = str(filterType)
-    except
+    except:
         raise NameError('PhotoWizard Error: Wrong filter type format')
         filterType = "NC"
 
@@ -35,7 +35,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         try:
             radius = int(parameters[0])
             a = float(parameters[1])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for gaussian low-pass filter')
        
         F = []
@@ -50,7 +50,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
     elif filterType == "MEAN-2D":
         try:
             radius = int(parameters[0])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
         
         F = numpy.array((2*radius+1,2*radius+1),dtype=numpy.float32)
@@ -61,7 +61,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         try:
             radius = int(parameters[0])
             a = float(parameters[1])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for poisson low-pass filter')
 
         F = []
@@ -79,7 +79,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         try:
             radius = int(parameters[0])
             a = float(parameters[1])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for gaussian low-pass filter')
        
         F = []
@@ -94,7 +94,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
     elif filterType == "MEAN-1D-H":
         try:
             radius = int(parameters[0])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
         
         F1 = numpy.ones((1,2*radius),dtype=numpy.float32)
@@ -107,7 +107,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         try:
             radius = int(parameters[0])
             a = float(parameters[1])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for poisson low-pass filter')
 
         F = []
@@ -134,7 +134,7 @@ def highPass(filterType,parameters): # Generates a high-pass filter
 
     try:
         filterType = str(filterType)
-    except
+    except:
         raise NameError('PhotoWizard Error: Wrong filter type format')
         filterType = "NC"
 
@@ -145,7 +145,7 @@ def highPass(filterType,parameters): # Generates a high-pass filter
     if filterType == "DIFF-2D":
         try:
             radius = int(parameters[0])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for diff low-pass filter')
         
         F1 = numpy.ones((2*radius+1,1),dtype=numpy.float32)
@@ -163,7 +163,7 @@ def highPass(filterType,parameters): # Generates a high-pass filter
     if filterType == "DIFF-1D-H":
         try:
             radius = int(parameters[0])
-        except
+        except:
             raise NameError('PhotoWizard Error: Wrong parameters for diff low-pass filter')
         
         #F1 = numpy.ones((2*radius+1,1),dtype=numpy.float32)
@@ -219,56 +219,54 @@ def rotate(mat,theta): # Rotates a 2D matrix by an angle theta in degrees
 
     return mat
 
-
-"""
-def cubicSpline(Xref,Yref,matrix,Xnew,Ynew): # Interpolation of a 2D matrix using cubic interpolation
-
-    f = interpolate.interp2d(Xref,Yref,matrix,'cubic')
-
-    matrix = f(Xnew,Ynew)
-
-    return matrix
-
-
-
-
-
-def rotate(mat,theta): # Rotates a 2D matrix mat by an angle theta in radians
-    if (type(theta) is int) and (type(mat) is numpy.array):
-        # First, we calculate the rotation matrix
-        #rotation = numpy.asarray([[math.cos(theta) -math.sin(theta)],[math.sin(theta) math.cos(theta)]],dtype=numpy.float32)
-        a = mat.shape[0]
-        b = mat.shape[1]
-
-        # Then we compute the old and new coordinates of the values to interpolate, thanks to the rotation matrix
-        """
-        coordinates = numpy.zeros((a,b,2),dtype=numpy.float32)
-        newCoordinates = numpy.array(coordinates)
-        for i in range(1,a):
-            y = (i-a/2)
-            for j in range(1,b):
-                x = (j-b/2)
-                coordinates[,i-1,j-1] = [x,y]
-                XY = numpy.array([[x],[y]],dtype=numpy.float32)
-                XY = numpy.multiply(rotation,XY)
-                newCoordinates[,i-1,j-1] = [XY[0],XY[1]]
-        """
-        Ycoord = numpy.zeros((1,a))
-        Xcoord = numpy.zeros((1,b))
-        
-        for i in range(1,a):
-            Ycoord[i-1] = (i-a/2)
-        for j in range(1,b):
-            Xcoord[j-1] = (j-b/2)
-        Xnew = numpy.multiply(Xcoord,numpy.asarray([math.cos(theta)]))
-        Ynew = numpy.multiply(Ycoord,numpy.asarray([math.sin(theta)]))
-
-        # Now we can interpolate the matrix at the new coordinates
-        mat = cubicSpline(Xcoord,Ycoord,mat,Xnew,Ynew)
-        
-    else:
-        raise NameError('PhotoWizard Error: Wrong argument type in rotate function')
-
-    return mat
-"""
-
+#
+#def cubicSpline(Xref,Yref,matrix,Xnew,Ynew): # Interpolation of a 2D matrix using cubic interpolation
+#
+#    f = interpolate.interp2d(Xref,Yref,matrix,'cubic')
+#
+#    matrix = f(Xnew,Ynew)
+#
+#    return matrix
+#
+#
+#
+#
+#
+#def rotate(mat,theta): # Rotates a 2D matrix mat by an angle theta in radians
+#    if (type(theta) is int) and (type(mat) is numpy.array):
+#        # First, we calculate the rotation matrix
+#        #rotation = numpy.asarray([[math.cos(theta) -math.sin(theta)],[math.sin(theta) math.cos(theta)]],dtype=numpy.float32)
+#        a = mat.shape[0]
+#        b = mat.shape[1]
+#
+#        # Then we compute the old and new coordinates of the values to interpolate, thanks to the rotation matrix
+#        """
+#        coordinates = numpy.zeros((a,b,2),dtype=numpy.float32)
+#        newCoordinates = numpy.array(coordinates)
+#        for i in range(1,a):
+#            y = (i-a/2)
+#            for j in range(1,b):
+#                x = (j-b/2)
+#                coordinates[,i-1,j-1] = [x,y]
+#                XY = numpy.array([[x],[y]],dtype=numpy.float32)
+#                XY = numpy.multiply(rotation,XY)
+#                newCoordinates[,i-1,j-1] = [XY[0],XY[1]]
+#        """
+#        Ycoord = numpy.zeros((1,a))
+#        Xcoord = numpy.zeros((1,b))
+#        
+#        for i in range(1,a):
+#            Ycoord[i-1] = (i-a/2)
+#        for j in range(1,b):
+#            Xcoord[j-1] = (j-b/2)
+#        Xnew = numpy.multiply(Xcoord,numpy.asarray([math.cos(theta)]))
+#        Ynew = numpy.multiply(Ycoord,numpy.asarray([math.sin(theta)]))
+#
+#        # Now we can interpolate the matrix at the new coordinates
+#        mat = cubicSpline(Xcoord,Ycoord,mat,Xnew,Ynew)
+#        
+#    else:
+#        raise NameError('PhotoWizard Error: Wrong argument type in rotate function')
+#
+#    return mat
+#
