@@ -34,14 +34,14 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
     if filterType == "GAUSSIAN-2D":
         try:
             radius = int(parameters[0])
-            a = float(parameters[1])
+            a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for gaussian low-pass filter')
        
         F = []
-        for elt in range(-radius,radius):
-            F.append(math.exp(a*elt**2))
-        F1 = numpy.asarray(F,dtype=numpy.float32)
+        for elt in range(-radius,radius+1):
+            F.append(math.exp(-a*elt**2))
+        F1 = numpy.asarray([F],dtype=numpy.float32)
         F2 = F1.reshape((F1.size,1))
         F = numpy.multiply(F2,F1)
         F = F/numpy.sum(F)
@@ -60,14 +60,14 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
     elif filterType == "POISSON-2D":
         try:
             radius = int(parameters[0])
-            a = float(parameters[1])
+            a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for poisson low-pass filter')
 
         F = []
-        for elt in range(-radius,radius):
+        for elt in range(-radius,radius+1):
             F.append(a*elt*math.exp(-a*elt))
-        F1 = numpy.asarray(F,dtype=numpy.float32)
+        F1 = numpy.asarray([F],dtype=numpy.float32)
         F2 = F1.reshape((F1.size,1))
         F = numpy.multiply(F2,F1)
         F = F/numpy.sum(F)
@@ -75,45 +75,45 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
     #----------- 1D FILTERS ----------#
                # Horizontal #
-    if filterType == "GAUSSIAN-1D-H":
+    elif filterType == "GAUSSIAN-1D":
         try:
             radius = int(parameters[0])
-            a = float(parameters[1])
+            a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for gaussian low-pass filter')
        
         F = []
-        for elt in range(-radius,radius):
-            F.append(math.exp(a*elt**2))
-        F1 = numpy.asarray(F,dtype=numpy.float32)
+        for elt in range(-radius,radius+1):
+            F.append(math.exp(-a*elt**2))
+        F1 = numpy.asarray([F],dtype=numpy.float32)
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
 
 
-    elif filterType == "MEAN-1D-H":
+    elif filterType == "MEAN-1D":
         try:
             radius = int(parameters[0])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
         
-        F1 = numpy.ones((1,2*radius),dtype=numpy.float32)
+        F1 = numpy.ones((1,2*radius+1),dtype=numpy.float32)
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
        
 
-    elif filterType == "POISSON-1D-H":
+    elif filterType == "POISSON-1D":
         try:
             radius = int(parameters[0])
-            a = float(parameters[1])
+            a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for poisson low-pass filter')
 
         F = []
-        for elt in range(-radius,radius):
+        for elt in range(-radius,radius+1):
             F.append(a*elt*math.exp(-a*elt))
-        F1 = numpy.asarray(F,dtype=numpy.float32)
+        F1 = numpy.asarray([F],dtype=numpy.float32)
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
@@ -148,32 +148,27 @@ def highPass(filterType,parameters): # Generates a high-pass filter
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for diff low-pass filter')
         
-        F1 = numpy.ones((2*radius+1,1),dtype=numpy.float32)
-        F2 = numpy.ones((1,2*radius+1),dtype=numpy.float32)
         F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
-        F[0,:] += F1
-        F[2*radius,:] += -F1
-        F[:,0] += F2
-        F[:,2*radius] += -F2
-        F = F/numpy.sum(F)
+        F[0,:] += 1
+        F[2*radius,:] += -1
+        F[:,0] += 1
+        F[:,2*radius] += -1
+        F = F/numpy.sum(numpy.abs(F))
  
     
     #----------- 1D FILTERS ----------#
                # Horizontal #
-    if filterType == "DIFF-1D-H":
+    elif filterType == "DIFF-1D":
         try:
             radius = int(parameters[0])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for diff low-pass filter')
         
         #F1 = numpy.ones((2*radius+1,1),dtype=numpy.float32)
-        F2 = numpy.ones((1,2*radius+1),dtype=numpy.float32)
         F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
-        #F[0,:] += F1
-        #F[2*radius,:] += -F1
-        F[:,0] += F2
-        F[:,2*radius] += -F2
-        F = F/numpy.sum(F)
+        F[:,0] += 1
+        F[:,2*radius] += -1
+        F = F/numpy.sum(numpy.abs(F))
 
 
     else:
@@ -198,7 +193,7 @@ def edgeEnhancement(mat,filterType,radius,threshold,gain):
 
 
 def rotate(mat,theta): # Rotates a 2D matrix by an angle theta in degrees
-    if (type(theta) is int) and (type(mat) is numpy.array):
+    if (type(theta) is int) and (type(mat) is numpy.ndarray):
         
         mat = ndimage.interpolation.rotate(mat,theta)
         

@@ -256,26 +256,90 @@ def pictureClass():
 ###***--- THE FILTERS FILE ---***###
 def filtersTest():
     
+    score= 0
+
     # Filters generation
+    try:
+        f = filters.lowPass('GAUSSIAN-2D',[5,0.5])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        f = filters.lowPass('GAUSSIAN-1D',[10,2])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        f = filters.lowPass('MEAN-2D',[3])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        f = filters.lowPass('MEAN-1D',[6])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        f = filters.lowPass('POISSON-2D',[5,2])
+        score+=1
+    except Exception as exception:
+        print(exception)
+    
+    try:
+        f = filters.lowPass('POISSON-1D',[10,0.7])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        f = filters.highPass('DIFF-2D',[5])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        f = filters.highPass('DIFF-1D',[10])
+        score+=1
+    except Exception as exception:
+        print(exception)
 
 
     # Filters rotation
+    try:
+        f = filters.rotate(numpy.zeros((5,5)),15)
+        score+=1
+    except Exception as exception:
+        print(exception)
 
 
     # Filters application
+    try:
+        f = filters.filterz(numpy.zeros((3,3)),numpy.zeros((3,3)))
+        score+=1
+    except Exception as exception:
+        print(exception)
 
 
-    return 0
+    # Others
+    try:
+        f = filters.edgeDetection(numpy.zeros((3,3)),'filterType',10,100)
+        score+=1
+    except Exception as exception:
+        print(exception)
+    
+    try:
+        f = filters.edgeEnhancement(numpy.zeros((3,3)),'filterType',10,100,5)
+        score+=1
+    except Exception as exception:
+        print(exception)
 
 
 
-
-###***--- THE HELPM FILE ---***###
-def helpmTest():
-
-    # User cases
-
-    return 0
+    return round(1000*score/12)/10
 
 
 
@@ -368,9 +432,6 @@ else:
     print('Filters Module Tests')
     res = filtersTest()
     print('   - score: '+str(res)+"%\n")
-    print('Help Module Tests')
-    res = helpmTest()
-    print('   - score: '+str(res)+"%\n")
     print('Levels Module Tests')
     res = levelsTest()
     print('   - score: '+str(res)+"%\n")
@@ -387,5 +448,7 @@ else:
     res = userCase3()
     print('   - score: '+str(res)+"%\n")
     print('Done.')
+
+    sys.exit(0)
 
     
