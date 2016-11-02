@@ -256,7 +256,7 @@ def pictureClass():
 ###***--- THE FILTERS FILE ---***###
 def filtersTest():
     
-    score= 0
+    score = 0
 
     # Filters generation
     try:
@@ -346,12 +346,75 @@ def filtersTest():
 
 ###***--- THE LEVELS FILE ---***###
 def levelsTest():
+    
+    score = 0
 
     # levels
+    try:
+        #print('A')
+        img = Image.open('pic/test1.jpg')
+        C = levels.getChannel(img,'R')
+        levels.recompose(img,'R',C)
+        C = levels.getChannel(img,'G')
+        levels.recompose(img,'G',C)
+        C = levels.getChannel(img,'B')
+        levels.recompose(img,'B',C)
+        C = levels.getChannel(img,'H')
+        levels.recompose(img,'H',C)
+        C = levels.getChannel(img,'S')
+        levels.recompose(img,'S',C)
+        C = levels.getChannel(img,'V')
+        levels.recompose(img,'V',C)
+        C = levels.getChannel(img,'ALL')
+        levels.recompose(img,'ALL',C)
+        score+=2
+    except Exception as exception:
+        print(exception)
+
+    try:
+        #print('B')
+        levels.levels(img,'ALL',[10,100,240],[0,128,255])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        #print('C')
+        levels.curves(img,'ALL',[10,30,60,120,200],[0,20,55,128,230])
+        score+=1
+    except Exception as exception:
+        print(exception)
 
     # automatic adjustments
+    try:
+        #print('D')
+        levels.equalizeHistogram(img,'ALL')
+        score+=1
+    except Exception as exception:
+        print(exception)
 
-    return 0
+    try:
+        #print('E')
+        levels.normalizeHistogram(img,'ALL')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        #print('F')
+        levels.expHistogram(img,'ALL')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        #print('G')
+        levels.logHistogram(img,'ALL')
+        score+=1
+    except Exception as exception:
+        print(exception)
+    
+    return round(1000*score/8)/10
 
 
 
@@ -359,15 +422,28 @@ def levelsTest():
 ###***--- THE TOOLS FILE ---***###
 def toolsTest():
 
-    # every tools
+    score = 0
 
-    return 0
+    # every tools
+    """
+    try:
+        doStuff()
+        score+=1
+    except Exception as exception:
+        print(exception)
+    """
+
+
+    return round(1000*score/1)/10
 
 
 ###***--- A FEW USERCASES ---***###
 
 ## UserCase1
 def userCase1():
+
+    #actions = []
+    #main.main(actions,'TEST')
 
     return 0
 

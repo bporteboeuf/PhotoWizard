@@ -15,7 +15,14 @@ from tools import *
 
 
 
-def main(args):
+def main(args,mode):
+
+    try:
+        mode = str(mode)
+        args = list(args)
+    except:
+        raise NameError('PhotoWizard Error: wrong argument type in main')
+
 
     display.greetings(LANG)
     quitFlag = False
@@ -27,20 +34,26 @@ def main(args):
 
     while not quitFlag:
         
-        if First :
-            #action = str(getInput(display.action(LANG)))
+        if mode == 'TEST':
             try:
-                action = str(getInput("\n   h - help      q - quit\n"))
+                action = str(args[::-1].pop())
             except:
-                action = ""
-                next
-            First = False
+                action = ''
         else:
-            try:
-                action = str(getInput(""))
-            except:
-                action = ""
-                next
+            if First :
+                #action = str(getInput(display.action(LANG)))
+                try:
+                    action = str(getInput("\n   h - help      q - quit\n"))
+                except:
+                    action = ""
+                    next
+                First = False
+            else:
+                try:
+                    action = str(getInput(""))
+                except:
+                    action = ""
+                    next
 
         ok = False
         while not ok:
@@ -103,12 +116,15 @@ def main(args):
                     ok = False
                     print("PhotoWizard Error: Unexpected input value")
                     try:
-                        if len(action) > 0:
-                            action = str(getInput(helpm.help("idle",LANG)))
+                        if mode != 'TEST':
+                            if len(action) > 0:
+                                action = str(getInput(helpm.help("idle",LANG)))
+                            else:
+                                action = str(getInput(""))
                         else:
-                            action = str(getInput(""))
+                            action = ''
                     except:
-                        action = ""
+                        action = ''
 
     display.bye(LANG)    
     sys.exit(0)
