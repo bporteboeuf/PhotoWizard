@@ -10,13 +10,22 @@ import numpy
 import math
 from PIL import Image
 from scipy import signal,ndimage
+from tools import *
 
 
 
-
-def filterz(mat,F): # convolves the 2D-matrix mat by the 2D-filter F
-    mat = signal.convolve2d(mat,F,mode='same',boundary='symm')
-    return mat
+def filterz(img,channel,F): # convolves the image by the 2D-filter F
+    if (isinstance(img,Image.Image) and isinstance(F,numpy.ndarray) and (type(channel) is str)):
+        images = getChannel(img,channel)
+        matrices = []
+        for elt in images:
+            tmp = signal.convolve2d(numpy.asarray((elt),dtype=numpy.uint8),F,mode='same',boundary='symm')
+            matrices.append(numpy.asarray(tmp,dtype=numpy.uint8))
+        image = recompose(img,channel,matrices)
+        
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in filterz')
+    return image
 
 
 
@@ -176,27 +185,70 @@ def highPass(filterType,parameters): # Generates a high-pass filter
 
         F = numpy.asarray([1])
 
-
     return F
 
 
 
-def edgeDetection(mat,filterType,radius,threshold):
-    return mat
-
-
-
-def edgeEnhancement(mat,filterType,radius,threshold,gain):
-    return mat
-
-
-
-
-def rotate(mat,theta): # Rotates a 2D matrix by an angle theta in degrees
-    if (type(theta) is int) and (type(mat) is numpy.ndarray):
+def edgeDetection(img,channel,filterType,parameters,threshold):
+    
+    if(isinstance(img,Image.Image) and type(filterType) is str and type(parameters) is list and type(threshold) is int):
         
-        mat = ndimage.interpolation.rotate(mat,theta)
+        #filter mat with a highpass filter
+        image = filterz(img,channel,highPass(filterType,parameters))
+        channels = getChannel(image,channel)
+
+        image = numpy.zeros(image.size,dtype=numpy.uint8)
+        for elt in channels:
+            image += elt
+        image = image/len(channels)
+
+        #map the values to grayscale
+        image = 128 + (128-image[0])
+        image = numpy.asarray(image,dtype=numpy.uint8)
+
+        empty = 255*numpy.ones(image.shape,dtype=numpy.uint8)
+
+        image = recompose(img,'ALL',[empty,empty,image])
         
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in edgeDetection')
+        image = img
+
+    return image
+
+
+
+def edgeEnhancement(img,channel,filterType,parameters,threshold,gain):
+     
+    if(isinstance(img,Image.Image) and (type(channel) is str) and (type(filterType) is str) and (type(parameters) is list) and (type(threshold) is int) and (type(gain) is float) and (gain<=1) and (gain>=0)):
+        
+        image = edgeDetection(img,channel,filterType,parameters,threshold)
+        channels_old = getChannel(img,channel)
+        channels_new = getChannel(image,channel)
+
+        image = []
+        for i in range(0,len(channels_old)):
+            image.append(channels_old[i]*(1-gain)+gain*(channels_new[i]-128))
+
+        image = recompose(img,channel,image)
+        
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in edgeEnhancement')
+        image = img
+    
+    return image
+
+
+
+
+def rotate(img,theta): # Rotates a 2D matrix by an angle theta in degrees
+    if (type(theta) is int) and (isinstance(img,Image.Image)):
+        
+        img = img.convert('RGB')
+        img = numpy.asarray(img,dtype=numpy.uint8)
+        img = ndimage.interpolation.rotate(img,theta)
+        image = Image.fromarray(img,'RGB')
+
         """
         # PIL Library
         a = numpy.amin(mat)
@@ -212,7 +264,7 @@ def rotate(mat,theta): # Rotates a 2D matrix by an angle theta in degrees
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in rotate function')
 
-    return mat
+    return image
 
 #
 #def cubicSpline(Xref,Yref,matrix,Xnew,Ynew): # Interpolation of a 2D matrix using cubic interpolation

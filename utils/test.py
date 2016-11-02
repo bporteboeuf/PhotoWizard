@@ -260,48 +260,56 @@ def filtersTest():
 
     # Filters generation
     try:
+        #print('A')
         f = filters.lowPass('GAUSSIAN-2D',[5,0.5])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('B')
         f = filters.lowPass('GAUSSIAN-1D',[10,2])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('C')
         f = filters.lowPass('MEAN-2D',[3])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('D')
         f = filters.lowPass('MEAN-1D',[6])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('E')
         f = filters.lowPass('POISSON-2D',[5,2])
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
+        #print('F')
         f = filters.lowPass('POISSON-1D',[10,0.7])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('G')
         f = filters.highPass('DIFF-2D',[5])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('H')
         f = filters.highPass('DIFF-1D',[10])
         score+=1
     except Exception as exception:
@@ -310,7 +318,10 @@ def filtersTest():
 
     # Filters rotation
     try:
-        f = filters.rotate(numpy.zeros((5,5)),15)
+        #print('I')
+        img = Image.open('pic/test1.jpg')
+        img = img.resize((100,100),Image.ANTIALIAS) # This will speed up the process
+        f = filters.rotate(img,15)
         score+=1
     except Exception as exception:
         print(exception)
@@ -318,7 +329,8 @@ def filtersTest():
 
     # Filters application
     try:
-        f = filters.filterz(numpy.zeros((3,3)),numpy.zeros((3,3)))
+        #print('J')
+        f = filters.filterz(img,'R',numpy.zeros((3,3)))
         score+=1
     except Exception as exception:
         print(exception)
@@ -326,13 +338,15 @@ def filtersTest():
 
     # Others
     try:
-        f = filters.edgeDetection(numpy.zeros((3,3)),'filterType',10,100)
+        #print('K')
+        f = filters.edgeDetection(img,'R','DIFF-2D',[10],100)
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
-        f = filters.edgeEnhancement(numpy.zeros((3,3)),'filterType',10,100,5)
+        #print('L')
+        f = filters.edgeEnhancement(img,'R','DIFF-2D',[10],100,.5)
         score+=1
     except Exception as exception:
         print(exception)
@@ -351,28 +365,9 @@ def levelsTest():
 
     # levels
     try:
-        #print('A')
-        img = Image.open('pic/test1.jpg')
-        C = levels.getChannel(img,'R')
-        levels.recompose(img,'R',C)
-        C = levels.getChannel(img,'G')
-        levels.recompose(img,'G',C)
-        C = levels.getChannel(img,'B')
-        levels.recompose(img,'B',C)
-        C = levels.getChannel(img,'H')
-        levels.recompose(img,'H',C)
-        C = levels.getChannel(img,'S')
-        levels.recompose(img,'S',C)
-        C = levels.getChannel(img,'V')
-        levels.recompose(img,'V',C)
-        C = levels.getChannel(img,'ALL')
-        levels.recompose(img,'ALL',C)
-        score+=2
-    except Exception as exception:
-        print(exception)
-
-    try:
         #print('B')
+        img = Image.open('pic/test1.jpg')
+        img = img.resize((100,100),Image.ANTIALIAS) # This will speed up the process
         levels.levels(img,'ALL',[10,100,240],[0,128,255])
         score+=1
     except Exception as exception:
@@ -414,7 +409,7 @@ def levelsTest():
     except Exception as exception:
         print(exception)
     
-    return round(1000*score/8)/10
+    return round(1000*score/6)/10
 
 
 
@@ -425,16 +420,76 @@ def toolsTest():
     score = 0
 
     # every tools
-    """
     try:
-        doStuff()
+        img = Image.open('pic/test1.jpg')
+        tools.resize(img,(100,100))
         score+=1
     except Exception as exception:
         print(exception)
-    """
+    
+    try:
+        C = tools.getChannel(img,'R')
+        tools.recompose(img,'R',C)
+        C = tools.getChannel(img,'G')
+        tools.recompose(img,'G',C)
+        C = tools.getChannel(img,'B')
+        tools.recompose(img,'B',C)
+        C = tools.getChannel(img,'H')
+        tools.recompose(img,'H',C)
+        C = tools.getChannel(img,'S')
+        tools.recompose(img,'S',C)
+        C = tools.getChannel(img,'V')
+        tools.recompose(img,'V',C)
+        C = tools.getChannel(img,'ALL')
+        tools.recompose(img,'ALL',C)
+        score+=2
+    except Exception as exception:
+        print(exception)
 
 
-    return round(1000*score/1)/10
+    try:
+        tools.crop(img,(10, 10, 50, 70))
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        tools.everyFunction(img,['resize',[(100,100)]])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        tools.explore('','')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        tools.unzip('')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        tools.zip('')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        tools.loadXMP('')
+        score+=1
+    except Exception as exception:
+        print(exception)
+    
+    try:
+        tools.saveXMP('')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    return round(1000*score/10)/10
 
 
 ###***--- A FEW USERCASES ---***###

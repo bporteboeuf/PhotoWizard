@@ -111,6 +111,134 @@ class Picture:
 
 
 
+def getChannel(image,channel): # Channel can be H, S, V, R, G, B or ALL - Note: if BW, should use V or ALL?
+ 
+    if isinstance(image,Image.Image) and (type(channel) is str):
+        if len(channel) == 1:
+            if channel == 'H':
+                image = image.convert('HSV')
+                image = numpy.asarray(image,dtype=numpy.uint8)
+                image = [image[:,:,0]]
+            elif channel == 'S':
+                image = image.convert('HSV')
+                image = numpy.asarray(image,dtype=numpy.uint8)
+                image = [image[:,:,1]]
+            elif channel == 'V':
+                image = image.convert('HSV')
+                image = numpy.asarray(image,dtype=numpy.uint8)
+                image = [image[:,:,2]]
+            elif channel == 'R':
+                image = image.convert('RGB')
+                image = numpy.asarray(image,dtype=numpy.uint8)
+                image = [image[:,:,0]]
+            elif channel == 'G':
+                image = image.convert('RGB')
+                image = numpy.asarray(image,dtype=numpy.uint8)
+                image = [image[:,:,2]]
+            elif channel == 'B' :
+                image = image.convert('RGB')
+                image = numpy.asarray(image,dtype=numpy.uint8)
+                image = [image[:,:,2]]
+            else:
+                raise NameError('PhotoWizard Error: unexpected argument in getChannel')
+        elif len(channel) == 3:
+            if channel == 'ALL':
+                image = image.convert('HSV')
+                image = numpy.asarray(image,dtype=numpy.uint8)
+                image = [image[:,:,0],image[:,:,1],image[:,:,2]]
+            else:
+                raise NameError('PhotoWizard Error: unexpected argument in getChannel')
+        else:
+            raise NameError('PhotoWizard Error: unexpected argument in getChannel')
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in getChannel')
+
+    return image
+
+
+def recompose(image,channel,matrices): # Recomposes the image after modifications on one or several of its channels
+    #print(isinstance(image,Image.Image),type(channel) is str,type(matrices) is list)
+    if (isinstance(image,Image.Image)) and (type(channel) is str) and (type(matrices) is list):
+       
+        if len(matrices) == len(channel):
+
+            if len(channel) == 1 :
+                
+                try:
+                    matrices = numpy.asarray(matrices[0],dtype=numpy.uint8)
+                except:
+                    raise NameError('PhotoWizard Error: Wrong argument type in recompose - 2')
+
+                if channel == 'R':
+                    img = image.convert('RGB')
+                    img = numpy.asarray(img,dtype=numpy.uint8)
+                    img.setflags(write=True)
+                    img[:,:,0] = matrices
+                    image = Image.fromarray(img,'RGB')
+                elif channel == 'G':
+                    img = image.convert('RGB')
+                    img = numpy.asarray(img,dtype=numpy.uint8)
+                    img.setflags(write=True)
+                    img[:,:,1] = matrices
+                    image = Image.fromarray(img,'RGB')
+                elif channel == 'B':
+                    img = image.convert('RGB')
+                    img = numpy.asarray(img,dtype=numpy.uint8)
+                    img.setflags(write=True)
+                    img[:,:,2] = matrices
+                    image = Image.fromarray(img,'RGB')
+                elif channel == 'H':
+                    img = image.convert('HSV')
+                    img = numpy.asarray(img,dtype=numpy.uint8)
+                    img.setflags(write=True)
+                    img[:,:,0] = matrices
+                    image = Image.fromarray(img,'HSV')
+                elif channel == 'S':
+                    img = image.convert('HSV')
+                    img = numpy.asarray(img,dtype=numpy.uint8)
+                    img.setflags(write=True)
+                    img[:,:,1] = matrices
+                    image = Image.fromarray(img,'HSV')
+                elif channel == 'V':
+                    img = image.convert('HSV')
+                    img = numpy.asarray(img,dtype=numpy.uint8)
+                    img.setflags(write=True)
+                    img[:,:,2] = matrices
+                    image = Image.fromarray(img,'HSV')
+                else:
+                    raise NameError('PhotoWizard Error: unexpected argument in recompose')  
+
+            elif len(channel) == 3:
+                if channel == 'ALL': 
+                    matrices2 = []
+                    try:
+                        matrices2.append(numpy.asarray(matrices[0],dtype=numpy.uint8))
+                        matrices2.append(numpy.asarray(matrices[1],dtype=numpy.uint8))
+                        matrices2.append(numpy.asarray(matrices[2],dtype=numpy.uint8))
+                    except:
+                        raise NameError('PhotoWizard Error: Wrong argument type in recompose - 3')
+
+                    img = image.convert('HSV')
+                    img = numpy.asarray(img,dtype=numpy.uint8)
+                    img.setflags(write=True)
+                    img[:,:,0] = matrices2[0]
+                    img[:,:,1] = matrices2[1]
+                    img[:,:,2] = matrices2[2]
+                    image = Image.fromarray(img,'HSV')
+
+                else:
+                    raise NameError('PhotoWizard Error: unexpected argument in recompose')
+            else:
+                raise NameError('PhotoWizard Error: unexpected argument in recompose')
+        else:
+            raise NameError('PhotoWizard Error: arugments length mismatch in recompose')
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in recompose - 1')
+
+    return image
+
+
+
 
 
 def getInput(message): # Message is a message to display
@@ -152,6 +280,19 @@ def resize(img,size): # Resizes an image to a given size and returns an Image.Im
 
 
 def crop(image,parameters): # Crops an image
+    
+    if (isinstance(image,Image.Image) and (type(parameters) is tuple) and (len(parameters)==4)):
+        try:
+            coord = (int(parameters[0]),int(parameters[1]),int(parameters[2]),int(parameters[3]))
+            if (min(coord)>=0 and coord[2]<= image.size[0] and coord[3] <= image.size[1]):
+                image = image.crop(coord)
+            else:
+                raise NameError('PhotoWizard Error: Unexpected values in crop')
+        except:
+            raise NameError('PhotoWizard Error: Wrong argument format in crop')
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in crop')
+    
     return image
 
 
@@ -167,44 +308,83 @@ def everyFunction(image,action): # Maps the action in the main or history to the
             f = ""
             params = []
         if f == "levels":
-            print(f)
-            #image = levels(image,params)
+            #print(f)
+            try:
+                image = levels(image,params[0],params[1],params[2])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call levels() in everyFunction')
         elif f == "curves":
-            print(f)
-            #image = curves(image,params)
+            #print(f)
+            try:
+                image = curves(image,params[0],params[1],params[2])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call curves() in everyFunction')
         elif f == "normHist":
-            print(f)
-            #image = normalizeHistogram(image,params)
+            #print(f)
+            try:
+                image = normalizeHistogram(image,params[0])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call normalizeHistogram() in everyFunction')
         elif f == "eqHist":
-            print(f)
-            #image = equalizeHistogram(image,params)
+            #print(f)
+            try:
+                image = equalizeHistogram(image,params[0])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call equalizeHistogram() in everyFunction')
         elif f == "expHist":
-            print(f)
-            #image = expHistogram(image,params)
+            #print(f)
+            try:
+                image = expHistogram(image,params[0])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call expHistogram() in everyFunction')
         elif f == "logHist":
-            print(f)
-            #image = logHistogram(image,params)
+            #print(f)
+            try:
+                image = logHistogram(image,params[0])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call logHistogram() in everyFunction')
         elif f == "lowPass":    
-            print(f)
-            #image = filterz(image,lowPass(params))
+            #print(f)
+            try:
+                image = filterz(image,lowPass(params[0],params[1]))
+            except:
+                raise NameError('PhotoWizard Error: Unable to call filterz() and/or lowPass() in everyFunction')
         elif f == "highPass":
-            print(f)
-            #image = filterz(image,lowPass(params))
+            #print(f)
+            try:
+                image = filterz(image,highPass(params[0],params[1]))
+            except:
+                raise NameError('PhotoWizard Error: Unable to call filterz() and/or highPass() in everyFunction')
         elif f == "detectEdges":
-            print(f)
-            #image = edgeDetection(image,params)
+            #print(f)
+            try:
+                image = edgeDetection(image,params[0],params[1],params[2],params[3])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call edgeDetection() in everyFunction')
         elif f == "enhanceEdges":
-            print(f)
-            #image = edgeEnhancement(image,params)
+            #print(f)
+            try:
+                image = edgeEnhancement(image,params[0],params[1],params[2],params[3],params[4])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call edgeEnhancement() in everyFunction')
         elif f == "rotate":
-            print(f)
-            #image = rotate(image,params)
+            #print(f)
+            try:
+                image = rotate(image,params[0])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call rotate() in everyFunction')
         elif f == "crop":
-            print(f)
-            #image = crop(image,params)
+            #print(f)
+            try:
+                image = crop(image,params[0])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call crop() in everyFunction')
         elif f == "resize":
-            print(f)
-            #image = resize(image,params)
+            #print(f)
+            try:
+                image = resize(image,params[0])
+            except:
+                raise NameError('PhotoWizard Error: Unable to call resize() in everyFunction')
         else:
             raise NameError('PhotoWizard Error: Unknown function in everyFunction')
 
@@ -218,24 +398,29 @@ def everyFunction(image,action): # Maps the action in the main or history to the
 
 def explore(path,options): # Explores a folder
 
-
     return
-
-
 
 
 
 def unzip(paths): # Extracts an archive file
-
-
+    # See zipfile @https://docs.python.org/3/library/zipfile.html
     return
-
-
 
 
 
 def zip(paths): # Compresses files into an archive
+    # See: zipfile @https://docs.python.org/3/library/zipfile.html
+    return
 
+
+
+def loadXMP(path):
 
     return
+
+
+def saveXMP(path):
+
+    return
+
 

@@ -8,6 +8,7 @@
 
 import numpy,math,scipy
 from PIL import Image
+from tools import *
 
 
 def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (same treatment for every selected channel) or a numpy.ndarray (same treatment for every layer)
@@ -78,134 +79,6 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
         image = recompose(image,channel,matrices)
     else:
         image = matrices
-
-    return image
-
-
-
-def getChannel(image,channel): # Channel can be H, S, V, R, G, B or ALL - Note: if BW, should use V or ALL?
- 
-    if isinstance(image,Image.Image) and (type(channel) is str):
-        if len(channel) == 1:
-            if channel == 'H':
-                image = image.convert('HSV')
-                image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,0]]
-            elif channel == 'S':
-                image = image.convert('HSV')
-                image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,1]]
-            elif channel == 'V':
-                image = image.convert('HSV')
-                image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,2]]
-            elif channel == 'R':
-                image = image.convert('RGB')
-                image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,0]]
-            elif channel == 'G':
-                image = image.convert('RGB')
-                image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,2]]
-            elif channel == 'B' :
-                image = image.convert('RGB')
-                image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,2]]
-            else:
-                raise NameError('PhotoWizard Error: unexpected argument in getChannel')
-        elif len(channel) == 3:
-            if channel == 'ALL':
-                image = image.convert('HSV')
-                image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,0],image[:,:,1],image[:,:,2]]
-            else:
-                raise NameError('PhotoWizard Error: unexpected argument in getChannel')
-        else:
-            raise NameError('PhotoWizard Error: unexpected argument in getChannel')
-    else:
-        raise NameError('PhotoWizard Error: Wrong argument type in getChannel')
-
-    return image
-
-
-def recompose(image,channel,matrices): # Recomposes the image after modifications on one or several of its channels
-    #print(isinstance(image,Image.Image),type(channel),type(matrices))
-    if (isinstance(image,Image.Image)) and (type(channel) is str) and (type(matrices) is list):
-       
-        if len(matrices) == len(channel):
-
-            if len(channel) == 1 :
-                
-                try:
-                    matrices = numpy.asarray(matrices[0],dtype=numpy.uint8)
-                except:
-                    raise NameError('PhotoWizard Error: Wrong argument type in recompose')
-
-                if channel == 'R':
-                    img = image.convert('RGB')
-                    img = numpy.asarray(img,dtype=numpy.uint8)
-                    img.setflags(write=True)
-                    img[:,:,0] = matrices
-                    image = Image.fromarray(img,'RGB')
-                elif channel == 'G':
-                    img = image.convert('RGB')
-                    img = numpy.asarray(img,dtype=numpy.uint8)
-                    img.setflags(write=True)
-                    img[:,:,1] = matrices
-                    image = Image.fromarray(img,'RGB')
-                elif channel == 'B':
-                    img = image.convert('RGB')
-                    img = numpy.asarray(img,dtype=numpy.uint8)
-                    img.setflags(write=True)
-                    img[:,:,2] = matrices
-                    image = Image.fromarray(img,'RGB')
-                elif channel == 'H':
-                    img = image.convert('HSV')
-                    img = numpy.asarray(img,dtype=numpy.uint8)
-                    img.setflags(write=True)
-                    img[:,:,0] = matrices
-                    image = Image.fromarray(img,'HSV')
-                elif channel == 'S':
-                    img = image.convert('HSV')
-                    img = numpy.asarray(img,dtype=numpy.uint8)
-                    img.setflags(write=True)
-                    img[:,:,1] = matrices
-                    image = Image.fromarray(img,'HSV')
-                elif channel == 'V':
-                    img = image.convert('HSV')
-                    img = numpy.asarray(img,dtype=numpy.uint8)
-                    img.setflags(write=True)
-                    img[:,:,2] = matrices
-                    image = Image.fromarray(img,'HSV')
-                else:
-                    raise NameError('PhotoWizard Error: unexpected argument in recompose')  
-
-            elif len(channel) == 3:
-                if channel == 'ALL':   
-                    matrices2 = []
-                    try:
-                        matrices2.append(numpy.asarray(matrices[0],dtype=numpy.uint8))
-                        matrices2.append(numpy.asarray(matrices[1],dtype=numpy.uint8))
-                        matrices2.append(numpy.asarray(matrices[2],dtype=numpy.uint8))
-                    except:
-                        raise NameError('PhotoWizard Error: Wrong argument type in recompose')
-
-                    img = image.convert('HSV')
-                    img = numpy.asarray(img,dtype=numpy.uint8)
-                    img.setflags(write=True)
-                    img[:,:,0] = matrices2[0]
-                    img[:,:,1] = matrices2[1]
-                    img[:,:,2] = matrices2[2]
-                    image = Image.fromarray(img,'HSV')
-
-                else:
-                    raise NameError('PhotoWizard Error: unexpected argument in recompose')
-            else:
-                raise NameError('PhotoWizard Error: unexpected argument in recompose')
-        else:
-            raise NameError('PhotoWizard Error: arugments length mismatch in recompose')
-    else:
-        raise NameError('PhotoWizard Error: Wrong argument type in recompose')
 
     return image
 
