@@ -25,6 +25,7 @@ def eventClass():
 
     # Init
     try:
+        #print('A')
         eventA = Event(1,None,('action',['parameters']),'eventA')
         eventB = Event(2,1,('action',['parameters']),'eventB')
         eventC = Event(3,None,('action',['parameters']),'eventC')
@@ -34,54 +35,63 @@ def eventClass():
 
     # Class methods
     try:
+        #print('B')
         eventA.getID()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('C')
         eventA.getNext()
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
+        #print('D')
         eventA.setNext(3)
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('E')
         eventC.getPrevious()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('F')
         eventC.setPrevious(1)
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('G')
         eventB.getContent()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('H')
         eventB.setContent(('action2',['params2']))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('I')
         eventB.getLabel()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('J')
         eventB.setLabel('EVENTB')
         score+=1
     except Exception as exception:
@@ -100,6 +110,7 @@ def historyClass():
 
     # Init
     try:
+        #print('A')
         hist = History(1)
         score+=1
     except Exception as exceptio:
@@ -107,6 +118,7 @@ def historyClass():
 
     # Class methods
     try:
+        #print('B')
         hist.add(('action',['parameters']),'eventA')
         hist.add(('action',['parameters']),'eventB')
         score+=1
@@ -114,54 +126,63 @@ def historyClass():
         print(exception)
 
     try:
+        #print('C')
         hist.getCurrentState()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('D')
         hist.setCurrentState(2)
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('E')
         hist.getEvent(1)
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('F')
         hist.undo()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('G')
         hist.redo()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('H')
         hist.rebase(1)
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('I')
         hist.getHistory()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('J')
         hist.getFullHistory()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('K')
         hist.clearHistory()
         score+=1
     except Exception as exception:
@@ -180,6 +201,7 @@ def pictureClass():
 
     # Init
     try:
+        #print('A')
         image = Picture(1,"pic/test1.jpg")
         score+=1
     except Exception as exception:
@@ -187,67 +209,70 @@ def pictureClass():
 
     # Class methods
     try:
-        (isinstance(image.asImage(),Image.Image))
+        #print('B')
+        (isinstance(image.getImage(),Image.Image))
         score+=1
     except Exception as exception:
         print(exception)
-    
+   
     try:
-        image.asArray()
-        score+=1
-    except Exception as exception:
-        print(exception)
-
-    try:
-        (isinstance(image.smallAsImage(),Image.Image))
+        #print('C')
+        (isinstance(image.getSmallImage(),Image.Image))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        image.smallAsArray()
-        score+=1
-    except Exception as exception:
-        print(exception)
-
-    try:
+        #print('D')
         image.resizeSmall((20,30))
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
+        #print('E')
         image.getHistory()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('F')
         image.setHistory(image.getHistory())
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('G')
         image.reCompute()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('H')
         image.export('pic/test1-2.jpg')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('I')
         image.close()
         score+=1
     except Exception as exception:
         print(exception)
 
+    try:
+        #print('J')
+        image.histogram('ALL')
+        score+=1
+    except Exception as exception:
+        print(exception)
 
-    return round(1000*score/11)/10
+
+    return round(1000*score/10)/10
 
 
 
@@ -320,7 +345,7 @@ def filtersTest():
     try:
         #print('I')
         img = Image.open('pic/test1.jpg')
-        img = img.resize((100,100),Image.ANTIALIAS) # This will speed up the process
+        img = img.resize((50,50),Image.ANTIALIAS) # This will speed up the process
         f = filters.rotate(img,15)
         score+=1
     except Exception as exception:
@@ -365,16 +390,16 @@ def levelsTest():
 
     # levels
     try:
-        #print('B')
+        #print('A')
         img = Image.open('pic/test1.jpg')
-        img = img.resize((100,100),Image.ANTIALIAS) # This will speed up the process
+        img = img.resize((50,50),Image.ANTIALIAS) # This will speed up the process
         levels.levels(img,'ALL',[10,100,240],[0,128,255])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('C')
+        #print('B')
         levels.curves(img,'ALL',[10,30,60,120,200],[0,20,55,128,230])
         score+=1
     except Exception as exception:
@@ -382,28 +407,28 @@ def levelsTest():
 
     # automatic adjustments
     try:
-        #print('D')
+        #print('C')
         levels.equalizeHistogram(img,'ALL')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('E')
+        #print('D')
         levels.normalizeHistogram(img,'ALL')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('F')
+        #print('E')
         levels.expHistogram(img,'ALL')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('G')
+        #print('F')
         levels.logHistogram(img,'ALL')
         score+=1
     except Exception as exception:
@@ -421,13 +446,15 @@ def toolsTest():
 
     # every tools
     try:
+        #print('A')
         img = Image.open('pic/test1.jpg')
-        tools.resize(img,(100,100))
+        tools.resize(img,(50,50))
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
+        #print('B')
         C = tools.getChannel(img,'R')
         tools.recompose(img,'R',C)
         C = tools.getChannel(img,'G')
@@ -448,48 +475,63 @@ def toolsTest():
 
 
     try:
+        #print('C')
         tools.crop(img,(10, 10, 50, 70))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        tools.everyFunction(img,['resize',[(100,100)]])
+        #print('D')
+        tools.everyFunction(img,['resize',['resize [50,50]']])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('E')
         tools.explore('','')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('F')
         tools.unzip('')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('G')
         tools.zip('')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
+        #print('H')
         tools.loadXMP('')
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
+        #print('I')
         tools.saveXMP('')
         score+=1
     except Exception as exception:
         print(exception)
 
-    return round(1000*score/10)/10
+    try:
+        #print('J')
+        tools.parseInput('a 1 [2,3,4] 3.14',[str,int,list,float])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
+    return round(1000*score/11)/10
 
 
 ###***--- A FEW USERCASES ---***###
@@ -497,20 +539,46 @@ def toolsTest():
 ## UserCase1
 def userCase1():
 
-    #actions = []
-    #main.main(actions,'TEST')
+    score = 0
 
-    return 0
+    #actions = ['h','open pic/test1.jpg','histogram','equalizeHistogram','histogram','save pic/test1-1.jpg','q']
+    #try:
+    #   main.main(actions,'TEST')
+    #   score+=1
+    #except Exception as exception:
+    #   print(exception)
+
+    return round(1000*score/1)/10
+
 
 ## UserCase2
 def userCase2():
-    
-    return 0
+ 
+    score = 0
 
+    #actions = ['open pic/test1.jpg', 'blur gaussian-2d 10 1 ALL', 'equalizeHistogram','undo','normalizeHistogram','saveXMP pic/test1-2.xmp','q']
+    #try:
+    #   main.main(actions,'TEST')
+    #   score+=1
+    #except Exception as exception:
+    #   print(exception)
+
+    return round(1000*score/1)/10
+
+   
 ## UserCase3
 def userCase3():
 
-    return 0
+    score = 0
+
+    #actions = ['open pic/test1.jpg','loadXMP pic/test1.xmp','history','rebase 2','curves [5, 10, 20, 50, 128, 205, 235, 245, 250] [0, 2, 10, 128, 245, 253, 255]','save pic/test1-3.jpg','saveXMP pic/test1-3.jpg','quitttt','q']
+    #try:
+    #   main.main(actions,'TEST')
+    #   score+=1
+    #except Exception as exception:
+    #   print(exception)
+
+    return round(1000*score/1)/10
 
 
 

@@ -10,6 +10,7 @@
 import sys,re,os,numpy
 from history import History
 from PIL import Image
+from config import *
 
 
 class Picture:
@@ -31,24 +32,15 @@ class Picture:
             self.smallpic = self.smallpic.resize((30,30),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
         else :
             self.smallpic = None
-
         return
 
 
-    def asImage(self):
+    def getImage(self):
         return self.pic
 
 
-    def asArray(self):
-        return numpy.asarray(self.pic)
-
-
-    def smallAsImage(self):
+    def getSmallImage(self):
         return self.smallpic
-
-
-    def smallAsArray(self):
-        return numpy.asarray(self.smallpic)
 
 
     def resizeSmall(self,size): # Resizes the working miniature picture according to a given relative size (range 1/100 to 100)
@@ -67,7 +59,7 @@ class Picture:
                     raise NameError('PhotoWizard Error: Wrong argument type, must be integers')
 
                 if (1<100*a<100*100) and (1<=100*b<=100*100):
-                    self.smallpic = resize(self.smallAsImage(),(a,b))
+                    self.smallpic = resize(self.getSmallImage(),(a,b))
                 else:
                     raise NameError('PhotoWizard Error: Wrong argument range, must be between 1/100 and 100')
         return
@@ -108,6 +100,19 @@ class Picture:
 
     def close(self):
         return
+
+
+
+
+    def histogram(self,channel):
+        matrices = getChannel(self.getSmallImage(),channel)
+        hist = []
+        precision = 4
+        for elt in matrices:
+            [H,B] = numpy.histogram(elt,bins=round(256/precision),range=(0,255))
+            hist.append(H)
+        return hist
+
 
 
 
@@ -154,6 +159,7 @@ def getChannel(image,channel): # Channel can be H, S, V, R, G, B or ALL - Note: 
         raise NameError('PhotoWizard Error: Wrong argument type in getChannel')
 
     return image
+
 
 
 def recompose(image,channel,matrices): # Recomposes the image after modifications on one or several of its channels
@@ -241,12 +247,16 @@ def recompose(image,channel,matrices): # Recomposes the image after modification
 
 
 
-def getInput(message): # Message is a message to display
+def getInput(message): # Gets input from user - message is a message to display
+    
+    if type(message) is str :
 
-    if sys.version_info[0] < 3 :
-        string =  raw_input(str(message))
-    else :
-        string = input(str(message))
+        if sys.version_info[0] < 3 :
+            string =  raw_input(str(message))
+        else :
+            string = input(str(message))
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in getInput')
 
     if re.search(r"^[0-9A-Za-z-_. \/]{0,60}$", string) is None :
         raise NameError('PhotoWizard Error: Unexpected input')
@@ -254,6 +264,54 @@ def getInput(message): # Message is a message to display
     else :
         return string
 
+
+def parseInput(string,expected): # Parses a string input to find the corresponding objects - expect is a list of expected types such as : [list,str,int,float]
+    if type(string) is str and type(expected) is list:
+        s = string.split(' ')
+        stringFormated = []
+        if len(s) == 2:
+            if s[1] == '-h' or s[1] == '--help':
+                print(helpm.help(s[0],LANG))
+                return stringFormated
+
+        if len(s) == len(expected):
+            try :
+                for i in range(0,len(s)):
+                    if expected[i] is str:
+                        tmp = str(s[i])
+                    elif expected[i] is int:
+                        tmp = int(s[i])
+                    elif expected[i] is list:
+                        tmp = str(s[i])
+                        if tmp[0] == '[' and tmp[len(tmp)-1] == ']':
+                            tmp = tmp[1:len(tmp)-1]
+                            tmp = tmp.split(',')
+                            tmp = numpy.asarray(tmp,dtype=numpy.float32)
+                            tmp = list(tmp)
+                        else:
+                            raise NameError('PhotoWizard Error: Unable to parse delimiters in parseInput')
+                    elif expected[i] is tuple:
+                        tmp = str(s[i])
+                        if tmp[0] == '(' and tmp[len(tmp)-1] == ')':
+                            tmp = tmp[1:len(tmp)-1]
+                            tmp = tmp.split(',')
+                            tmp.numpy.asarray(tmp,dtype=numpy.asarray.float32)
+                            tmp = tuple(tmp)
+                        else:
+                            raise NameError('PhotoWizard Error: Unable to parse delimiters in parseInput')
+
+                    elif expected[i] is float:
+                        tmp = float(s[i])
+                    else:
+                        raise NameError('PhotoWizard Error: Unsupported type in parseInput')
+                    stringFormated.append(tmp)
+            except:
+                raise NameError('PhotoWizard Error: Wrong argument type in parseInput - 2')
+        else:
+            raise NameError('PhotoWizard Error: arguments length mismatch in parseInput')
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in parseInput - 1')
+    return stringFormated
 
 
 
@@ -303,6 +361,7 @@ def everyFunction(image,action): # Maps the action in the main or history to the
         try:
             f = action[0]
             params = action[1]
+            params = params[0]
         except:
             raise NameError('PhotoWizard Error: Wrong argument format in everyFunction')
             f = ""
@@ -310,78 +369,104 @@ def everyFunction(image,action): # Maps the action in the main or history to the
         if f == "levels":
             #print(f)
             try:
+                params = parseInput(params,[str,str,int,int])
+                params = params[1:]
                 image = levels(image,params[0],params[1],params[2])
             except:
                 raise NameError('PhotoWizard Error: Unable to call levels() in everyFunction')
         elif f == "curves":
             #print(f)
             try:
+                params = parseInput(params,[str,str,int,int])
+                params = params[1:len(params)-1]
                 image = curves(image,params[0],params[1],params[2])
             except:
                 raise NameError('PhotoWizard Error: Unable to call curves() in everyFunction')
         elif f == "normHist":
             #print(f)
             try:
+                params = parseInput(params,[str,str])
+                params = params[1:]
                 image = normalizeHistogram(image,params[0])
             except:
                 raise NameError('PhotoWizard Error: Unable to call normalizeHistogram() in everyFunction')
         elif f == "eqHist":
             #print(f)
             try:
+                params = parseInput(params,[str,str])
+                params = params[1:]
                 image = equalizeHistogram(image,params[0])
             except:
                 raise NameError('PhotoWizard Error: Unable to call equalizeHistogram() in everyFunction')
         elif f == "expHist":
             #print(f)
             try:
+                params = parseInput(params,[str,str])
+                params = params[1:]
                 image = expHistogram(image,params[0])
             except:
                 raise NameError('PhotoWizard Error: Unable to call expHistogram() in everyFunction')
         elif f == "logHist":
             #print(f)
             try:
+                params = parseInput(params,[str,str])
+                params = params[1:]
                 image = logHistogram(image,params[0])
             except:
                 raise NameError('PhotoWizard Error: Unable to call logHistogram() in everyFunction')
         elif f == "lowPass":    
             #print(f)
             try:
-                image = filterz(image,lowPass(params[0],params[1]))
+                params = parseInput(params,[str,str,int,float,str])
+                params = params[1:]
+                image = filterz(image,params[2],lowPass(params[0],params[1],params[2]))
             except:
                 raise NameError('PhotoWizard Error: Unable to call filterz() and/or lowPass() in everyFunction')
         elif f == "highPass":
             #print(f)
             try:
-                image = filterz(image,highPass(params[0],params[1]))
+                params = parseInput(params,[str,str,int,str])
+                params = params[1:]
+                image = filterz(image,params[2],highPass(params[0],params[1]))
             except:
                 raise NameError('PhotoWizard Error: Unable to call filterz() and/or highPass() in everyFunction')
         elif f == "detectEdges":
             #print(f)
             try:
+                params = parseInput(params,[str,str,str,int,float])
+                params = params[1:]
                 image = edgeDetection(image,params[0],params[1],params[2],params[3])
             except:
                 raise NameError('PhotoWizard Error: Unable to call edgeDetection() in everyFunction')
         elif f == "enhanceEdges":
             #print(f)
             try:
+                params = parseInput(params,[str,str,str,int,int,float])
+                params = params[1:]
                 image = edgeEnhancement(image,params[0],params[1],params[2],params[3],params[4])
             except:
                 raise NameError('PhotoWizard Error: Unable to call edgeEnhancement() in everyFunction')
         elif f == "rotate":
             #print(f)
             try:
+                params = parseInput(params,[str,float])
+                params = params[1:]
                 image = rotate(image,params[0])
             except:
                 raise NameError('PhotoWizard Error: Unable to call rotate() in everyFunction')
         elif f == "crop":
             #print(f)
             try:
+                params = parseInput(params,[str,list])
+                params = params[1:]
                 image = crop(image,params[0])
             except:
                 raise NameError('PhotoWizard Error: Unable to call crop() in everyFunction')
         elif f == "resize":
             #print(f)
             try:
+                params = parseInput(params,[str,list])
+                params = params[1:]
                 image = resize(image,params[0])
             except:
                 raise NameError('PhotoWizard Error: Unable to call resize() in everyFunction')

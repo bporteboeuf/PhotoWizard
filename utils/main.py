@@ -29,6 +29,7 @@ def main(args,mode):
     First = True
 
     images = {}
+    files = []
     ID_max = 0
     current = ""
 
@@ -36,82 +37,187 @@ def main(args,mode):
         
         if mode == 'TEST':
             try:
-                action = str(args[::-1].pop())
+                request = str(args[::-1].pop())
             except:
-                action = ''
+                request = ''
         else:
             if First :
                 #action = str(getInput(display.action(LANG)))
                 try:
-                    action = str(getInput("\n   h - help      q - quit\n"))
+                    request = str(getInput("\n   h - help      q - quit\n"))
                 except:
-                    action = ""
+                    request = ""
                     next
                 First = False
             else:
                 try:
-                    action = str(getInput(""))
+                    request = str(getInput(""))
                 except:
-                    action = ""
+                    request = ""
                     next
 
         ok = False
         while not ok:
             ok = True
+            
+            request = request.split(' ')
+            action = request[0]
+            request = ' '.join(request)
 
             if action == "h" or action == "help":
                 display.disp(helpm.help("idle",LANG))
+            
             elif action == "q" or action == "quit":
                 quitFlag = True
+            
             elif action == "open":
-                print("open file")
-                #ID_max += 1
-                #images[fileName] = Picture(ID_max,fileName)
-                #current = fileName
+                try:
+                    fileName = parseInput(request,[str,str])
+                    fileName = fileName[1]
+                    print("Opening "+str(fileName))
+                    ID_max += 1
+                    images[fileName] = Picture(ID_max,fileName)
+                    files.append(fileName)
+                    current = fileName
+                except:
+                    ok = False
+            
             elif action == "close":
-                print("close file")
-                #images[fileName].close()
-                #current = ??
+                try:
+                    fileName = parseInput(request,[str,str])
+                    fileName = fileName[1]
+                    print("Closing "+str(fileName))
+                    images[fileName].close()
+                    del images[fileName]
+                    files.delete(fileName)
+                    if files is not None:
+                           nextFile = files[len(files)-1]
+                           print(str(fileName)+' closed; switching to '+str(nextFile))
+                           current = images[nextFile]
+                except:
+                    ok = False
+
             elif action == "load":
-                print("load xmp")
-                #images[current].rebase(1)
-                #for event in xmp:
-                #       images[current].History.add(event)
+                try:
+                    fileName = parseInput(request,[str,str])
+                    fileName = fileName[1]
+                    print("Loading xmp file "+str(fileName))
+                    images[current].rebase(1)
+                    h = images[current].getHistory()
+                    for event in xmp:
+                           h = h.add(event)
+                    images[current].setHistory(h)
+                except:
+                    ok = False
+
             elif action == "save":
-                print("save xmp")
-                #save(xmp)
+                try:
+                    fileName = parseInput(request,[str,str])
+                    fileName = fileName[1]
+                    print("Saving xmp file "+str(fileName))
+                    saveXMP(fileName,images[current])
+                except:
+                    ok = False
+            
             elif action == "export":
-                print("export")
-                #images[current].export()
+                try:
+                    fileName = parseInput(request,[str,str])
+                    fileName = fileName[1]
+                    print("Exporting "+str(fileName))
+                    images[current].export(fileName)
+                except:
+                    ok = False
+
             elif action == "switch":
-                print("switch")
-                #current = fileName
+                try:
+                    fileName = parseInput(request,[str,str])
+                    fileName = fileName[1]
+
+                    if fileName in files:
+                        print("Switching to "+str(fileName))
+                        current = fileName
+                    else:
+                        print('PhotoWizard Error: no such file opened')
+                except:
+                    ok = False
+
             elif action == "histogram":
-                print("histogram")
-                #print(images[current].histogram())
+                try:
+                    channel = parseInput(request,[str,str])
+                    channel = channel[1]
+                    print("Histogram")
+                    H = images[current].histogram(channel)
+                    for elt in H:
+                        for k in range(0,11):
+                            s = ''
+                            for el in elt:
+                                if int(el) >= round(255/10*(9-k)) and k != 10 :
+                                    s += '#'
+                                elif k != 10:
+                                    s += ' '
+                                else:
+                                    s += '-'
+                            print(s)
+                except:
+                    ok = False
+            
             elif action == "preview":
-                print("preview")
-                #images[current].preview()
+                try:
+                    parseInput(request,[str])
+                    print("preview")
+                    images[current].preview()
+                except:
+                    ok = False
+            
             elif action == "undo":
-                print("undo")
-                #images[current].History.undo()
+                try:
+                    parseInput(request,[str])
+                    print("undo")
+                    h = images[current].getHistory()
+                    images[current].setHistory(h.undo())
+                    images[current].recompute()
+                except:
+                    ok = False
+
             elif action == "redo":
-                print("redo")
-                #images[current].History.redo()
+                try:
+                    parseInput(request,[str])
+                    print("redo")
+                    h = images[current].getHistory()
+                    images[current].setHistory(h.redo())
+                    images[current].recompute()
+                except:
+                    ok = False
+
             elif action == "rebase":
-                print(rebase)
-                #images[current].rebase(event)
+                try:
+                    event = parseInput(request,[str,int])
+                    event = event[1]
+                    print(rebase)
+                    h = images[current].getHistory()
+                    images[current].setHistory(h.rebase(event))
+                    images[current].recompute()
+                except:
+                    ok = False
+
             elif action == "history":
-                print("history")
-                #print(images[current].History.getFullHistory)
+                try:
+                    parseInput(request,[str])
+                    print("history")
+                    print(images[current].getHistory().getFullHistory())
+                except:
+                    ok = False
+
             else:
                 try:
                     # We try to compute the resized copy of the picture
                     image = Image.Image
                     function = action
-                    parameters = ""
-                    everyFunction(image,[function,[parameters]])
-                    #images[current].setSmallPic = everyFunction(images[current].getSmallPic,[function,[parameters]])
+                    #parameters = parseInput(request,[str,])
+                    #everyFunction(image,[function,[parameters]])
+                    images[current].setSmallPic = everyFunction(images[current].getSmallImage,[function,request])
+                    h = images[current].getHistory()
+                    imags[current].setHistory(h.add([function,[parameters]],function))
                 except:
                     ok = False
                     print("PhotoWizard Error: Unexpected input value")
