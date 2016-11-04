@@ -8,7 +8,7 @@
 
 import numpy,math,scipy
 from PIL import Image
-from tools import *
+from tools import getChannel,recompose
 
 
 def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (same treatment for every selected channel) or a numpy.ndarray (same treatment for every layer)

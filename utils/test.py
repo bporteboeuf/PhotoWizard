@@ -7,7 +7,7 @@
 # This module contains tests for the whole software
 
 try:
-    import filters,helpm,history,levels,main,tools
+    import filters,helpm,history,levels,main,tools,mapping
     from tools import Picture
     from history import History, Event
     from config import *
@@ -448,7 +448,7 @@ def toolsTest():
     try:
         #print('A')
         img = Image.open('pic/test1.jpg')
-        tools.resize(img,(50,50))
+        tools.resize(img,[50,50])
         score+=1
     except Exception as exception:
         print(exception)
@@ -483,7 +483,7 @@ def toolsTest():
 
     try:
         #print('D')
-        tools.everyFunction(img,['resize',['resize [50,50]']])
+        mapping.everyFunction(img,['resize','resize [50,50]'])
         score+=1
     except Exception as exception:
         print(exception)
