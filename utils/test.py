@@ -541,12 +541,12 @@ def userCase1():
 
     score = 0
 
-    #actions = ['h','open pic/test1.jpg','histogram','equalizeHistogram','histogram','save pic/test1-1.jpg','q']
-    #try:
-    #   main.main(actions,'TEST')
-    #   score+=1
-    #except Exception as exception:
-    #   print(exception)
+    actions = ['h','open pic/test1.jpg','histogram','equHist ALL','histogram','save pic/test1-1.jpg','q']
+    try:
+       main.main(actions,True)
+       score+=1
+    except Exception as exception:
+       print(exception)
 
     return round(1000*score/1)/10
 
@@ -556,12 +556,12 @@ def userCase2():
  
     score = 0
 
-    #actions = ['open pic/test1.jpg', 'blur gaussian-2d 10 1 ALL', 'equalizeHistogram','undo','normalizeHistogram','saveXMP pic/test1-2.xmp','q']
-    #try:
-    #   main.main(actions,'TEST')
-    #   score+=1
-    #except Exception as exception:
-    #   print(exception)
+    actions = ['open pic/test1.jpg', 'blur GAUSSIAN-2D 10 1 ALL', 'equHist','undo','normHist','saveXMP pic/test1-2.xmp','q']
+    try:
+       main.main(actions,True)
+       score+=1
+    except Exception as exception:
+       print(exception)
 
     return round(1000*score/1)/10
 
@@ -571,12 +571,12 @@ def userCase3():
 
     score = 0
 
-    #actions = ['open pic/test1.jpg','loadXMP pic/test1.xmp','history','rebase 2','curves [5, 10, 20, 50, 128, 205, 235, 245, 250] [0, 2, 10, 128, 245, 253, 255]','save pic/test1-3.jpg','saveXMP pic/test1-3.jpg','quitttt','q']
-    #try:
-    #   main.main(actions,'TEST')
-    #   score+=1
-    #except Exception as exception:
-    #   print(exception)
+    actions = ['open pic/test1.jpg','loadXMP pic/test1.xmp','history','rebase 2','curves [5,10,20,50,128,205,235,245,250] [0,2,10,128,245,253,255]','save pic/test1-3.jpg','saveXMP pic/test1-3.jpg','quitttt','q']
+    try:
+       main.main(actions,True)
+       score+=1
+    except Exception as exception:
+       print(exception)
 
     return round(1000*score/1)/10
 

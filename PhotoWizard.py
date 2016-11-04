@@ -49,21 +49,21 @@ if __name__ == "__main__" :
                     launched = True
 
                 elif elt == "c":
-                    main.main(sys.argv,'')
+                    main.main(sys.argv,False)
                     launched = True
 
                 elif elt == "g":
                     print("PhotoWizard Error: Graphical User Interface not implemented yet")
-                    main.main(sys.argv,'')
+                    main.main(sys.argv,False)
                     launched = True
 
 
     if not launched:
         if MODE == "g":
             print("PhotoWizard Error: Graphical User Interface not implemented yet")
-            main.main(sys.argv,'')
+            main.main(sys.argv,False)
         elif MODE == "c":
-            main.main(sys.argv,'')
+            main.main(sys.argv,False)
         else:
             raise NameError('PhotoWizard Error: Unknown default launching mode in config')
         

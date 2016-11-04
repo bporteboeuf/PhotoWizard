@@ -15,13 +15,22 @@ from tools import *
 
 
 
-def main(args,mode):
+def main(args,testmode):
 
     try:
-        mode = str(mode)
+        testmode = bool(testmode)
         args = list(args)
     except:
         raise NameError('PhotoWizard Error: wrong argument type in main')
+
+
+    """
+    if testmode: # We disable any print message
+        f = open(os.devnull, 'w')
+        sys.stdout = f
+        args = args[::-1]
+    """
+    args = args[::-1]
 
 
     display.greetings(LANG)
@@ -35,9 +44,9 @@ def main(args,mode):
 
     while not quitFlag:
         
-        if mode == 'TEST':
+        if testmode:
             try:
-                request = str(args[::-1].pop())
+                request = str(args.pop())
             except:
                 request = ''
         else:
@@ -55,11 +64,16 @@ def main(args,mode):
                 except:
                     request = ""
                     next
+        
 
         ok = False
         while not ok:
             ok = True
-            
+        
+            #print('ACTIONS: ',args[::-1])
+            #print('REQUEST: ',request)
+
+     
             request = request.split(' ')
             action = request[0]
             request = ' '.join(request)
@@ -252,15 +266,17 @@ def main(args,mode):
             
             if not ok:
                 try:
-                    if mode != 'TEST':
+                    if not testmode:
                         if len(action) > 0:
                             request = str(getInput(helpm.help("idle",LANG)))
                         else:
                             request = str(getInput(""))
                     else:
                         request = ''
+                        ok = True
                 except:
                     request = ''
+                    ok = True
 
 
 
@@ -272,6 +288,6 @@ def main(args,mode):
 
 
 if __name__=="__main__":
-    main("a")
+    main('',False)
 
 
