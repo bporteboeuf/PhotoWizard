@@ -40,7 +40,7 @@ def getChannel(image,channel): # Channel can be H, S, V, R, G, B or ALL - Note: 
             elif channel == 'G':
                 image = image.convert('RGB')
                 image = numpy.asarray(image,dtype=numpy.uint8)
-                image = [image[:,:,2]]
+                image = [image[:,:,1]]
             elif channel == 'B' :
                 image = image.convert('RGB')
                 image = numpy.asarray(image,dtype=numpy.uint8)
@@ -49,7 +49,7 @@ def getChannel(image,channel): # Channel can be H, S, V, R, G, B or ALL - Note: 
                 raise NameError('PhotoWizard Error: unexpected argument in getChannel')
         elif len(channel) == 3:
             if channel == 'ALL':
-                image = image.convert('HSV')
+                image = image.convert('RGB')
                 image = numpy.asarray(image,dtype=numpy.uint8)
                 image = [image[:,:,0],image[:,:,1],image[:,:,2]]
             else:
@@ -125,13 +125,13 @@ def recompose(image,channel,matrices): # Recomposes the image after modification
                     except:
                         raise NameError('PhotoWizard Error: Wrong argument type in recompose - 3')
 
-                    img = image.convert('HSV')
+                    img = image.convert('RGB')
                     img = numpy.asarray(img,dtype=numpy.uint8)
                     img.setflags(write=True)
                     img[:,:,0] = matrices2[0]
                     img[:,:,1] = matrices2[1]
                     img[:,:,2] = matrices2[2]
-                    image = Image.fromarray(img,'HSV')
+                    image = Image.fromarray(img,'RGB')
 
                 else:
                     raise NameError('PhotoWizard Error: unexpected argument in recompose')

@@ -444,10 +444,17 @@ def toolsTest():
 
     score = 0
 
+    # Initialization
+    try:
+        picture = Picture(1,'pic/test2.jpg')
+        img = Image.open('pic/test2.jpg')
+    except Exception as e:
+        print(e)
+        
+
     # every tools
     try:
         #print('A')
-        img = Image.open('pic/test1.jpg')
         tools.resize(img,[50,50])
         score+=1
     except Exception as exception:
@@ -455,21 +462,32 @@ def toolsTest():
     
     try:
         #print('B')
-        C = tools.getChannel(img,'R')
-        tools.recompose(img,'R',C)
-        C = tools.getChannel(img,'G')
-        tools.recompose(img,'G',C)
-        C = tools.getChannel(img,'B')
-        tools.recompose(img,'B',C)
-        C = tools.getChannel(img,'H')
-        tools.recompose(img,'H',C)
-        C = tools.getChannel(img,'S')
-        tools.recompose(img,'S',C)
-        C = tools.getChannel(img,'V')
-        tools.recompose(img,'V',C)
+        CR = tools.getChannel(img,'R')
+        tools.recompose(img,'R',CR)
+        CG = tools.getChannel(img,'G')
+        tools.recompose(img,'G',CG)
+        CB = tools.getChannel(img,'B')
+        tools.recompose(img,'B',CB)
+        CH = tools.getChannel(img,'H')
+        tools.recompose(img,'H',CH)
+        CS = tools.getChannel(img,'S')
+        tools.recompose(img,'S',CS)
+        CV = tools.getChannel(img,'V')
+        tools.recompose(img,'V',CV)
         C = tools.getChannel(img,'ALL')
-        tools.recompose(img,'ALL',C)
-        score+=2
+        C = tools.recompose(img,'ALL',C)
+        
+        print(numpy.mean(CR),numpy.mean(CG),numpy.mean(CB),numpy.mean(CH),numpy.mean(CS),numpy.mean(CV))
+        print(numpy.sum(numpy.abs(numpy.asarray(CR,dtype=numpy.uint8)-numpy.asarray(img,dtype=numpy.uint8))))
+        
+        if (numpy.sum(numpy.abs(numpy.asarray(C,dtype=numpy.uint8)-numpy.asarray(img,dtype=numpy.uint8))) == 0):
+            score+=1
+            print('getChannel & recompose ok')
+        
+        if ((numpy.mean(CR) == 235) and (numpy.mean(CG) == 143) and (numpy.mean(CB) == 63) and (numpy.mean(CH) == 28) and (numpy.mean(CS) == 73) and (numpy.mean(CV) == 92)):
+            score+=1
+            print('getChannel ok')
+    
     except Exception as exception:
         print(exception)
 
@@ -518,7 +536,7 @@ def toolsTest():
     
     try:
         #print('I')
-        tools.saveXMP('')
+        tools.saveXMP('',picture)
         score+=1
     except Exception as exception:
         print(exception)
@@ -541,7 +559,7 @@ def userCase1():
 
     score = 0
 
-    actions = ['h','open pic/test1.jpg','histogram ALL','eqHist ALL','histogram ALL','export pic/test1-2.jpg','q']
+    actions = ['h','open pic/test1.jpg','histogram ALL','normHist ALL','histogram ALL','export pic/test1-2.jpg','q']
     try:
        main.main(actions,True)
        score+=1
