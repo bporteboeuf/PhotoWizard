@@ -162,7 +162,7 @@ def getInput(message): # Gets input from user - message is a message to display
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in getInput')
 
-    if re.search(r"^[0-9A-Za-z-_. \/]{0,60}$", string) is None :
+    if re.search(r"^[0-9A-Za-z-_., \\/[\]]{0,60}$", string) is None :
         raise NameError('PhotoWizard Error: Unexpected input')
         return
     else :
