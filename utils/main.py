@@ -9,7 +9,7 @@ sys.path.insert(0,'utils/')
 
 import display,helpm,mapping
 from PIL import Image
-
+from picture import Picture
 from config import *
 from tools import *
 
@@ -97,7 +97,8 @@ def main(args,testmode):
                     else:
                         current = fileName
                         print('PhotoWizard Error: '+str(fileName)+' is already opened. Switched to '+str(fileName)+'\n')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to open '+str(fileName))
             
@@ -115,7 +116,8 @@ def main(args,testmode):
                            current = images[nextFile]
                     else:
                         print(str(fileName)+' closed\n')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to close '+str(fileName)+'\n')
 
@@ -126,11 +128,15 @@ def main(args,testmode):
                     #print("Loading XMP file "+str(fileName))
                     h = images[current].getHistory()
                     h.rebase(1)
+                    xmp = []
+                    # Handling XMP files is not supported yet
                     for event in xmp:
-                           h = h.add(event)
+                           h.add(event)
                     images[current].setHistory(h)
+                    images[current].reCompute()
                     print('XMP file '+str(fileName)+' loaded\n')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to load '+str(fileName))
 
@@ -141,7 +147,8 @@ def main(args,testmode):
                     #print("Saving xmp file "+str(fileName))
                     saveXMP(fileName,images[current])
                     print('XMP file saved to '+str(fileName)+'\n')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to save file '+str(fileName))
             
@@ -152,7 +159,8 @@ def main(args,testmode):
                     #print("Exporting "+str(fileName))
                     images[current].export(fileName)
                     print(str(fileName)+' exported\n')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to export '+str(fileName))
 
@@ -166,7 +174,8 @@ def main(args,testmode):
                         print("Switched to "+str(fileName))
                     else:
                         print('PhotoWizard Error: no such file opened')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to switch to '+str(fileName)+'\n')
 
@@ -176,6 +185,7 @@ def main(args,testmode):
                     channel = channel[1]
                     #print("Histogram")
                     H = images[current].histogram(channel)
+                    #print(H)
                     for elt in H:
                         for k in range(0,11):
                             s = ''
@@ -197,7 +207,8 @@ def main(args,testmode):
                     parseInput(request,[str])
                     #print("preview")
                     images[current].preview()
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to preview picture')
             
@@ -206,10 +217,12 @@ def main(args,testmode):
                     parseInput(request,[str])
                     #print("undo")
                     h = images[current].getHistory()
-                    images[current].setHistory(h.undo())
-                    images[current].recompute()
+                    h.undo()
+                    images[current].setHistory(h)
+                    images[current].reCompute()
                     print('Last action revoked')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to undo action')
 
@@ -218,10 +231,12 @@ def main(args,testmode):
                     parseInput(request,[str])
                     #print("redo")
                     h = images[current].getHistory()
-                    images[current].setHistory(h.redo())
-                    images[current].recompute()
+                    h.redo()
+                    images[current].setHistory(h)
+                    images[current].reCompute()
                     print('Last action restored')
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to redo action')
 
@@ -231,10 +246,12 @@ def main(args,testmode):
                     event = event[1]
                     #print(rebase)
                     h = images[current].getHistory()
-                    images[current].setHistory(h.rebase(event))
-                    images[current].recompute()
+                    h.rebase(event)
+                    images[current].setHistory(h)
+                    images[current].reCompute()
                     print('History rebased to event '+str(event))
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to rebase history to event '+str(event))
 
@@ -243,7 +260,8 @@ def main(args,testmode):
                     parseInput(request,[str])
                     print("History:")
                     print(images[current].getHistory().getFullHistory())
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to preview history')
 

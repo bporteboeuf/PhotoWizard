@@ -34,9 +34,11 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
     try:
         filterType = str(filterType)
+        parameters = list(parameters)
     except:
         raise NameError('PhotoWizard Error: Wrong filter type format')
         filterType = "NC"
+        parameters = []
 
 
     #----------- 2D FILTERS ----------#

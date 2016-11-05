@@ -6,15 +6,15 @@
 
 # This module contains tests for the whole software
 
-try:
-    import filters,helpm,history,levels,main,tools,mapping
-    from tools import Picture
-    from history import History, Event
-    from config import *
-    import sys,numpy,scipy,math
-    from PIL import Image
-except:
-   raise NameError('PhotoWizard Error: unable to load dependencies')
+#try:
+import filters,helpm,history,levels,main,tools,mapping
+from picture import Picture
+from history import History, Event
+from config import *
+import sys,numpy,scipy,math
+from PIL import Image
+#except:
+#   raise NameError('PhotoWizard Error: unable to load dependencies')
 
 
 
@@ -541,7 +541,7 @@ def userCase1():
 
     score = 0
 
-    actions = ['h','open pic/test1.jpg','histogram ALL','eqHist ALL','histogram ALL','save pic/test1-1.jpg','q']
+    actions = ['h','open pic/test1.jpg','histogram ALL','eqHist ALL','histogram ALL','export pic/test1-2.jpg','q']
     try:
        main.main(actions,True)
        score+=1
@@ -556,7 +556,7 @@ def userCase2():
  
     score = 0
 
-    actions = ['open pic/test1.jpg', 'lowPass GAUSSIAN-2D 10 1 ALL', 'eqHist','undo','normHist','save pic/test1-2.xmp','q']
+    actions = ['open pic/test1.jpg', 'lowPass GAUSSIAN-2D 10 1 ALL', 'eqHist ALL','undo','normHist ALL','save pic/test1-2.xmp','q']
     try:
        main.main(actions,True)
        score+=1
@@ -571,7 +571,7 @@ def userCase3():
 
     score = 0
 
-    actions = ['open pic/test1.jpg','load pic/test1.xmp','history','rebase 2','curves [5,10,20,50,128,205,235,245,250] [0,2,10,128,245,253,255]','save pic/test1-3.jpg','save pic/test1-3.jpg','quitttt','q']
+    actions = ['open pic/test1.jpg','load pic/test1.xmp','history','rebase 2','curves ALL [5,10,20,50,128,205,235,245,250] [0,2,10,128,245,253,255]','save pic/test1-3.jpg','save pic/test1-3.jpg','quitttt','q']
     try:
        main.main(actions,True)
        score+=1
