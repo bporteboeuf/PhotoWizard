@@ -1,0 +1,5 @@
+<XMD FILE>
+<EVENT><label>lowPass<label><request>lowPass GAUSSIAN-2D 10 1 H<request><id>1<id><previous>None<previous>
+<EVENT><label>normHist<label><request>normHist ALL<request><id>2<id><previous>1<previous>
+<EVENT><label>eqHist<label><request>eqHist S<request><id>3<id><previous>2<previous>
+<EVENT><current>3<current>

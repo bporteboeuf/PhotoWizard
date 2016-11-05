@@ -126,17 +126,16 @@ def main(args,testmode):
             elif action == "load":
                 try:
                     fileName = parseInput(request,[str,str])
-                    fileName = fileName[1]
-                    #print("Loading XMP file "+str(fileName))
+                    fileName = str(fileName[1])
+                    #print("Loading XMD file "+str(fileName))
                     h = images[current].getHistory()
                     h.rebase(1)
-                    xmp = []
-                    # Handling XMP files is not supported yet
-                    for event in xmp:
-                           h.add(event)
+                    events,currentState = loadXMD(fileName)
+                    h.setEvents(events)
+                    h.setCurrentState(currentState)
                     images[current].setHistory(h)
                     images[current].reCompute()
-                    print('XMP file '+str(fileName)+' loaded\n')
+                    print('XMD file '+str(fileName)+' loaded\n')
                 except Exception as e:
                     print(e)
                     ok = False
@@ -146,9 +145,9 @@ def main(args,testmode):
                 try:
                     fileName = parseInput(request,[str,str])
                     fileName = fileName[1]
-                    #print("Saving xmp file "+str(fileName))
-                    saveXMP(fileName,images[current])
-                    print('XMP file saved to '+str(fileName)+'\n')
+                    #print("Saving xmd file "+str(fileName))
+                    saveXMD(fileName,images[current].getHistory())
+                    print('XMD file saved to '+str(fileName)+'\n')
                 except Exception as e:
                     print(e)
                     ok = False

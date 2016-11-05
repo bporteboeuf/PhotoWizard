@@ -28,12 +28,29 @@ class History: # Each time a file is opened, a History object is created
             raise NameError('PhotoWizardError: Wrong argument format in class History')
         return
 
+
     def getRedoState(self):
         return self.redoState
+
 
     def setRedoState(self,ID):
         if (type(ID) is int) and (ID > 0):
             self.redoState = ID
+        return
+
+
+    def getEvents(self):
+        return self.events
+
+
+    def setEvents(self,events):
+        if (type(events) is dict):
+            for elt in events:
+                if not isinstance(events[elt],Event):
+                    raise NameError('PhotoWizard Error: Wrong argument type in setEvents')
+            self.events = events
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument type in setEvents')
         return
 
 

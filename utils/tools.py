@@ -10,7 +10,7 @@
 import sys,re,os,numpy
 sys.path.insert(0,'utils')
 from scipy import ndimage
-from history import History
+from history import History,Event
 from PIL import Image
 from config import *
 
@@ -281,14 +281,70 @@ def zip(paths): # Compresses files into an archive
 
 
 
-def loadXMP(path):
+def loadXMD(path): # loads an eXternal MetaData file which basically contains a copy of the history
+    try:
+        f0 = open(str(path))
+        f = f0.read()
+        f = f.split('<EVENT>')
+        f1 = f[1:len(f)-1]
+        events = {}
+        for event in f1:
+            a = event.split('<label>')
+            label = str(a[1])
+            #print('Label: ',label)
+            b = event.split('<request>')
+            request = str(b[1])
+            #print('Request: ',request)
+            c = event.split('<id>')
+            ID = int(c[1])
+            #print('ID: ',ID)
+            d = event.split('<previous>')
+            try:
+                previous = int(d[1])
+            except:
+                previous = None
+            #print('Previous: ',previous)
+            events[ID] = Event(ID,previous,request,label)
+            #print('Event created.\n')
+        current = f[len(f)-1]
+        current = current.split('<current>')
+        current = int(current[1])
+        #print('Current State: ',current)
+        f0.close()
+    except Exception as e:
+        print(e)
+        raise NameError('PhotoWizard Error: Unable to open XMD file')
 
+    return events,current
+
+
+
+def saveXMD(path,history): # Saves the XMD file
+
+    if type(path) is str and isinstance(history,History):
+        try:
+            f = ['<XMD FILE>']
+            events = history.getEvents()
+            for elt in events:
+                event = events[elt]
+                label = '<label>'+str(event.getLabel())+'<label>'
+                request = '<request>'+str(event.getContent())+'<request>'
+                ID = '<id>'+str(event.getID())+'<id>'
+                previous = '<previous>'+str(event.getPrevious())+'<previous>'
+                f.append('<EVENT>'+label+request+ID+previous)
+            f.append('<EVENT>'+'<current>'+str(history.getCurrentState())+'<current>')
+            f = '\n'.join(f)
+            f0 = open(str(path),'w')
+            f0.write(f)
+            f0.close()
+        except Exception as e:
+            print(e)
+            raise NameError('PhotoWizard Error: Unable to save XMD file')
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in saveXMD')
+            
     return
 
-
-def saveXMP(path,img):
-
-    return
 
 
 def rotate(img,theta): # Rotates a 2D matrix by an angle theta in degrees

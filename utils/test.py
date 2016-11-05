@@ -533,14 +533,14 @@ def toolsTest():
 
     try:
         #print('H')
-        tools.loadXMP('')
+        tools.loadXMD('')
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
         #print('I')
-        tools.saveXMP('',picture)
+        tools.saveXMD('',picture)
         score+=1
     except Exception as exception:
         print(exception)
@@ -578,7 +578,7 @@ def userCase2():
  
     score = 0
 
-    actions = ['open pic/test3.jpg', 'lowPass GAUSSIAN-2D 10 1 ALL', 'eqHist ALL','undo','normHist ALL','save pic/test1-3.xmp','q']
+    actions = ['open pic/test3.jpg', 'lowPass GAUSSIAN-2D 10 1 ALL', 'eqHist ALL','undo','normHist ALL','save pic/test3.xmd','q']
     try:
        main.main(actions,True)
        score+=1
@@ -593,7 +593,7 @@ def userCase3():
 
     score = 0
 
-    actions = ['open pic/test1.jpg','load pic/test1.xmp','history','rebase 2','curves ALL [5,10,20,50,128,205,235,245,250] [0,2,10,128,245,253,255]','save pic/test1-3.jpg','save pic/test1-3.jpg','quitttt','q']
+    actions = ['open pic/test1.jpg','load pic/test1.xmd','history','rebase 2','curves ALL [5,10,20,50,128,205,235,245,250] [0,2,10,40,128,215,245,253,255]','export pic/test1-3.jpg','save pic/test1-3.xmd','quitttt','q']
     try:
        main.main(actions,True)
        score+=1
