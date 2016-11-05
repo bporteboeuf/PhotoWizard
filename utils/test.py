@@ -471,30 +471,34 @@ def toolsTest():
         CH = tools.getChannel(img,'H')
         tools.recompose(img,'H',CH)
         CS = tools.getChannel(img,'S')
-        tools.recompose(img,'S',CS)
+        CSr = tools.recompose(img,'S',CS)
         CV = tools.getChannel(img,'V')
         tools.recompose(img,'V',CV)
         C = tools.getChannel(img,'ALL')
-        C = tools.recompose(img,'ALL',C)
+        Cr = tools.recompose(img,'ALL',C)
         
-        print(numpy.mean(CR),numpy.mean(CG),numpy.mean(CB),numpy.mean(CH),numpy.mean(CS),numpy.mean(CV))
-        print(numpy.sum(numpy.abs(numpy.asarray(CR,dtype=numpy.uint8)-numpy.asarray(img,dtype=numpy.uint8))))
-        
-        if (numpy.sum(numpy.abs(numpy.asarray(C,dtype=numpy.uint8)-numpy.asarray(img,dtype=numpy.uint8))) == 0):
+        #print(numpy.mean(CR),numpy.mean(CG),numpy.mean(CB),round(numpy.mean(CH)*360/255),round(numpy.mean(CS)*100/255),round(numpy.mean(CV)*100/255))
+        #print(numpy.sum(numpy.abs(numpy.asarray(Cr,dtype=numpy.uint8)-numpy.asarray(img,dtype=numpy.uint8))))
+        #print(numpy.sum(numpy.abs(numpy.asarray(CSr,dtype=numpy.uint8)-numpy.asarray(img.convert('HSV'),dtype=numpy.uint8))))
+
+        #print(numpy.asarray(CSr),numpy.asarray(img.convert('HSV')))
+        #print(numpy.abs(numpy.asarray(CSr,dtype=numpy.uint8)-numpy.asarray(img.convert('HSV'),dtype=numpy.uint8)))
+
+        if ((numpy.mean(CR) == 235) and (numpy.mean(CG) == 144) and (numpy.mean(CB) == 63) and (round(numpy.mean(CH)*360/255) == 28) and (round(numpy.mean(CS)*100/255) == 73) and (round(numpy.mean(CV)*100/255) == 92)):
             score+=1
-            print('getChannel & recompose ok')
-        
-        if ((numpy.mean(CR) == 235) and (numpy.mean(CG) == 143) and (numpy.mean(CB) == 63) and (numpy.mean(CH) == 28) and (numpy.mean(CS) == 73) and (numpy.mean(CV) == 92)):
-            score+=1
-            print('getChannel ok')
+            #print('getChannel ok')
     
+        if (numpy.sum(numpy.abs(numpy.asarray(Cr,dtype=numpy.uint8)-numpy.asarray(img,dtype=numpy.uint8))) == 0) and (numpy.sum(numpy.abs(numpy.asarray(CSr,dtype=numpy.uint8)-numpy.asarray(img.convert('HSV'),dtype=numpy.uint8))) == 0):
+            score+=1
+            #print('getChannel & recompose ok')
+        
     except Exception as exception:
         print(exception)
 
 
     try:
         #print('C')
-        tools.crop(img,(10, 10, 50, 70))
+        tools.crop(img,(10,10,30,40))
         score+=1
     except Exception as exception:
         print(exception)

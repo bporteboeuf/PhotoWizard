@@ -100,18 +100,21 @@ def recompose(image,channel,matrices): # Recomposes the image after modification
                     img.setflags(write=True)
                     img[:,:,0] = matrices
                     image = Image.fromarray(img,'HSV')
+                    #image = image.convert('RGB') # We convert this to back to RGB mode for easier handling
                 elif channel == 'S':
                     img = image.convert('HSV')
                     img = numpy.asarray(img,dtype=numpy.uint8)
                     img.setflags(write=True)
                     img[:,:,1] = matrices
                     image = Image.fromarray(img,'HSV')
+                    #image = image.convert('RGB')
                 elif channel == 'V':
                     img = image.convert('HSV')
                     img = numpy.asarray(img,dtype=numpy.uint8)
                     img.setflags(write=True)
                     img[:,:,2] = matrices
                     image = Image.fromarray(img,'HSV')
+                    #image = image.convert('RGB')
                 else:
                     raise NameError('PhotoWizard Error: unexpected argument in recompose')  
 
@@ -249,7 +252,7 @@ def crop(image,parameters): # Crops an image
             else:
                 raise NameError('PhotoWizard Error: Unexpected values in crop')
         except:
-            raise NameError('PhotoWizard Error: Wrong argument format in crop')
+            raise NameError('PhotoWizard Error: Wrong argument format in crop or picture is too small')
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in crop')
     
