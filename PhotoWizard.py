@@ -68,3 +68,6 @@ if __name__ == "__main__" :
             raise NameError('PhotoWizard Error: Unknown default launching mode in config')
         
 
+
+    sys.exit(0)
+

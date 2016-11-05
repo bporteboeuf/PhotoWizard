@@ -24,13 +24,10 @@ def main(args,testmode):
         raise NameError('PhotoWizard Error: wrong argument type in main')
 
 
-    """
     if testmode: # We disable any print message
-        f = open(os.devnull, 'w')
-        sys.stdout = f
-        args = args[::-1]
-    """
-    args = args[::-1]
+        #f = open(os.devnull, 'w')
+        #sys.stdout = f
+        args = args[::-1] # And we invert our args for easier access
 
 
     display.greetings(LANG)
@@ -128,7 +125,7 @@ def main(args,testmode):
                     fileName = fileName[1]
                     #print("Loading XMP file "+str(fileName))
                     h = images[current].getHistory()
-                    h = h.rebase(1)
+                    h.rebase(1)
                     for event in xmp:
                            h = h.add(event)
                     images[current].setHistory(h)
@@ -190,7 +187,8 @@ def main(args,testmode):
                                 else:
                                     s += '-'
                             print(s)
-                except:
+                except Exception as e:
+                    print(e)
                     ok = False
                     print('PhotoWizard Error: Unable to preview histogram')
             
@@ -256,9 +254,11 @@ def main(args,testmode):
                     function = action
                     #parameters = parseInput(request,[str,])
                     #everyFunction(image,[function,[parameters]])
-                    images[current].setSmallImage(mapping.everyFunction(images[current].getSmallImage(),[function,request]))
+                    img,parameters = mapping.everyFunction(images[current].getSmallImage(),[function,request])
+                    images[current].setSmallImage(img)
                     h = images[current].getHistory()
-                    imags[current].setHistory(h.add([function,[parameters]],function))
+                    h.add((function,parameters),function)
+                    images[current].setHistory(h)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -281,7 +281,6 @@ def main(args,testmode):
 
 
     display.bye(LANG)    
-    sys.exit(0)
 
     return
 

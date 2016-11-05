@@ -131,7 +131,7 @@ def everyFunction(image,action): # Maps the action in the main or history to the
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in everyFunction')
 
-    return image
+    return image,params
 
 
 

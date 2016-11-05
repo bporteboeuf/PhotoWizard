@@ -8,6 +8,7 @@
 
 
 import sys,re,os,numpy
+sys.path.insert(0,'utils')
 from scipy import ndimage
 from history import History
 from PIL import Image
