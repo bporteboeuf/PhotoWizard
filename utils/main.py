@@ -95,7 +95,8 @@ def main(args,testmode):
                         images[fileName] = Picture(ID_max,fileName)
                         files.append(fileName)
                         current = fileName
-                        print(str(fileName) + ' opened\n')
+                        #print(str(fileName) + ' opened\n')
+                        display.dispm('open',fileName,LANG)
                     else:
                         current = fileName
                         print('PhotoWizard Error: '+str(fileName)+' is already opened. Switched to '+str(fileName)+'\n')
@@ -114,10 +115,13 @@ def main(args,testmode):
                     files.remove(fileName)
                     if len(files) > 0:
                            nextFile = files[len(files)-1]
-                           print(str(fileName)+' closed; switching to '+str(nextFile)+'\n')
+                           display.dispm('close',fileName,LANG)
+                           display.dispm('switch',str(nextFile),LANG)
+                           #print(str(fileName)+' closed; switching to '+str(nextFile)+'\n')
                            current = images[nextFile]
                     else:
-                        print(str(fileName)+' closed\n')
+                        #print(str(fileName)+' closed\n')
+                        display.dispm('close',fileName,LANG)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -135,7 +139,8 @@ def main(args,testmode):
                     h.setCurrentState(currentState)
                     images[current].setHistory(h)
                     images[current].reCompute()
-                    print('XMD file '+str(fileName)+' loaded\n')
+                    #print('XMD file '+str(fileName)+' loaded\n')
+                    display.dispm('load',fileName,LANG)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -147,7 +152,8 @@ def main(args,testmode):
                     fileName = fileName[1]
                     #print("Saving xmd file "+str(fileName))
                     saveXMD(fileName,images[current].getHistory())
-                    print('XMD file saved to '+str(fileName)+'\n')
+                    #print('XMD file saved to '+str(fileName)+'\n')
+                    display.dispm('save',fileName,LANG)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -159,7 +165,8 @@ def main(args,testmode):
                     fileName = fileName[1]
                     #print("Exporting "+str(fileName))
                     images[current].export(fileName)
-                    print(str(fileName)+' exported\n')
+                    #print(str(fileName)+' exported\n')
+                    display.dispm('export',fileName,LANG)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -172,7 +179,8 @@ def main(args,testmode):
 
                     if fileName in files:
                         current = fileName
-                        print("Switched to "+str(fileName))
+                        #print("Switched to "+str(fileName))
+                        display.dispm('switch',fileName,LANG)
                     else:
                         print('PhotoWizard Error: no such file opened')
                 except Exception as e:
@@ -221,7 +229,8 @@ def main(args,testmode):
                     h.undo()
                     images[current].setHistory(h)
                     images[current].reCompute()
-                    print('Last action revoked')
+                    #print('Last action revoked')
+                    display.dispm('undo','',LANG)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -235,7 +244,8 @@ def main(args,testmode):
                     h.redo()
                     images[current].setHistory(h)
                     images[current].reCompute()
-                    print('Last action restored')
+                    #print('Last action restored')
+                    display.dispm('redo','',LANG)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -250,7 +260,8 @@ def main(args,testmode):
                     h.rebase(event)
                     images[current].setHistory(h)
                     images[current].reCompute()
-                    print('History rebased to event '+str(event))
+                    #print('History rebased to event '+str(event))
+                    display.dispm('rebase',str(event),LANG)
                 except Exception as e:
                     print(e)
                     ok = False
@@ -278,6 +289,7 @@ def main(args,testmode):
                     h = images[current].getHistory()
                     h.add(request,function)
                     images[current].setHistory(h)
+                    display.dispm('actionCompleted','',LANG)
                 except Exception as e:
                     print(e)
                     ok = False
