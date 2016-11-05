@@ -186,7 +186,6 @@ def expHistogram(image,channel): # Automatic contrast adjustment to recover deta
 
 
 def curves(image,channel,inputs,outputs): # S-curve function for more precise levels adjustment
-    
     if (isinstance(image,Image.Image) or isinstance(image,numpy.ndarray)) and (type(inputs) is list) and (type(outputs) is list) and (len(inputs)==len(outputs)):
         precision = 4
         X = numpy.linspace(0,255,len(inputs))

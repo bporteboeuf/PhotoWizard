@@ -33,7 +33,7 @@ def everyFunction(image,action): # Maps the action in the main or history to the
             #print(f)
             try:
                 params = parseInput(params,[str,str,list,list])
-                params = params[1:len(params)-1]
+                params = params[1:]
                 image = levels.curves(image,params[0],params[1],params[2])
             except Exception as e:
                 print(e)
