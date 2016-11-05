@@ -93,7 +93,8 @@ def normalizeHistogram(image,channel): # Automatic contrast adjustment
         for img in images:
             a = numpy.amin(img)
             b = numpy.amax(img)
-
+            if a==b :
+                b = a+1
             #image[:,:,i] = (img-a)*255/(b-a)
             #i+=1
             matrices.append(numpy.asarray((img-a)*255/(b-a),dtype=numpy.uint8))
