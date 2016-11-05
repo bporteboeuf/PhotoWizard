@@ -26,9 +26,9 @@ def eventClass():
     # Init
     try:
         #print('A')
-        eventA = Event(1,None,('action',['parameters']),'eventA')
-        eventB = Event(2,1,('action',['parameters']),'eventB')
-        eventC = Event(3,None,('action',['parameters']),'eventC')
+        eventA = Event(1,None,'action parameters','eventA')
+        eventB = Event(2,1,'action parameters','eventB')
+        eventC = Event(3,None,'action parameters','eventC')
         score+=1
     except Exception as exception:
         print(exception)
@@ -78,7 +78,7 @@ def eventClass():
 
     try:
         #print('H')
-        eventB.setContent(('action2',['params2']))
+        eventB.setContent('action2 params2')
         score+=1
     except Exception as exception:
         print(exception)
@@ -119,8 +119,8 @@ def historyClass():
     # Class methods
     try:
         #print('B')
-        hist.add(('action',['parameters']),'eventA')
-        hist.add(('action',['parameters']),'eventB')
+        hist.add('action parameters','eventA')
+        hist.add('action parameters','eventB')
         score+=1
     except Exception as exception:
         print(exception)

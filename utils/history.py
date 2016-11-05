@@ -143,14 +143,14 @@ class History: # Each time a file is opened, a History object is created
 
 class Event: # Each action creates an event object, which is part of a history branch
 
-    def __init__(self,ID,previous,content,label):
-        if (type(ID) is int) and ((previous is None) or ((type(previous) is int) and (previous > 0))) and (type(content) is tuple) and (type(label) is str):
-            if (ID > 0) and (len(content)==2) and (type(content[0]) is str) and (type(content[1]) is list):
+    def __init__(self,ID,previous,request,label):
+        if (type(ID) is int) and ((previous is None) or ((type(previous) is int) and (previous > 0))) and (type(request) is str) and (type(label) is str):
+            if (ID > 0):
                 self.id = ID
                 self.next = {}
                 self.previous = previous
-                self.content = content
-                self.label = label
+                self.content = request # Contains the request of the user, as defined by mapping.everyFunction
+                self.label = label # Contains a label for display
             else:
                 raise NameError('PhotoWizard Error: Wrong argument format in class Event')
         else:
@@ -190,9 +190,9 @@ class Event: # Each action creates an event object, which is part of a history b
         return self.content
 
 
-    def setContent(self,content):
-        if (type(content) is tuple) and (len(content) == 2) and (type(content[0]) is str) and (type(content[1]) is list):
-            self.content = content
+    def setContent(self,request):
+        if (type(request) is str):
+            self.content = request
         else:
             raise NameError('PhotoWizard Error: Wrong argument format in class Event')
         return

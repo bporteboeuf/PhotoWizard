@@ -29,8 +29,9 @@ def main(args,testmode):
         #sys.stdout = f
         args = args[::-1] # And we invert our args for easier access
 
-
-    display.greetings(LANG)
+    if not testmode:
+        display.greetings(LANG)
+    
     quitFlag = False
     First = True
 
@@ -44,6 +45,7 @@ def main(args,testmode):
         if testmode:
             try:
                 request = str(args.pop())
+                print(request)
             except:
                 request = ''
         else:
@@ -275,7 +277,7 @@ def main(args,testmode):
                     img,parameters = mapping.everyFunction(images[current].getSmallImage(),[function,request])
                     images[current].setSmallImage(img)
                     h = images[current].getHistory()
-                    h.add((function,parameters),function)
+                    h.add(request,function)
                     images[current].setHistory(h)
                 except Exception as e:
                     print(e)
@@ -297,8 +299,8 @@ def main(args,testmode):
                     ok = True
 
 
-
-    display.bye(LANG)    
+    if not testmode:
+        display.bye(LANG)    
 
     return
 

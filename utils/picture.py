@@ -87,21 +87,24 @@ class Picture:
 
 
     def reCompute(self): # Recompute the miniature image according to the current history
+        #try :
         hist = self.getHistory().getHistory()
         for event in hist:
-            action = event.getContent()
-            self.smallpic = mapping.everyFunction(self,action)
-            
+            request = event.getContent()
+            self.setSmallImage(mapping.everyFunction(self.getSmallImage(),request))
+        #except:
+        #    raise NameError('PhotoWizard Error: Unable to reCompute')
         return
 
 
     def export(self,path):
         hist = self.getHistory().getHistory()
+        picture = self.getImage()
         for event in hist:
             action = event.getContent()
-            self.pic = mapping.everyFunction(self,action)
+            picture = mapping.everyFunction(picture,action)
         try:
-            self.pic.save(path)            
+            picture.save(path)
         except:
             raise NameError('PhotoWizard Error: Unable to save file in export')
         return
