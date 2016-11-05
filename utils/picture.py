@@ -87,26 +87,39 @@ class Picture:
 
 
     def reCompute(self): # Recompute the miniature image according to the current history
-        #try :
-        hist = self.getHistory().getHistory()
-        for event in hist:
-            request = event.getContent()
-            self.setSmallImage(mapping.everyFunction(self.getSmallImage(),request))
-        #except:
-        #    raise NameError('PhotoWizard Error: Unable to reCompute')
+        try :
+            hist = self.getHistory().getHistory()
+            for event in hist:
+                request = event.getContent()
+                request = request.split(" ")
+                function = request[0]
+                request = " ".join(request)
+                img,parameters = mapping.everyFunction(self.getSmallImage(),[function,request])
+                self.setSmallImage(img)
+        except Exception as e:
+            print(e)
+            raise NameError('PhotoWizard Error: Unable to reCompute')
         return
 
 
     def export(self,path):
-        hist = self.getHistory().getHistory()
-        picture = self.getImage()
-        for event in hist:
-            action = event.getContent()
-            picture = mapping.everyFunction(picture,action)
         try:
-            picture.save(path)
-        except:
-            raise NameError('PhotoWizard Error: Unable to save file in export')
+            hist = self.getHistory().getHistory()
+            picture = self.getImage()
+            for event in hist:
+                request = event.getContent()
+                action = request.split(' ')
+                function = action[0]
+                picture,parameters = mapping.everyFunction(picture,[function,request])
+            try:
+                picture = picture.convert('RGB')
+                picture.save(path)
+            except Exception as e:
+                print(e)
+                raise NameError('PhotoWizard Error: Unable to save file in export')
+        except Exception as e:
+            print(e)
+            raise NameError('PhotoWizard Error: Unable to export file')
         return
 
 
