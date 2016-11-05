@@ -30,7 +30,7 @@ class Picture:
             raise NameError('PhotoWizard Error: Unable to find file')
         if self.pic is not None :
             self.smallpic = self.pic
-            self.smallpic = self.smallpic.resize((30,30),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
+            self.smallpic = self.smallpic.resize((100,100),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
         else :
             self.smallpic = None
         return
@@ -140,6 +140,7 @@ class Picture:
 
 
     def preview(self):
+        self.getSmallImage().show() # temporary
         return
 
 

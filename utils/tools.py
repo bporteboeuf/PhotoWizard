@@ -210,7 +210,8 @@ def parseInput(string,expected): # Parses a string input to find the correspondi
                     else:
                         raise NameError('PhotoWizard Error: Unsupported type in parseInput')
                     stringFormated.append(tmp)
-            except:
+            except Exception as e:
+                print(e)
                 raise NameError('PhotoWizard Error: Wrong argument type in parseInput - 2')
         else:
             raise NameError('PhotoWizard Error: arguments length mismatch in parseInput')

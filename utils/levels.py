@@ -97,7 +97,9 @@ def normalizeHistogram(image,channel): # Automatic contrast adjustment
                 b = a+1
             #image[:,:,i] = (img-a)*255/(b-a)
             #i+=1
-            matrices.append(numpy.asarray((img-a)*255/(b-a),dtype=numpy.uint8))
+            alpha = 255/(b-a)
+            tmp = numpy.asarray((img-a)*alpha,dtype=numpy.uint8)
+            matrices.append(tmp)
         image = recompose(image,channel,matrices)
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in normalizeHistogram')

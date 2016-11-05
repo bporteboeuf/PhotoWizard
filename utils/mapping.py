@@ -23,7 +23,7 @@ def everyFunction(image,action): # Maps the action in the main or history to the
         if f == "levels":
             #print(f)
             try:
-                params = parseInput(params,[str,str,int,int])
+                params = parseInput(params,[str,str,list,list])
                 params = params[1:]
                 image = levels.levels(image,params[0],params[1],params[2])
             except Exception as e:
@@ -32,7 +32,7 @@ def everyFunction(image,action): # Maps the action in the main or history to the
         elif f == "curves":
             #print(f)
             try:
-                params = parseInput(params,[str,str,int,int])
+                params = parseInput(params,[str,str,list,list])
                 params = params[1:len(params)-1]
                 image = levels.curves(image,params[0],params[1],params[2])
             except Exception as e:

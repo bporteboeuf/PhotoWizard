@@ -563,7 +563,7 @@ def userCase1():
 
     score = 0
 
-    actions = ['h','open pic/test1.jpg','histogram ALL','normHist ALL','histogram ALL','export pic/test1-2.jpg','q']
+    actions = ['h','open pic/test1.jpg','histogram ALL','eqHist ALL','histogram ALL','export pic/test1-2.jpg','q']
     try:
        main.main(actions,True)
        score+=1
@@ -578,7 +578,7 @@ def userCase2():
  
     score = 0
 
-    actions = ['open pic/test1.jpg', 'lowPass GAUSSIAN-2D 10 1 ALL', 'eqHist ALL','undo','normHist ALL','save pic/test1-2.xmp','q']
+    actions = ['open pic/test3.jpg', 'lowPass GAUSSIAN-2D 10 1 ALL', 'eqHist ALL','undo','normHist ALL','save pic/test1-3.xmp','q']
     try:
        main.main(actions,True)
        score+=1
