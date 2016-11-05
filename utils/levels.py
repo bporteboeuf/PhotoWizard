@@ -137,8 +137,8 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
 def logHistogram(image,channel): # Automatic contrast adjustment recover details in low values
     if isinstance(image,Image.Image):
         precision = 4
-        inputs = numpy.linspace(1,255,round(256/precision))
-        outputs = numpy.log(inputs)
+        inputs = numpy.linspace(0,255,round(256/precision))
+        outputs = numpy.log(1+inputs/32)
         outputs = outputs*255/outputs[len(outputs)-1]
         inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
         outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
@@ -164,11 +164,11 @@ def expHistogram(image,channel): # Automatic contrast adjustment to recover deta
     if isinstance(image,Image.Image):
         precision = 4
         inputs = numpy.linspace(0,255,round(256/precision))
-        outputs = numpy.exp(inputs)
+        outputs = numpy.exp(inputs/48)
         outputs = outputs*255/outputs[len(outputs)-1]
         inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
         outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
-        
+       
         images = getChannel(image,channel)
         #matrices = numpy.zeros((images[0].shape[0],images[0].shape[1],len(images)))
         #i = 0
