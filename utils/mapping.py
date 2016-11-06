@@ -8,9 +8,10 @@
 
 import levels,filters
 from tools import *
+from config import *
 
 
-def everyFunction(image,action): # Maps the action in the main or history to the real image editing functions
+def everyFunction(image,action,LANG): # Maps the action in the main or history to the real image editing functions
     if (isinstance(image,Image.Image)) and (type(action) is list):
         try:
             f = action[0]
@@ -99,7 +100,7 @@ def everyFunction(image,action): # Maps the action in the main or history to the
         elif f == "detectEdges":
             #print(f)
             try:
-                params = parseInput(params,[str,str,str,int,float])
+                params = parseInput(params,[str,str,str,list,int])
                 params = params[1:]
                 image = filters.edgeDetection(image,params[0],params[1],params[2],params[3])
             except Exception as e:
@@ -108,7 +109,7 @@ def everyFunction(image,action): # Maps the action in the main or history to the
         elif f == "enhanceEdges":
             #print(f)
             try:
-                params = parseInput(params,[str,str,str,int,int,float])
+                params = parseInput(params,[str,str,str,list,int,float])
                 params = params[1:]
                 image = filters.edgeEnhancement(image,params[0],params[1],params[2],params[3],params[4])
             except Exception as e:

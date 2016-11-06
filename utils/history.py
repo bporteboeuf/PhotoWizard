@@ -12,7 +12,8 @@ class History: # Each time a file is opened, a History object is created
     def __init__(self,ID):
         self.name = ID
         self.events = {}
-        self.currentState = None
+        self.events[0] = Event(0,None,'InitState','InitialState')
+        self.currentState = 0
         self.redoState = None
         return
 
@@ -22,7 +23,7 @@ class History: # Each time a file is opened, a History object is created
 
     
     def setCurrentState(self,ID):
-        if (type(ID) is int) and (ID > 0):
+        if (type(ID) is int) and (ID >= 0):
             self.currentState = ID
         else:
             raise NameError('PhotoWizardError: Wrong argument format in class History')
@@ -64,7 +65,10 @@ class History: # Each time a file is opened, a History object is created
     def undo(self): # Undoes the last action
         self.setRedoState(self.getCurrentState())
         state = self.getEvent(self.getCurrentState()).getPrevious()
-        self.setCurrentState(state)
+        if state is not None:
+            self.setCurrentState(state)
+        else:
+            print('PhotoWizard Error: Unable to undo actions past initial state')
         return state 
 
 
@@ -87,7 +91,7 @@ class History: # Each time a file is opened, a History object is created
 
 
     def rebase(self,ID): # Restores the current state to a previous history version, in a given branch and at a given index
-        if (type(ID) is int) and (ID > 0):
+        if (type(ID) is int) and (ID >= 0):
             self.currentState = ID
         else:
             raise NameError('PhotoWizardError: Wrong argument format in class History')
@@ -121,7 +125,7 @@ class History: # Each time a file is opened, a History object is created
 
 
     def getFullHistory(self): # Returns the full history as a string
-        tree = self.explore(1)
+        tree = self.explore(0)
         tree = self.toString(tree,0)
         return tree
 
@@ -137,7 +141,7 @@ class History: # Each time a file is opened, a History object is created
 
 
     def add(self,content,label): # adds a new event
-        newEvent = Event(len(self.events)+1,self.currentState,content,label)
+        newEvent = Event(len(self.events),self.currentState,content,label)
         self.events[newEvent.getID()] = newEvent
         if self.getCurrentState() is not None:
             currentState = self.getEvent(self.getCurrentState())
@@ -161,8 +165,8 @@ class History: # Each time a file is opened, a History object is created
 class Event: # Each action creates an event object, which is part of a history branch
 
     def __init__(self,ID,previous,request,label):
-        if (type(ID) is int) and ((previous is None) or ((type(previous) is int) and (previous > 0))) and (type(request) is str) and (type(label) is str):
-            if (ID > 0):
+        if (type(ID) is int) and ((previous is None) or ((type(previous) is int) and (previous >= 0))) and (type(request) is str) and (type(label) is str):
+            if (ID >= 0):
                 self.id = ID
                 self.next = {}
                 self.previous = previous
@@ -196,7 +200,7 @@ class Event: # Each action creates an event object, which is part of a history b
 
     
     def setPrevious(self,ID):
-        if (type(ID) is int) and (ID > 0):
+        if (type(ID) is int) and (ID >= 0):
             self.previous = ID
         else:
             raise NameError('PhotoWizardError: Wrong argument format in class Event')
