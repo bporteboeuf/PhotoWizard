@@ -44,12 +44,12 @@ def main(args,testmode):
         
         if testmode:
             try:
-                request = str(args.pop())
+                request = str(args.pop()) # We get our next request
                 print(request)
             except:
                 request = ''
         else:
-            if First :
+            if First : # The first action displays a small helping message
                 #action = str(getInput(display.action(LANG)))
                 try:
                     request = str(getInput("\n   h - help      q - quit\n"))
@@ -66,19 +66,21 @@ def main(args,testmode):
         
 
         ok = False
-        while not ok:
+        while not ok: # ie while the input can not be properly understood
             ok = True
         
             #print('ACTIONS: ',args[::-1])
             #print('REQUEST: ',request)
 
      
+            # First, we try to understand which function or module the user wants to call
             request = request.split(' ')
             action = request[0]
             request = ' '.join(request)
 
             #print(request)
 
+            # And we act accordingly
             if action == "h" or action == "help":
                 display.disp(helpm.help("idle",LANG))
             
@@ -113,7 +115,7 @@ def main(args,testmode):
                     images[fileName].close()
                     del images[fileName]
                     files.remove(fileName)
-                    if len(files) > 0:
+                    if len(files) > 0: # There are still some files opened
                            nextFile = files[len(files)-1]
                            display.dispm('close',fileName,LANG)
                            display.dispm('switch',str(nextFile),LANG)
@@ -133,12 +135,18 @@ def main(args,testmode):
                     fileName = str(fileName[1])
                     #print("Loading XMD file "+str(fileName))
                     h = images[current].getHistory()
-                    h.rebase(1)
-                    events,currentState = loadXMD(fileName)
-                    h.setEvents(events)
-                    h.setCurrentState(currentState)
+                    h.rebase(0) # We start by restoring the history to its initial state
+                    events = h.getEvents()
+                    offset = 0
+                    for elt in events: # We look for the offset to apply to our new events, so that IDs preserve their unicity
+                        if elt > offset:
+                            offset = elt
+                    events2,currentState = loadXMD(fileName,offset)
+                    events.update(events2)
+                    h.setEvents(events) # We concatenate the events dictionaries and set it as the new one
+                    h.setCurrentState(currentState) # We update the current state
                     images[current].setHistory(h)
-                    images[current].reCompute()
+                    images[current].reCompute() # And we update the working copy for faster preview
                     #print('XMD file '+str(fileName)+' loaded\n')
                     display.dispm('load',fileName,LANG)
                 except Exception as e:
@@ -193,7 +201,7 @@ def main(args,testmode):
                     channel = parseInput(request,[str,str])
                     channel = channel[1]
                     #print("Histogram")
-                    H = images[current].histogram(channel)
+                    H = images[current].histogram(channel) # This returns a normalized histogram, covering a square of 256 by 256
                     #print(H)
                     for elt in H:
                         for k in range(0,11):
@@ -267,7 +275,7 @@ def main(args,testmode):
                     ok = False
                     print('PhotoWizard Error: Unable to rebase history to event '+str(event))
 
-            elif action == "history":
+            elif action == "history": # This function is not fully supported yet
                 try:
                     parseInput(request,[str])
                     print("History:")
@@ -277,7 +285,7 @@ def main(args,testmode):
                     ok = False
                     print('PhotoWizard Error: Unable to preview history')
 
-            else:
+            else: # We assume the wanted module is not part of the main functions and try to access it with our modules mapping function: everyFunction
                 try:
                     # We try to compute the resized copy of the picture
                     image = Image.Image
@@ -285,10 +293,10 @@ def main(args,testmode):
                     #parameters = parseInput(request,[str,])
                     #everyFunction(image,[function,[parameters]])
                     img,parameters = mapping.everyFunction(images[current].getSmallImage(),[function,request])
-                    images[current].setSmallImage(img)
+                    images[current].setSmallImage(img) # We update the working copy
                     h = images[current].getHistory()
                     h.add(request,function)
-                    images[current].setHistory(h)
+                    images[current].setHistory(h) # And we update the history
                     display.dispm('actionCompleted','',LANG)
                 except Exception as e:
                     print(e)
@@ -297,12 +305,12 @@ def main(args,testmode):
             
             if not ok:
                 try:
-                    if not testmode:
+                    if not testmode: # We ask the user to try again
                         if len(action) > 0:
                             request = str(getInput(helpm.help("idle",LANG)))
                         else:
                             request = str(getInput(""))
-                    else:
+                    else: # We pass and move on to the next request for automatic test
                         request = ''
                         ok = True
                 except:

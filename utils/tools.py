@@ -281,12 +281,13 @@ def zip(paths): # Compresses files into an archive
 
 
 
-def loadXMD(path): # loads an eXternal MetaData file which basically contains a copy of the history
+def loadXMD(path,offset): # loads an eXternal MetaData file which basically contains a copy of the history
     try:
+        offset = int(offset)
         f0 = open(str(path))
         f = f0.read()
         f = f.split('<EVENT>')
-        f1 = f[1:len(f)-1]
+        f1 = f[2:len(f)-1] # We get rid of the header, the initial state which is already present and the currentState
         events = {}
         for event in f1:
             a = event.split('<label>')
@@ -296,11 +297,11 @@ def loadXMD(path): # loads an eXternal MetaData file which basically contains a 
             request = str(b[1])
             #print('Request: ',request)
             c = event.split('<id>')
-            ID = int(c[1])
+            ID = int(c[1])+offset
             #print('ID: ',ID)
             d = event.split('<previous>')
             try:
-                previous = int(d[1])
+                previous = int(d[1])+offset
             except:
                 previous = None
             #print('Previous: ',previous)

@@ -30,9 +30,11 @@ class Picture:
             raise NameError('PhotoWizard Error: Unable to find file')
         if self.pic is not None :
             self.smallpic = self.pic
-            self.smallpic = self.smallpic.resize((100,100),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
+            self.smallpic = self.smallpic.resize((250,250),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
+            self.smallpic_ref =  self.smallpic # Keeps a reference copy for any possible history rebase
         else :
             self.smallpic = None
+            self.smallpic_ref = None
         return
 
 
@@ -49,6 +51,18 @@ class Picture:
             self.smallpic = image
         else:
             raise NameError('PhotoWizard Error: Wrong argument type in setSmallImage')
+        return
+
+
+    def getSmallImageRef(self):
+        return self.smallpic_ref
+
+
+    def setSmallImageRef(self,image):
+        if isinstance(image,Image.Image):
+            self.smallpic_ref = image
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument type in setSmallImageRef')
         return
 
 
@@ -88,14 +102,16 @@ class Picture:
 
     def reCompute(self): # Recompute the miniature image according to the current history
         try :
-            hist = self.getHistory().getHistory()
+            hist = self.getHistory()
+            hist = hist.getHistory()
+            img = self.getSmallImageRef()
             for event in hist:
                 request = event.getContent()
                 request = request.split(" ")
                 function = request[0]
                 request = " ".join(request)
-                img,parameters = mapping.everyFunction(self.getSmallImage(),[function,request])
-                self.setSmallImage(img)
+                img,parameters = mapping.everyFunction(img,[function,request])
+            self.setSmallImage(img)
         except Exception as e:
             print(e)
             raise NameError('PhotoWizard Error: Unable to reCompute')

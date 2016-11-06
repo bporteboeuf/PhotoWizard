@@ -20,7 +20,11 @@ def everyFunction(image,action): # Maps the action in the main or history to the
             raise NameError('PhotoWizard Error: Wrong argument format in everyFunction')
             f = ""
             params = []
-        if f == "levels":
+
+        if f == 'InitState': # This is the initialization state for the history
+            image = image # We keep the image intact
+
+        elif f == "levels":
             #print(f)
             try:
                 params = parseInput(params,[str,str,list,list])
