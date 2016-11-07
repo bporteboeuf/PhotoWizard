@@ -51,14 +51,14 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'eqHist':
             hmess = '\nHELP - EQHIST'
             hmess += '\nThis module offers the possibility to equalize the histogram, which is a way to increase the contrast and overall detail of an image.'
-            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL'
+            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL.'
             hmess += '\n\nExample: eqHist V'
             hmess += '\n'
 
         elif matter == 'normHist':
             hmess = '\nHELP - NORMHIST'
             hmess += '\nThis module offers the possibility to normalize the histogram using a linear function, which is a way to increase the contrast and overall detail of an image.'
-            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL'
+            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL.'
             hmess += '\n\nExample: normHist V'
             hmess += '\n'
 
@@ -66,7 +66,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'logHist':
             hmess = '\nHELP - LOGHIST'
             hmess += '\nThis module offers the possibility to normalize the histogram using a logarithmic function, which is a way to increase the contrast and overall detail of an underexposed image, recovering a lot of details in the dark areas.'
-            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL'
+            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL.'
             hmess += '\n\nExample: logHist V'
             hmess += '\n'
 
@@ -74,13 +74,17 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == '\nexpHist':
             hmess = '\nHELP - EXPHIST'
             hmess += '\nThis module offers the possibility to normalize the histogram using an exponential function, which is a way to increase the contrast and overall detail of an overexposed image, recovering a lot of details in the light areas.'
-            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL'
+            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL.'
             hmess += '\n'
 
 
         elif matter == 'contrast':
             hmess = '\nHELP - CONTRAST'
-            hmess += '\nUnfortunately, this function is not implemented yet. Try using LEVELS or CURVES.'
+            hmess += '\nThis module offers the possibility to modify the contrast of an image.'
+            hmess += '\nYou first need to specify the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V or ALL.'
+            hmess += '\nYou then simply need to specify the percentage by which you want to modify your contrast: +100 to double it or -50 to divide it by 2 for isntance.'
+            hmess += '\n\nExample: contrast ALL 25'
+            hmess += '\n'
 
         elif matter == 'exposure':
             hmess = '\nHELP - EXPOSURE'
@@ -91,7 +95,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\nThis module displays a normalized histogram of the working copy of your image.'
             hmess += '\nAn histogram is a graphic that details how much pixels have a given value. The value (range 0 to 255 from left to right) is on the X-axis and the number (or proportion) of concerned pixels is represented on the Y-axis.'
             hmess += '\nIt is a great way to know if your picture is over or underexpoed for instance.'
-            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL'
+            hmess += '\nYou just need to select the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL.'
             hmess += '\n\nExample: histogram R'
             hmess += '\n'
 
@@ -303,7 +307,11 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'contrast':
             hmess = '\nAIDE - CONTRAST'
-            hmess += '\nMalheureusement, cette fonction n\'est pas encore implémentée. Essayez d\'utiliser le module LEVELS ou CURVES.'
+            hmess += '\nCe module offre la possibilité de modifier le contraste d\'une image.'
+            hmess += '\nIl faut d\'abord sélectionner le canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl suffit ensuite de préciser le pourcentage par lequel vous voulez modifier le contraste: +100 pour le doubler ou -50 pour le diviser par 2 par exemple.'
+            hmess += '\n\nExemple : contrast ALL 25'
+            hmess ++ '\n'
 
         elif matter == 'exposure':
             hmess = '\nAIDE - EXPOSURE'

@@ -111,7 +111,7 @@ def normalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def equalizeHistogram(image,channel): # Automatic contrast adjustment
     if isinstance(image,Image.Image):
-        precision = 4
+        precision = 8
         inputs = numpy.linspace(0,255,round(256/precision))
         
         images = getChannel(image,channel)
@@ -226,4 +226,39 @@ def curves(image,channel,inputs,outputs): # S-curve function for more precise le
     return image
 
 
+
+
+def contrast(image,channel,percentage): # Increases the contrast of the image by the percentage given
+
+    if (isinstance(image,Image.Image)) and (type(channel) is str) and (type(percentage) is int) and abs(percentage) < 100 :
+       
+        channels = getChannel(image,channel)
+
+        matrices = []
+        for img in channels:
+            a = numpy.amin(img) + 1
+            b = numpy.amax(img) + 1
+            m = numpy.mean(img)
+
+            alpha = (1+percentage/100)
+            
+            img = img*alpha - m*percentage/100 # We maitain the mean value
+ 
+            img[numpy.where(img<0)] = 0 # And we make sure the result is still between 0 and 255
+            img[numpy.where(img>255)] = 255
+            img = numpy.asarray(img,dtype=numpy.uint8)
+
+            matrices.append(img)
+        
+        image = recompose(image,channel,matrices)
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument format in contrast')
+ 
+    return image
+
+
+
+def exposure(image,channel,ev):
+    
+    return image
 

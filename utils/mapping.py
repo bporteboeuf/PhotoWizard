@@ -11,7 +11,7 @@ from tools import *
 from config import *
 
 
-def everyFunction(image,action,LANG): # Maps the action in the main or history to the real image editing functions
+def everyFunction(image,action): # Maps the action in the main or history to the real image editing functions
     if (isinstance(image,Image.Image)) and (type(action) is list):
         try:
             f = action[0]
@@ -79,6 +79,15 @@ def everyFunction(image,action,LANG): # Maps the action in the main or history t
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to call logHistogram() in everyFunction')
+        elif f == "contrast":
+            #print(f)
+            try:
+                params = parseInput(params,[str,str,int])
+                params = params[1:]
+                image = levels.contrast(image,params[0],params[1])
+            except Exception as e:
+                print(e)
+                raise NameError('PhotoWizard Error: Unable to call contrast() in everyFunction')
         elif f == "lowPass":    
             #print(f)
             try:

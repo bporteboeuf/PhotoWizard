@@ -433,8 +433,15 @@ def levelsTest():
         score+=1
     except Exception as exception:
         print(exception)
+
+    try:
+        #print('G')
+        levels.contrast(img,'ALL',50)
+        score+=1
+    except Exception as exception:
+        print(exception)
     
-    return round(1000*score/6)/10
+    return round(1000*score/7)/10
 
 
 
@@ -533,14 +540,15 @@ def toolsTest():
 
     try:
         #print('H')
-        tools.loadXMD('')
+        tools.loadXMD('pic/test3.xmd',0)
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
         #print('I')
-        tools.saveXMD('',picture)
+        hist = History(1)
+        tools.saveXMD('pic/test0.xmd',hist)
         score+=1
     except Exception as exception:
         print(exception)
