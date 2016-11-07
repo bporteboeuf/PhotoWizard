@@ -1,6 +1,6 @@
 <XMD FILE>
 <EVENT><label>InitialState<label><request>InitState<request><id>0<id><previous>None<previous>
-<EVENT><label>lowPass<label><request>lowPass GAUSSIAN-2D 10 1 ALL<request><id>1<id><previous>0<previous>
+<EVENT><label>lowPass<label><request>lowPass GAUSSIAN-2D [10,1] ALL<request><id>1<id><previous>0<previous>
 <EVENT><label>eqHist<label><request>eqHist ALL<request><id>2<id><previous>1<previous>
 <EVENT><label>normHist<label><request>normHist ALL<request><id>3<id><previous>1<previous>
 <EVENT><current>3<current>

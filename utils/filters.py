@@ -15,6 +15,7 @@ from tools import *
 
 
 def filterz(img,channel,F): # convolves the image by the 2D-filter F
+    
     if (isinstance(img,Image.Image) and isinstance(F,numpy.ndarray) and (type(channel) is str)):
         images = getChannel(img,channel)
         matrices = []
@@ -22,7 +23,6 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
             tmp = signal.convolve2d(numpy.asarray((elt),dtype=numpy.uint8),F,mode='same',boundary='symm')
             matrices.append(numpy.asarray(tmp,dtype=numpy.uint8))
         image = recompose(img,channel,matrices)
-        
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in filterz')
     return image
@@ -31,6 +31,7 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
 
 
 def lowPass(filterType,parameters): # Generates a low-pass filter
+
 
     try:
         filterType = str(filterType)
@@ -90,6 +91,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         try:
             radius = int(parameters[0])
             a = abs(float(parameters[1]))
+            theta = float(parameters[2])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for gaussian low-pass filter')
        
@@ -100,11 +102,12 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
-
+        F = rotate(F,theta)
 
     elif filterType == "MEAN-1D":
         try:
             radius = int(parameters[0])
+            theta = float(parameters[1])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
         
@@ -112,12 +115,13 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
-       
+        F = rotate(F,theta)
 
     elif filterType == "POISSON-1D":
         try:
             radius = int(parameters[0])
             a = abs(float(parameters[1]))
+            theta = float(parameters[2])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for poisson low-pass filter')
 
@@ -128,6 +132,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
+        F = rotate(F,theta)
 
 
     else:
@@ -172,6 +177,7 @@ def highPass(filterType,parameters): # Generates a high-pass filter
     elif filterType == "DIFF-1D":
         try:
             radius = int(parameters[0])
+            theta = float(parameters[1])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for diff low-pass filter')
         
@@ -180,6 +186,7 @@ def highPass(filterType,parameters): # Generates a high-pass filter
         F[:,0] += 1
         F[:,2*radius] += -1
         F = F/numpy.sum(numpy.abs(F))
+        F = rotate(F,theta)
 
 
     else:
@@ -199,7 +206,10 @@ def edgeDetection(img,channel,filterType,parameters,threshold):
         image = filterz(img,channel,highPass(filterType,parameters))
         channels = getChannel(image,channel)
 
-        image = numpy.zeros(image.size,dtype=numpy.uint8)
+        shape = list(image.size)
+        shape = tuple(shape[::-1])
+
+        image = numpy.zeros(shape,dtype=numpy.uint8)
         for elt in channels:
             image += elt
         image = image/len(channels)
@@ -208,7 +218,7 @@ def edgeDetection(img,channel,filterType,parameters,threshold):
         image = 128 + (128-image[0])
         image = numpy.asarray(image,dtype=numpy.uint8)
 
-        empty = 255*numpy.ones(image.shape,dtype=numpy.uint8)
+        empty = 255*numpy.ones(shape,dtype=numpy.uint8)
 
         image = recompose(img,'ALL',[empty,empty,image])
         

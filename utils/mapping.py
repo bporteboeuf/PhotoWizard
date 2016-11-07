@@ -91,18 +91,18 @@ def everyFunction(image,action): # Maps the action in the main or history to the
         elif f == "lowPass":    
             #print(f)
             try:
-                params = parseInput(params,[str,str,int,float,str])
+                params = parseInput(params,[str,str,list,str])
                 params = params[1:]
-                image = filters.filterz(image,params[3],filters.lowPass(params[0],[params[1],params[2]]))
+                image = filters.filterz(image,params[2],filters.lowPass(params[0],params[1]))
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to call filterz() and/or lowPass() in everyFunction')
         elif f == "highPass":
             #print(f)
             try:
-                params = parseInput(params,[str,str,int,str])
+                params = parseInput(params,[str,str,list,str])
                 params = params[1:]
-                image = filters.filterz(image,params[2],filters.highPass(params[0],[params[1]]))
+                image = filters.filterz(image,params[2],filters.highPass(params[0],params[1]))
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to call filterz() and/or highPass() in everyFunction')

@@ -349,13 +349,32 @@ def saveXMD(path,history): # Saves the XMD file
 
 
 def rotate(img,theta): # Rotates a 2D matrix by an angle theta in degrees
-    if (type(theta) is int) and (isinstance(img,Image.Image)):
+    
+    if (type(theta) is float) and (isinstance(img,Image.Image) or isinstance(img,numpy.ndarray)):
+       
+        if isinstance(img,Image.Image):
+            #(W0,H0) = img.size
+            imglist = getChannel(img,'ALL')
+            matrices = []
+            
+            for elt in imglist:
+                new_elt = ndimage.interpolation.rotate(elt,theta)
+                #(H,W) = new_elt.shape
+                #a = round(abs(W-W0)/2)
+                #b = round(abs(H-H0)/2)
+                #new_elt = new_elt[b:H-b,a:W-a] # We maintain the image size
+                new_elt = numpy.asarray(new_elt,dtype=numpy.uint8)
+                matrices.append(new_elt)            
+            
+            shape = list(new_elt.shape)
+            shape.append(3)
+            shape = tuple(shape)
+            img = Image.fromarray(numpy.zeros(shape,dtype=numpy.uint8),'RGB')
+            image = recompose(img,'ALL',matrices)
         
-        img = img.convert('RGB')
-        img = numpy.asarray(img,dtype=numpy.uint8)
-        img = ndimage.interpolation.rotate(img,theta)
-        image = Image.fromarray(img,'RGB')
-
+        else:
+            image = ndimage.interpolation.rotate(img,theta)
+       
         """
         # PIL Library
         a = numpy.amin(mat)

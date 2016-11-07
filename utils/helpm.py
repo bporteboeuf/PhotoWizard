@@ -102,19 +102,21 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'lowPass':
             hmess = '\nHELP - LOWPASS'
             hmess += '\nThis module offers the possibility to apply a low-pass filter on your image (essentially a blurring effet).'
-            hmess += '\nYou first need to specify the filter you want to use. It can currently be: GAUSSIAN-2D, MEAN-2D or POISSON-2D.'
-            hmess += '\nThen you also need to provide the correct parameters for those filters, such as a radius (integer) and a coefficient (float) for GAUSSIAN-2D and POISSON-2D.'
+            hmess += '\nYou first need to specify the filter you want to use. It can currently be: GAUSSIAN-2D, MEAN-2D, POISSON-2D,GAUSSIAN-1D, MEAN-1D, POISSON-1D.'
+            hmess += '\nThen you also need to provide the correct parameters for those filters, such as a radius (integer), a coefficient (float) for GAUSSIAN-2D and POISSON-2D and an angle in degrees (float) for GAUSSIAN-1D, MEAN-1D, POISSON-1D.'
             hmess += '\nFinally, you need to precise the channel on which you want to apply your effect. You can choose between R,G,B,H,S,V or ALL.'
-            hmess += '\n\nExample: lowPass GAUSSIAN-2D [20,1] ALL'
+            hmess += '\n\nExamples: lowPass GAUSSIAN-2D [20,1] ALL'
+            hmess += '          lowPass MEAN-1D [20,45] ALL'
             hmess += '\n'
 
         elif matter == 'highPass':
             hmess = '\nHELP - HIGHPASS'
             hmess += '\nThis module offers the possibility to apply a high-pass filter on your image (essentially a sharpening effet).'
-            hmess += '\nYou first need to specify the filter you want to use. It can currently be: DIFF-2D.'
-            hmess += '\nThen you also need to provide the correct parameters for those filters, such as a radius (integer).'
+            hmess += '\nYou first need to specify the filter you want to use. It can currently be: DIFF-2D, DIFF-1D.'
+            hmess += '\nThen you also need to provide the correct parameters for those filters, such as a radius (integer) and an angle in degrees (float) for DIFF-1D.'
             hmess += '\nFinally, you need to precise the channel on which you want to apply your effect. You can choose between R,G,B,H,S,V or ALL.'
-            hmess += '\n\nExample: highPass DIFF-2D [5]  ALL'
+            hmess += '\n\nExamples: highPass DIFF-2D [5]  ALL'
+            hmess += '          highPass DIFF-1D [5,45] ALL'
             hmess += '\n'
 
         elif matter == 'detectEdges':
@@ -147,7 +149,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'rotate':
             hmess = '\nHELP - ROTATE'
-            hmess += '\nThis module offers the possibility to rotate your image by a given angle in degrees (float).'
+            hmess += '\nThis module offers the possibility to rotate your image counter clockwise by a given angle in degrees (float).'
             hmess += '\n\nExample: rotate 30'
             hmess += '\n'
 
@@ -329,19 +331,21 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'lowPass':
             hmess = '\nAIDE - LOWPASS'
             hmess += '\nCe module offre la possibilité d\'appliquer un filtre passe-bas sur une image (soit essentiellement un effet de flou).'
-            hmess += '\nIl faut d\'abord sélectionner le type de filtre à utiliser. Pour l\'instant, vous pouvez choisir parmi : GAUSSIAN-2D, MEAN-2D ou POISSON-2D.'
-            hmess += '\nIl faut ensuite fournir les paramètres nécessaires au filtre, comme le rayon (entier) et éventuellement un coefficient (flottant) pour GAUSSIAN-2D et POISSON-2D.'
+            hmess += '\nIl faut d\'abord sélectionner le type de filtre à utiliser. Pour l\'instant, vous pouvez choisir parmi : GAUSSIAN-2D, MEAN-2D, POISSON-2D, GAUSSIAN-1D, MEAN-1D, POISSON-1D.'
+            hmess += '\nIl faut ensuite fournir les paramètres nécessaires au filtre, comme le rayon (entier), éventuellement un coefficient (flottant) pour GAUSSIAN-2D et POISSON-2D et un angle en degrés (flottant) pour GAUSSIAN-1D, MEAN-1D et POISSON-1D.'
             hmess += '\nEnfin, il faut préciser le canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
-            hmess += '\n\nExemple : lowPass GAUSSIAN-2D [20,1] ALL'
+            hmess += '\n\nExemples : lowPass GAUSSIAN-2D [20,1] ALL'
+            hmess += '           lowPass MEAN-1D [20,45] ALL'
             hmess += '\n'
 
         elif matter == 'highPass':
             hmess = '\nAIDE- HIGHPASS'
             hmess += '\nCe module offre la possibilité d\'appliquer un filtre passe-haut sur une image (soit essentiellement un effet d\'accentuation).'
             hmess += '\nIl faut d\'abord sélectionner le type de filtre à utiliser. Pour l\'instant, vous pouvez choisir parmi : DIFF-2D.'
-            hmess += '\nIl faut ensuite fournir les paramètres nécessaires au filtre, comme le rayon (entier).'
+            hmess += '\nIl faut ensuite fournir les paramètres nécessaires au filtre, comme le rayon (entier) et un angle en degrés (flottant) pour DIFF-1D.'
             hmess += '\nEnfin, il faut préciser le canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
-            hmess += '\n\nExemple : highPass DIFF-2D [5]  ALL'
+            hmess += '\n\nExemples : highPass DIFF-2D [5]  ALL'
+            hmess += '           highPass DIFF-1D [5,45] ALL'
             hmess += '\n'
 
         elif matter == 'detectEdges':

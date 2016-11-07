@@ -283,6 +283,14 @@ def filtersTest():
     
     score = 0
 
+    # Initialization
+    try:
+        img = Image.open('pic/test3.jpg')
+        img.resize((100,100)) # This will speed up the process
+    except Exception as e:
+        print(e)    
+
+
     # Filters generation
     try:
         #print('A')
@@ -293,7 +301,7 @@ def filtersTest():
 
     try:
         #print('B')
-        f = filters.lowPass('GAUSSIAN-1D',[10,2])
+        f = filters.lowPass('GAUSSIAN-1D',[10,2,0])
         score+=1
     except Exception as exception:
         print(exception)
@@ -307,7 +315,7 @@ def filtersTest():
 
     try:
         #print('D')
-        f = filters.lowPass('MEAN-1D',[6])
+        f = filters.lowPass('MEAN-1D',[6,0])
         score+=1
     except Exception as exception:
         print(exception)
@@ -321,7 +329,7 @@ def filtersTest():
     
     try:
         #print('F')
-        f = filters.lowPass('POISSON-1D',[10,0.7])
+        f = filters.lowPass('POISSON-1D',[10,0.7,0])
         score+=1
     except Exception as exception:
         print(exception)
@@ -335,18 +343,7 @@ def filtersTest():
 
     try:
         #print('H')
-        f = filters.highPass('DIFF-1D',[10])
-        score+=1
-    except Exception as exception:
-        print(exception)
-
-
-    # Filters rotation
-    try:
-        #print('I')
-        img = Image.open('pic/test1.jpg')
-        img = img.resize((50,50),Image.ANTIALIAS) # This will speed up the process
-        f = filters.rotate(img,15)
+        f = filters.highPass('DIFF-1D',[10,0])
         score+=1
     except Exception as exception:
         print(exception)
@@ -354,7 +351,7 @@ def filtersTest():
 
     # Filters application
     try:
-        #print('J')
+        #print('I')
         f = filters.filterz(img,'R',numpy.zeros((3,3)))
         score+=1
     except Exception as exception:
@@ -363,22 +360,21 @@ def filtersTest():
 
     # Others
     try:
-        #print('K')
+        #print('J')
         f = filters.edgeDetection(img,'R','DIFF-2D',[10],100)
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
-        #print('L')
+        #print('K')
         f = filters.edgeEnhancement(img,'R','DIFF-2D',[10],100,.5)
         score+=1
     except Exception as exception:
         print(exception)
 
 
-
-    return round(1000*score/12)/10
+    return round(1000*score/11)/10
 
 
 
@@ -560,6 +556,16 @@ def toolsTest():
     except Exception as exception:
         print(exception)
 
+    # Filters rotation
+    try:
+        #print('K')
+        f = tools.rotate(img,15)
+        f = tools.rotate(numpy.ones((5,7),dtype=numpy.uint8),-15)
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
 
     return round(1000*score/11)/10
 
@@ -586,7 +592,7 @@ def userCase2():
  
     score = 0
 
-    actions = ['open pic/test3.jpg', 'lowPass GAUSSIAN-2D 10 1 ALL', 'eqHist ALL','undo','normHist ALL','save pic/test3.xmd','q']
+    actions = ['open pic/test3.jpg', 'lowPass GAUSSIAN-2D [10,1] ALL', 'eqHist ALL','undo','normHist ALL','save pic/test3.xmd','q']
     try:
        main.main(actions,True)
        score+=1
