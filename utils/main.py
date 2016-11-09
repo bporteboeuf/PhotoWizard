@@ -144,6 +144,10 @@ def main(args,testmode):
 
                 elif action == "load":
                     try:
+                    
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         fileName = parseInput(request,[str,str])
                         fileName = str(fileName[1])
                         #print("Loading XMD file "+str(fileName))
@@ -169,6 +173,10 @@ def main(args,testmode):
 
                 elif action == "save":
                     try:
+                        
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         fileName = parseInput(request,[str,str])
                         fileName = fileName[1]
                         #print("Saving xmd file "+str(fileName))
@@ -181,7 +189,11 @@ def main(args,testmode):
                         print('PhotoWizard Error: Unable to save file '+str(fileName))
                 
                 elif action == "export":
-                    try:
+                    try: 
+
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         fileName = parseInput(request,[str,str])
                         fileName = fileName[1]
                         #print("Exporting "+str(fileName))
@@ -210,7 +222,11 @@ def main(args,testmode):
                         print('PhotoWizard Error: Unable to switch to '+str(fileName)+'\n')
 
                 elif action == "histogram":
-                    try:
+                    try: 
+
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         channel = parseInput(request,[str,str])
                         channel = channel[1]
                         #print("Histogram")
@@ -233,7 +249,11 @@ def main(args,testmode):
                         print('PhotoWizard Error: Unable to preview histogram')
                 
                 elif action == "preview":
-                    try:
+                    try: 
+
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         parseInput(request,[str])
                         #print("preview")
                         images[current].preview()
@@ -243,7 +263,11 @@ def main(args,testmode):
                         print('PhotoWizard Error: Unable to preview picture')
                 
                 elif action == "undo":
-                    try:
+                    try: 
+
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         parseInput(request,[str])
                         #print("undo")
                         h = images[current].getHistory()
@@ -258,7 +282,11 @@ def main(args,testmode):
                         print('PhotoWizard Error: Unable to undo action')
 
                 elif action == "redo":
-                    try:
+                    try: 
+
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         parseInput(request,[str])
                         #print("redo")
                         h = images[current].getHistory()
@@ -273,7 +301,11 @@ def main(args,testmode):
                         print('PhotoWizard Error: Unable to redo action')
 
                 elif action == "rebase":
-                    try:
+                    try: 
+
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         event = parseInput(request,[str,int])
                         event = event[1]
                         #print(rebase)
@@ -290,6 +322,10 @@ def main(args,testmode):
 
                 elif action == "history": # This function is not fully supported yet
                     try:
+
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         parseInput(request,[str])
                         print("History:")
                         print(images[current].getHistory().getFullHistory())
@@ -299,8 +335,12 @@ def main(args,testmode):
                         print('PhotoWizard Error: Unable to preview history')
 
                 else: # We assume the wanted module is not part of the main functions and try to access it with our modules mapping function: everyFunction
+                    
                     try:
                        
+                        if current == '':
+                            raise NameError('PhotoWizard Error: No picture opened')
+                        
                         # We try to compute the resized copy of the picture
                         image = Image.Image
                         function = action
@@ -317,7 +357,7 @@ def main(args,testmode):
                         print(e)
                         ok = False
                         print("PhotoWizard Error: Unexpected input value")
-                
+
                 if not ok:
                     try:
                         if not testmode: # We ask the user to try again

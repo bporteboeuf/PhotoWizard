@@ -129,7 +129,7 @@ class Picture:
                 picture,parameters = mapping.everyFunction(picture,[function,request])
             try:
                 picture = picture.convert('RGB')
-                picture.save(path)
+                picture.save(path,quality=90,optimize=True,progressive=True)
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to save file in export')
@@ -151,7 +151,8 @@ class Picture:
         precision = 4
         for elt in matrices:
             [H,B] = numpy.histogram(elt,bins=round(256/precision),range=(0,255))
-            hist.append(H*255/numpy.amax(H))
+            hist.append(numpy.round(H*255/numpy.amax(H)))
+        #print(hist)
         return hist
 
 

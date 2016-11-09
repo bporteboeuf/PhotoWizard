@@ -20,7 +20,17 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
         images = getChannel(img,channel)
         matrices = []
         for elt in images:
-            tmp = signal.convolve2d(numpy.asarray((elt),dtype=numpy.uint8),F,mode='same',boundary='symm')
+            #tmp = signal.convolve(numpy.asarray((elt),dtype=numpy.uint8),F,mode='same',boundary='symm')
+            tmp = numpy.asarray(elt,dtype=numpy.uint8)
+            a = math.floor(F.shape[0]/2)
+            b = math.floor(F.shape[1]/2)
+            Atmp = tmp.shape[0]
+            Btmp = tmp.shape[1]
+            # We extend the array by symmetry before convolution by the kernel F
+            tmp = numpy.pad(tmp,((a,a),(b,b)),mode='symmetric')
+            tmp = signal.fftconvolve(tmp,F,mode='same')
+            # And we crop it down to the original size
+            tmp = tmp[a:Atmp+a,b:Btmp+b]
             matrices.append(numpy.asarray(tmp,dtype=numpy.uint8))
         image = recompose(img,channel,matrices)
     else:
@@ -53,7 +63,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         F = []
         for elt in range(-radius,radius+1):
             F.append(math.exp(-a*elt**2))
-        F1 = numpy.asarray([F],dtype=numpy.float32)
+        F1 = numpy.asarray([F],dtype=numpy.float16)
         F2 = F1.reshape((F1.size,1))
         F = numpy.multiply(F2,F1)
         F = F/numpy.sum(F)
@@ -62,10 +72,12 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
     elif filterType == "MEAN-2D":
         try:
             radius = int(parameters[0])
+            opacity = float(parameters[1])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
         
-        F = numpy.array((2*radius+1,2*radius+1),dtype=numpy.float32)
+        F = opacity*numpy.ones((2*radius+1,2*radius+1),dtype=numpy.float16)
+        F[radius,radius] = 1
         F = F/numpy.sum(F)
         
 
@@ -78,8 +90,8 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
         F = []
         for elt in range(-radius,radius+1):
-            F.append(a*elt*math.exp(-a*elt))
-        F1 = numpy.asarray([F],dtype=numpy.float32)
+            F.append(a*abs(elt)*math.exp(-a*abs(elt)))
+        F1 = numpy.asarray([F],dtype=numpy.float16)
         F2 = F1.reshape((F1.size,1))
         F = numpy.multiply(F2,F1)
         F = F/numpy.sum(F)
@@ -98,8 +110,8 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
         F = []
         for elt in range(-radius,radius+1):
             F.append(math.exp(-a*elt**2))
-        F1 = numpy.asarray([F],dtype=numpy.float32)
-        F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
+        F1 = numpy.asarray([F],dtype=numpy.float16)
+        F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
         F = rotate(F,theta)
@@ -107,13 +119,15 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
     elif filterType == "MEAN-1D":
         try:
             radius = int(parameters[0])
-            theta = float(parameters[1])
+            opacity = float(parameters[1])
+            theta = float(parameters[2])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
         
-        F1 = numpy.ones((1,2*radius+1),dtype=numpy.float32)
-        F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
+        F1 = opacity*numpy.ones((1,2*radius+1),dtype=numpy.float16)
+        F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
         F2[radius,:] = F1
+        F2[radius,radius] = 1
         F = F2/numpy.sum(F2)
         F = rotate(F,theta)
 
@@ -127,9 +141,9 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
         F = []
         for elt in range(-radius,radius+1):
-            F.append(a*elt*math.exp(-a*elt))
-        F1 = numpy.asarray([F],dtype=numpy.float32)
-        F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
+            F.append(a*abs(elt)*math.exp(-a*abs(elt)))
+        F1 = numpy.asarray([F],dtype=numpy.float16)
+        F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
         F2[radius,:] = F1
         F = F2/numpy.sum(F2)
         F = rotate(F,theta)
@@ -162,9 +176,9 @@ def highPass(filterType,parameters): # Generates a high-pass filter
         try:
             radius = int(parameters[0])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for diff low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for diff high-pass filter')
         
-        F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
+        F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
         F[0,:] += 1
         F[2*radius,:] += -1
         F[:,0] += 1
@@ -179,15 +193,16 @@ def highPass(filterType,parameters): # Generates a high-pass filter
             radius = int(parameters[0])
             theta = float(parameters[1])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for diff low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for diff high-pass filter')
         
-        #F1 = numpy.ones((2*radius+1,1),dtype=numpy.float32)
-        F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float32)
+        #F1 = numpy.ones((2*radius+1,1),dtype=numpy.float16)
+        F = numpy.zeros((2*radius+1,3),dtype=numpy.float16)
         F[:,0] += 1
-        F[:,2*radius] += -1
+        F[:,2] += -1
         F = F/numpy.sum(numpy.abs(F))
         F = rotate(F,theta)
 
+        print(F)
 
     else:
         raise NameError('PhotoWizard Error: Unknown high-pass filter type')

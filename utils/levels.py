@@ -38,19 +38,19 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
                 ob = 0
                 for k in range(0,len(inputs)):
                     # input interval
-                    ia = ib
-                    ib = inputs[k]
+                    ia = float(ib)
+                    ib = float(inputs[k])
 
                     # output interval
-                    oa = ob
-                    ob = outputs[k]
+                    oa = float(ob)
+                    ob = float(outputs[k])
 
                     # coefficients
                     if ib!=ia:
-                        alpha = (ob-oa)/(ib-ia)
+                        alpha = float((ob-oa)/(ib-ia))
                     else:
                         alpha = 0
-                    beta = ob - alpha*ib
+                    beta = float(ob - alpha*ib)
 
                     # We get the indexes of elements in our inputs interval
                     under = numpy.where(matrix2<=ib)
@@ -67,7 +67,7 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
 
                     # And we finally compute the wanted values
                     matrix2[indexes] = matrix2[indexes]*alpha+beta
-                matrices.append(matrix2)
+                matrices.append(numpy.asarray(matrix2,dtype=numpy.uint8))
                 #matrices[:,:,i] = matrix2
                 #i+=1
         else:
@@ -121,7 +121,10 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
         for img in images:
             histogram, bins = numpy.histogram(img,bins=round(256/precision),range=(0,255))
             outputs = numpy.cumsum(histogram)
-            outputs = outputs*255/outputs[outputs.shape[0]-1]
+            outputs = outputs*255/numpy.amax(outputs)
+            inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
+            outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
+            #print(inputs,outputs)
             #matrices[:,:,i] = levels(img,'',list(inputs),list(outputs))
             #i+=1
             matrices.append(levels(img,'',list(inputs),list(outputs)))
@@ -136,12 +139,13 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def logHistogram(image,channel): # Automatic contrast adjustment recover details in low values
     if isinstance(image,Image.Image):
-        precision = 4
+        precision = 8
         inputs = numpy.linspace(0,255,round(256/precision))
         outputs = numpy.log(1+inputs/32)
         outputs = outputs*255/outputs[len(outputs)-1]
         inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
         outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
+        #print(inputs,outputs)
 
         images = getChannel(image,channel)
         #matrices = numpy.zeros((images[0].shape[0],images[0].shape[1],len(images)))
