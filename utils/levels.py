@@ -32,6 +32,8 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
                 # We first analyze which region of the matrix is in each inputs interval
                 # And we normalize it (affine) so it fits in the corresponding outputs interval
 
+                #print(inputs,outputs)
+
                 matrix2 = matrix
                 matrix2.setflags(write=True)
                 ib = 0
@@ -124,7 +126,7 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
             outputs = outputs*255/numpy.amax(outputs)
             inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
             outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
-            #print(inputs,outputs)
+            print(inputs,outputs)
             #matrices[:,:,i] = levels(img,'',list(inputs),list(outputs))
             #i+=1
             matrices.append(levels(img,'',list(inputs),list(outputs)))
@@ -145,7 +147,7 @@ def logHistogram(image,channel): # Automatic contrast adjustment recover details
         outputs = outputs*255/outputs[len(outputs)-1]
         inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
         outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
-        #print(inputs,outputs)
+        print(inputs,outputs)
 
         images = getChannel(image,channel)
         #matrices = numpy.zeros((images[0].shape[0],images[0].shape[1],len(images)))
