@@ -28,6 +28,12 @@ class Picture:
                 raise NameError('PhotoWizard Error: Unable to load file')
         else:
             raise NameError('PhotoWizard Error: Unable to find file')
+        
+        try:
+            self.EXIF = self.pic.info['exif']
+        except:
+            pass
+        
         if self.pic is not None :
             self.smallpic = self.pic
             self.smallpic = self.smallpic.resize((250,250),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
@@ -129,7 +135,7 @@ class Picture:
                 picture,parameters = mapping.everyFunction(picture,[function,request])
             try:
                 picture = picture.convert('RGB')
-                picture.save(path,quality=90,optimize=True,progressive=True)
+                picture.save(path,quality=90,optimize=True,progressive=True,exif=self.EXIF)
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to save file in export')
