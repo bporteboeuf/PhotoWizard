@@ -13,38 +13,45 @@ from tools import getChannel,recompose
 
 def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (same treatment for every selected channel) or a numpy.ndarray (same treatment for every layer)
     if (isinstance(image,Image.Image) or isinstance(image,numpy.ndarray)) and (type(channel) is str) and (type(inputs) is list) and (type(outputs) is list) :
-        #print(len(inputs)==len(outputs),0<=min(inputs),0<=min(outputs),255>=max(inputs),255>=max(outputs))
         if (len(inputs) == len(outputs)) and (0<=min(inputs)) and (0<=min(outputs)) and (255>=max(inputs)) and (255>=max(outputs)):
     
             if isinstance(image,Image.Image):
                 channels = getChannel(image,channel)
             elif image.size == image.shape[0]*image.shape[1]: # 2D numpy array
-                channels = image
+                channels = [image]
             else:
                 raise NameError('PhotoWizard Error: Wrong argument format in levels')
 
-            i = 0
-            #matrices = numpy.zeros((channels[0].shape[0],channels[0].shape[1],len(channels)))
-            #matrices.setflags(write=True)
             matrices = []
             for matrix in channels:
 
                 # We first analyze which region of the matrix is in each inputs interval
                 # And we normalize it (affine) so it fits in the corresponding outputs interval
 
-                #print(inputs,outputs)
+                if max(inputs)<255:
+                    inputs.append(255)
+                    outputs.append(255)
 
-                matrix2 = matrix
+                if min(inputs)>0:
+                    inputs.insert(0,0)
+                    outputs.insert(0,0)
+                
+                matrix2 = numpy.array(matrix,dtype=numpy.uint8)
                 matrix2.setflags(write=True)
-                ib = 0
-                ob = 0
-                for k in range(0,len(inputs)):
+                for k in range(1,len(inputs)):
+                    
                     # input interval
-                    ia = float(ib)
+                    if k == 1:
+                        ia = float(inputs[0])
+                    else:
+                        ia = float(ib)
                     ib = float(inputs[k])
 
                     # output interval
-                    oa = float(ob)
+                    if k == 1:
+                        oa = float(outputs[0])
+                    else:
+                        oa = float(ob)
                     ob = float(outputs[k])
 
                     # coefficients
@@ -52,26 +59,16 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
                         alpha = float((ob-oa)/(ib-ia))
                     else:
                         alpha = 0
-                    beta = float(ob - alpha*ib)
-
-                    # We get the indexes of elements in our inputs interval
-                    under = numpy.where(matrix2<=ib)
-                    over = numpy.where(matrix2>=ia)
-
-                    # Then we build an indicator matrix
-                    eltUnder = numpy.zeros(matrix2.shape,dtype=numpy.uint8)
-                    eltUnder[under] = 1
-                    eltOver = numpy.zeros(matrix2.shape,dtype=numpy.uint8)
-                    eltOver[over] = 1
-
-                    eltInterval = eltUnder*eltOver
-                    indexes = numpy.where(eltInterval>0)
-
+                    beta = float(oa - alpha*ia)
+                  
+                    # We build an indicator matrix
+                    interval = (matrix<=ib)*(matrix>=ia)
+                    indexes = numpy.where(interval)
+                    
                     # And we finally compute the wanted values
-                    matrix2[indexes] = matrix2[indexes]*alpha+beta
+                    matrix2[indexes] = matrix[indexes]*alpha+beta
+
                 matrices.append(numpy.asarray(matrix2,dtype=numpy.uint8))
-                #matrices[:,:,i] = matrix2
-                #i+=1
         else:
             raise NameError('PhotoWozard Error: Wrong argument format in levels')
     else:
@@ -89,16 +86,12 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
 def normalizeHistogram(image,channel): # Automatic contrast adjustment
     if isinstance(image,Image.Image):
         images = getChannel(image,channel)
-        #image = numpy.zeros((images[0].shape,images[1].shape,len(images)))
-        #i = 0
         matrices = []
         for img in images:
             a = numpy.amin(img)
             b = numpy.amax(img)
             if a==b :
                 b = a+1
-            #image[:,:,i] = (img-a)*255/(b-a)
-            #i+=1
             alpha = 255/(b-a)
             tmp = numpy.asarray((img-a)*alpha,dtype=numpy.uint8)
             matrices.append(tmp)
@@ -113,12 +106,10 @@ def normalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def equalizeHistogram(image,channel): # Automatic contrast adjustment
     if isinstance(image,Image.Image):
-        precision = 8
+        precision = 16
         inputs = numpy.linspace(0,255,round(256/precision))
         
         images = getChannel(image,channel)
-        #matrices = numpy.zeros((images[0].shape[0],images[0].shape[1],len(images)))
-        #i = 0
         matrices = []
         for img in images:
             histogram, bins = numpy.histogram(img,bins=round(256/precision),range=(0,255))
@@ -126,9 +117,6 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
             outputs = outputs*255/numpy.amax(outputs)
             inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
             outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
-            print(inputs,outputs)
-            #matrices[:,:,i] = levels(img,'',list(inputs),list(outputs))
-            #i+=1
             matrices.append(levels(img,'',list(inputs),list(outputs)))
         image = recompose(image,channel,matrices)
     else:
@@ -141,21 +129,16 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def logHistogram(image,channel): # Automatic contrast adjustment recover details in low values
     if isinstance(image,Image.Image):
-        precision = 8
+        precision = 64
         inputs = numpy.linspace(0,255,round(256/precision))
-        outputs = numpy.log(1+inputs/32)
+        outputs = numpy.log(1+inputs/16)
         outputs = outputs*255/outputs[len(outputs)-1]
         inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
         outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
-        print(inputs,outputs)
 
         images = getChannel(image,channel)
-        #matrices = numpy.zeros((images[0].shape[0],images[0].shape[1],len(images)))
-        #i = 0
         matrices = []
         for img in images:
-            #matrices[:,:,i] = levels(img,'',list(inputs),list(outputs))
-            #i+=1
             matrices.append(levels(img,'',list(inputs),list(outputs)))
         image = recompose(image,channel,matrices)
     else:
@@ -168,20 +151,16 @@ def logHistogram(image,channel): # Automatic contrast adjustment recover details
 
 def expHistogram(image,channel): # Automatic contrast adjustment to recover details in high values
     if isinstance(image,Image.Image):
-        precision = 4
+        precision = 8
         inputs = numpy.linspace(0,255,round(256/precision))
-        outputs = numpy.exp(inputs/48)
+        outputs = numpy.exp(inputs/64)-1
         outputs = outputs*255/outputs[len(outputs)-1]
         inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
         outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
        
         images = getChannel(image,channel)
-        #matrices = numpy.zeros((images[0].shape[0],images[0].shape[1],len(images)))
-        #i = 0
         matrices = []
         for img in images:
-            #matrices[:,:,i] = levels(img,'',list(inputs),list(outputs))
-            #i+=1
             matrices.append(levels(img,'',list(inputs),list(outputs)))
         image = recompose(image,channel,matrices)
     else:
@@ -193,7 +172,7 @@ def expHistogram(image,channel): # Automatic contrast adjustment to recover deta
 
 def curves(image,channel,inputs,outputs): # S-curve function for more precise levels adjustment
     if (isinstance(image,Image.Image) or isinstance(image,numpy.ndarray)) and (type(inputs) is list) and (type(outputs) is list) and (len(inputs)==len(outputs)):
-        precision = 4
+        precision = 8
         X = numpy.linspace(0,255,len(inputs))
         X2 = numpy.linspace(0,255,round(256/precision))
         # We interpolate inputs and outputs values to recreate the curves from the point the user selected
@@ -214,13 +193,8 @@ def curves(image,channel,inputs,outputs): # S-curve function for more precise le
         else:
             raise NameError('PhotoWizard Error: Wrong argument format in levels')
 
-        #matrices = numpy.zeros((channels[0].shape[0],channels[0].shape[1],len(channels)))
-        #matrices.setflags(write=True)
         matrices = []
-        #i = 0
         for img in channels:
-            #matrices[:,:,i] = levels(img,'',list(inputs),list(outputs))
-            #i+=1
             matrices.append(levels(img,'',inputs,outputs))
         if isinstance(image,Image.Image):
             image = recompose(image,channel,matrices)
@@ -265,6 +239,63 @@ def contrast(image,channel,percentage): # Increases the contrast of the image by
 
 
 def exposure(image,channel,ev):
+ 
+    if (isinstance(image,Image.Image)) and (type(channel) is str) and ((type(ev) is float) or (type(ev) is int)) and (abs(ev) <= 8) :
+       
+        # A standard measure for exposure value consists of measuring the luminance of a medium 18% gray (ie about 210/255)
+        # +1.00 eV means to double the quantity of light, -1.00 eV to divide it by two
+
+
+        channels = getChannel(image,channel)
+
+        matrices = []
+        for img in channels:
+            a = numpy.amin(img)
+            b = numpy.amax(img)
+            c = numpy.mean(img)
+
+            if ev >= 0:
+                b2 = min(b,255)
+                a2 = min(a*(1+ev/8),255)
+                c2 = min(c*ev,b)
+            else:
+                a2 = max(a*(1+ev/8),0)
+                b2 = max(a*(1+ev/8),0)
+                c2 = max(c/abs(ev),a2)
+
+            inputs = [a,c,b]
+            outputs = [a2,c2,b2]
+
+            img = levels(img,'',inputs,outputs)
+
+            matrices.append(img)
+        
+        image = recompose(image,channel,matrices)
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument format in exposure')
     
+
+    return image
+
+
+
+def blackAndWhite(image,channel):
+
+    if (isinstance(image,Image.Image)) and (type(channel) is str):
+       
+        channels = getChannel(image,channel)
+
+        if len(channel) == 1:
+            channels = numpy.asarray(channels[0],dtype=numpy.uint8)
+            image = Image.fromarray(channels,'L')
+        
+        elif len(channel) == 3:
+            image = image.convert('L')
+
+        else:
+            raise NameError('PhotoWizard Error: Unsupported number of channels in blackAndWhite')
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument format in blackAndWhite')
+ 
     return image
 

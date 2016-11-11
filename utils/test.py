@@ -430,6 +430,7 @@ def levelsTest():
     except Exception as exception:
         print(exception)
 
+    # Others
     try:
         #print('G')
         levels.contrast(img,'ALL',50)
@@ -437,7 +438,22 @@ def levelsTest():
     except Exception as exception:
         print(exception)
     
-    return round(1000*score/7)/10
+    try:
+        #print('H')
+        levels.exposure(img,'ALL',1)
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        #print('I')
+        levels.blackAndWhite(img,'ALL')
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
+    return round(1000*score/9)/10
 
 
 

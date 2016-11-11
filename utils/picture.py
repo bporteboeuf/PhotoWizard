@@ -135,7 +135,10 @@ class Picture:
                 picture,parameters = mapping.everyFunction(picture,[function,request])
             try:
                 picture = picture.convert('RGB')
-                picture.save(path,quality=90,optimize=True,progressive=True,exif=self.EXIF)
+                if len(self.EXIF) > 0:
+                    picture.save(path,quality=90,optimize=True,progressive=True,exif=self.EXIF)
+                else:
+                    picture.save(path,quality=90,optimize=True,progressive=True)
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to save file in export')

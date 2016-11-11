@@ -88,6 +88,24 @@ def everyFunction(image,action): # Maps the action in the main or history to the
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to call contrast() in everyFunction')
+        elif f == 'exposure':
+            #print(f)
+            try:
+                params = parseInput(params,[str,str,float])
+                params = params[1:]
+                image = levels.exposure(image,params[0],params[1])
+            except Exception as e:
+                print(e)
+                raise NameError('PhotoWizard Error: Unable to call exposure() in everyFunction')
+        elif f == 'blackandwhite':
+            #print(f)
+            try:
+                params = parseInput(params,[str,str])
+                params = params[1:]
+                image = levels.blackAndWhite(image,params[0])
+            except Exception as e:
+                print(e)
+                raise NameError('PhotoWizard Error: Unable to call blackAndWhite() in everyFunction')
         elif f == "lowPass":    
             #print(f)
             try:

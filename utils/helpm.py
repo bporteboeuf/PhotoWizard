@@ -81,14 +81,25 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'contrast':
             hmess = '\nHELP - CONTRAST'
             hmess += '\nThis module offers the possibility to modify the contrast of an image.'
-            hmess += '\nYou first need to specify the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V or ALL.'
+            hmess += '\nYou first need to specify the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL.'
             hmess += '\nYou then simply need to specify the percentage by which you want to modify your contrast: +100 to double it or -50 to divide it by 2 for isntance.'
             hmess += '\n\nExample: contrast ALL 25'
             hmess += '\n'
 
         elif matter == 'exposure':
             hmess = '\nHELP - EXPOSURE'
-            hmess += '\nUnfortunately, this function is not implemented yet. Try using LEVELS or CURVES.'
+            hmess += '\nThis module offers the possibility to modify the overall exposure of the image.'
+            hmess += '\nYou simply need to specify the channel on which you want to apply the effect. You can choose between R,G,B,H,S,V and ALL.'
+            hmess += '\nYou then need to enter the exposure adjustment coefficient (float from -8 to 8): +1 to double the average exposure or -1 to divide it by two.'
+            hmess += '\n\nExample: exposure ALL 1'
+            hmess += '\n'
+        
+        elif matter == 'blackandwhite':
+            hmess = '\nHELP - BLACKANDWHITE'
+            hmess += '\nThis module offers the possibility to convert an image or part of an image to black and white (grayscale).'
+            hmess += '\nYou simply need to specify the channel that you want to convert to a black and white image. You can choose between R,G,B,H,S,V and ALL.'
+            hmess += '\n\nExample: blackandwhite R'
+            hmess +='\n'
 
         elif matter == 'histogram':
             hmess = '\nHELP - HISTOGRAM'
@@ -272,7 +283,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess = '\nAIDE - CURVES'
             hmess += '\nCe module offre la possibilité de changer la courbe de dynamique de l\'image, c\'est-à-dire de changer les valeurs de sortie en fonction d\'intervalles de valeurs d\'entrée précisés.'
             hmess += '\nCe module fonctionne de manière très similaire au module LEVELS, sauf que LEVELS propose une réponse dynamique C-0 alors que CURVES propose une réponse dynamique C1 en utilisant une interpolation par spline.'
-            hmess += '\nIl faut tout d\'abord sélectionner un cannal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl faut tout d\'abord sélectionner un canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
             hmess += '\nIl faut ensuite donner les bornes des intervalles d\'entrée comme suit : [ia,ib,ic] où (ia,ib,ic) sont des entiers de 0 à 255, ia/ib définissant les tons sombres de l\'image et ib/ic les tons clairs.'
             hmess += '\nDe la même manière, il faut renseigner les bornes des intervalles de sortie [oa,ob,oc] comme des entiers de 0 à 255.'
             hmess += '\n\nRemarque : il est possible de renseigner autant de bornes en entrée et en sortie, du moment que les longueurs des listes d\'entrées et de sorties sont égales et comprises entre 4 et 257.'
@@ -282,28 +293,28 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'eqHist':
             hmess = '\nAIDE - EQHIST'
             hmess += '\nCe module offre la possibilité d\'égaliser l\'histogramme, ce qui est une moyen d\'augmenter le contrast et le détail global d\'une image.'
-            hmess += '\nIl suffit de sélectionner un cannal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl suffit de sélectionner un canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
             hmess += '\n\nExemple : eqHist V'
             hmess += '\n'
 
         elif matter == 'normHist':
             hmess = '\nAIDE - NORMHIST'
             hmess += '\nCe module offre la possibilité de normaliser l\'histogramme en utilisant une fonction linéaire, ce qui est un moyen d\'augmenter le contraste et le détail global d\'une image.'
-            hmess += '\nIl suffit de sélectionner un cannal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl suffit de sélectionner un canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
             hmess += '\n\nExemple : normHist V'
             hmess += '\n'
 
         elif matter == 'logHist':
             hmess = '\nAIDE - LOGHIST'
             hmess += '\nCe module offre la possibilité de normaliser l\'histogramme en utilisant une fonction logarithmique, ce qui est un moyen d\'augmenter le contraste et le détail global d\'une image sous-exposée, en restaurant beaucoup de détails dans les zones sombres.'
-            hmess += '\nIl suffit de sélectionner un cannal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl suffit de sélectionner un canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
             hmess += '\n\nExemple : logHist V'
             hmess += '\n'
 
         elif matter == '\nexpHist':
             hmess = '\nAIDE - EXPHIST'
             hmess += '\nCe module offre la possibilité de normaliser l\'histogramme en utilisant une fonction exponentielle, ce qui est un moyen d\'augmenter le contraste et le détail global d\'une image sur-exposée, en restaurant beaucoup de détails dans les zones claires.'
-            hmess += '\nIl suffit de sélectionner un cannal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl suffit de sélectionner un canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
             hmess += '\n\nExemple : expHist V'
             hmess += '\n'
 
@@ -317,8 +328,19 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'exposure':
             hmess = '\nAIDE - EXPOSURE'
-            hmess += '\nMalheureusement, cette fonction n\'est pas encore implémentée. Essayez d\'utiliser le module LEVELS ou CURVES.'
+            hmess += '\nCe module offre la possibilité de modifier l\'exposition globale d\'une image.'
+            hmess += '\nIl faut d\'abord sélectionner un canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl suffit alors de renseigner le coefficient d\'ajustement d\'exposition (flottant de -8 à 8) : +1 pour doubler l\'exposition moyenne ou -1 pour la diviser par deux.'
+            hmess += '\n\nExemple : exposure ALL 1'
+            hmess += '\n'
 
+        elif matter == 'blackandwhite':
+            hmess = '\nAIDE - BLACKANDWHITE'
+            hmess += '\nCe module offre la possibilité de convertir une image ou une partie d\'une image en une image en noir et blanc (niveaux de gris).'
+            hmess += '\nIl suffit de sélectionner un canal à convertir en une image en noir et blanc, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\n\nExemple : blackandwhite R'
+            hmess +='\n'
+        
         elif matter == 'histogram':
             hmess = '\nAIDE - HISTOGRAM'
             hmess += '\nCe module affiche un histogramme normalisé de la copie de travail de votre image.'
