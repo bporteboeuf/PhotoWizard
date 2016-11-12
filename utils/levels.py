@@ -245,28 +245,34 @@ def exposure(image,channel,ev):
         # A standard measure for exposure value consists of measuring the luminance of a medium 18% gray (ie about 210/255)
         # +1.00 eV means to double the quantity of light, -1.00 eV to divide it by two
 
+        precision = 8
 
         channels = getChannel(image,channel)
 
         matrices = []
         for img in channels:
-            a = numpy.amin(img)
-            b = numpy.amax(img)
-            c = numpy.mean(img)
 
-            if ev >= 0:
-                b2 = min(b,255)
-                a2 = min(a*(1+ev/8),255)
-                c2 = min(c*ev,b)
+            inputs = numpy.linspace(0,255,round(256/precision))
+            X = inputs/255
+
+            alpha = 1 + abs(ev)
+
+            if ev > 0:
+                a = alpha-2
+                b = 3-2*alpha
+                c = alpha
+            elif ev < 0:
+                a = alpha-2
+                b = 3-alpha
+                c = 0
             else:
-                a2 = max(a*(1+ev/8),0)
-                b2 = max(a*(1+ev/8),0)
-                c2 = max(c/abs(ev),a2)
+                a = 0
+                b = 0
+                c = 1
 
-            inputs = [a,c,b]
-            outputs = [a2,c2,b2]
+            outputs = 255*(a*X**3+b*X**2+c*X)
 
-            img = levels(img,'',inputs,outputs)
+            img = levels(img,'',list(inputs),list(outputs))
 
             matrices.append(img)
         
