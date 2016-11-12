@@ -15,7 +15,8 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
     if str(language) == "EN" :
         if matter == 'idle':
-            hmess = '\nThis image editing software is still at an early stage development. More functionalities are to come soon.'
+            hmess = '\nHELP'
+            hmess += '\nThis image editing software is still at an early stage development. More functionalities are to come soon.'
             hmess += '\n\nTo open an image, simply type open [filePath].'
             hmess += ' You can edit it using the different functionalities implemented, such as filters, levels, and much more.'
             hmess += '\nTo switch between two opened images, simply type switch [filePath]. You can save your changes by typing save [filePath] and load previous changes by typing load [filePath].'
@@ -206,7 +207,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\nThis command restore your system to a given state in the current history.'
             hmess += '\nYou just need to specify which state number you want to restore (0 being the initial state).'
             hmess += '\n\nExample: rebase 0'
-            hmes += '\n'
+            hmess += '\n'
 
         elif matter == 'open':
             hmess = '\nHELP - OPEN'
@@ -257,7 +258,8 @@ def help(matter,language): # Matter indicates the matter on which the user needs
     # FRENCH VERSION
     elif str(language) == "FR" :
         if matter == 'idle':
-            hmess = "\nCe logiciel de traitement d'images est encore au stade de développement. Plus de fonctionnalités devraient bientôt arriver."
+            hmess = '\nAIDE'
+            hmess += '\nCe logiciel de traitement d\'images est encore au stade de développement. Plus de fonctionnalités devraient bientôt arriver.'
             hmess += '\n\nPour ouvrir une image, il suffit de taper open [filePath].'
             hmess += 'Vous pouvez alors modifier l\'image à l\'aide des fonctionnalités présentes, comme des filtres, niveaux et bien plus.'
             hmess += '\nPour sélectionner l\'image de travail parmi plusieurs images ouvertes, taper switch [filePath]. Vous pouvez enregistrer les changements effectués en tapant save [filePath] et charger des changements antérieurs avec load [filePath].'

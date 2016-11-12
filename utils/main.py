@@ -65,6 +65,7 @@ def main(args,testmode):
                     next
         
 
+        tries = 0
         ok = False
         while not ok: # ie while the input can not be properly understood
             ok = True
@@ -84,8 +85,7 @@ def main(args,testmode):
                     display.disp(helpm.help(action,LANG))
                     helped = True
             except Exception as e:
-                #print(e)
-                #if Exception is TypeError:
+                print(e)
                 pass
             
 
@@ -137,6 +137,7 @@ def main(args,testmode):
                         else:
                             #print(str(fileName)+' closed\n')
                             display.dispm('close',fileName,LANG)
+                            current = ''
                     except Exception as e:
                         print(e)
                         ok = False
@@ -145,11 +146,12 @@ def main(args,testmode):
                 elif action == "load":
                     try:
                     
+                        fileName = parseInput(request,[str,str])
+                        fileName = str(fileName[1])
+                        
                         if current == '':
                             raise NameError('PhotoWizard Error: No picture opened')
                         
-                        fileName = parseInput(request,[str,str])
-                        fileName = str(fileName[1])
                         #print("Loading XMD file "+str(fileName))
                         h = images[current].getHistory()
                         h.rebase(0) # We start by restoring the history to its initial state
@@ -174,11 +176,12 @@ def main(args,testmode):
                 elif action == "save":
                     try:
                         
+                        fileName = parseInput(request,[str,str])
+                        fileName = fileName[1]
+                        
                         if current == '':
                             raise NameError('PhotoWizard Error: No picture opened')
                         
-                        fileName = parseInput(request,[str,str])
-                        fileName = fileName[1]
                         #print("Saving xmd file "+str(fileName))
                         saveXMD(fileName,images[current].getHistory())
                         #print('XMD file saved to '+str(fileName)+'\n')
@@ -190,12 +193,13 @@ def main(args,testmode):
                 
                 elif action == "export":
                     try: 
+                        
+                        fileName = parseInput(request,[str,str])
+                        fileName = fileName[1]
 
                         if current == '':
                             raise NameError('PhotoWizard Error: No picture opened')
                         
-                        fileName = parseInput(request,[str,str])
-                        fileName = fileName[1]
                         #print("Exporting "+str(fileName))
                         images[current].export(fileName)
                         #print(str(fileName)+' exported\n')
@@ -303,11 +307,12 @@ def main(args,testmode):
                 elif action == "rebase":
                     try: 
 
+                        event = parseInput(request,[str,int])
+                        event = event[1]
+                        
                         if current == '':
                             raise NameError('PhotoWizard Error: No picture opened')
                         
-                        event = parseInput(request,[str,int])
-                        event = event[1]
                         #print(rebase)
                         h = images[current].getHistory()
                         h.rebase(event)
@@ -361,10 +366,11 @@ def main(args,testmode):
                 if not ok:
                     try:
                         if not testmode: # We ask the user to try again
-                            if len(action) > 0:
+                            if tries > 3:
                                 request = str(getInput(helpm.help("idle",LANG)))
                             else:
                                 request = str(getInput(""))
+                            tries += 1
                         else: # We pass and move on to the next request for automatic test
                             request = ''
                             ok = True

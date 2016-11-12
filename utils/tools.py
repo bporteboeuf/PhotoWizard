@@ -174,10 +174,10 @@ def parseInput(string,expected): # Parses a string input to find the correspondi
         #print(string,expected)
         s = string.split(' ')
         stringFormated = []
-        if len(s) == 2:
-            if s[1] == '-h' or s[1] == '--help':
-                print(helpm.help(s[0],LANG))
-                return stringFormated
+        #if len(s) == 2:
+        #    if s[1] == '-h' or s[1] == '--help':
+        #        print(helpm.help(s[0],LANG))
+        #        return stringFormated
 
         if len(s) == len(expected):
             try :
