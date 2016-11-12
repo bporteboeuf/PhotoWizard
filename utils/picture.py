@@ -7,6 +7,7 @@
 # This module defines the picture class
 
 import sys
+import rawpy, numpy
 sys.path.insert(0,'utils')
 from history import History
 from PIL import Image
@@ -25,7 +26,13 @@ class Picture:
             try:
                 self.pic = Image.open(name)
             except:
-                raise NameError('PhotoWizard Error: Unable to load file')
+                try:
+                    tmp = rawpy.imread(name)
+                    tmp = numpy.asarray(tmp.postprocess(),dtype=numpy.uint8)
+                    self.pic = Image.fromarray(tmp)
+                except Exception as e:
+                    print(e)
+                    raise NameError('PhotoWizard Error: Unable to load file')
         else:
             raise NameError('PhotoWizard Error: Unable to find file')
         
