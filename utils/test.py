@@ -301,35 +301,35 @@ def filtersTest():
 
     try:
         #print('B')
-        f = filters.lowPass('GAUSSIAN-1D',[10,2,0])
+        f = filters.lowPass('GAUSSIAN-1D',[10,.2,0.])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('C')
-        f = filters.lowPass('MEAN-2D',[3])
+        f = filters.lowPass('MEAN-2D',[3,.5])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('D')
-        f = filters.lowPass('MEAN-1D',[6,0])
+        f = filters.lowPass('MEAN-1D',[6,1.,0.])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('E')
-        f = filters.lowPass('POISSON-2D',[5,2])
+        f = filters.lowPass('POISSON-2D',[5,1.])
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
         #print('F')
-        f = filters.lowPass('POISSON-1D',[10,0.7,0])
+        f = filters.lowPass('POISSON-1D',[10,0.7,15.3])
         score+=1
     except Exception as exception:
         print(exception)
@@ -343,7 +343,7 @@ def filtersTest():
 
     try:
         #print('H')
-        f = filters.highPass('DIFF-1D',[10,0])
+        f = filters.highPass('DIFF-1D',[10,0.])
         score+=1
     except Exception as exception:
         print(exception)
@@ -575,15 +575,15 @@ def toolsTest():
     # Filters rotation
     try:
         #print('K')
-        f = tools.rotate(img,15)
-        f = tools.rotate(numpy.ones((5,7),dtype=numpy.uint8),-15)
+        f = tools.rotate(img,15.)
+        f = tools.rotate(numpy.ones((5,7),dtype=numpy.uint8),-15.)
         score+=1
     except Exception as exception:
         print(exception)
 
 
 
-    return round(1000*score/11)/10
+    return round(1000*score/12)/10
 
 
 ###***--- A FEW USERCASES ---***###
