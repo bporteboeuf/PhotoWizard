@@ -85,7 +85,7 @@ def main(args,testmode):
                     display.disp(helpm.help(action,LANG))
                     helped = True
             except Exception as e:
-                print(e)
+                #print(e)
                 pass
             
 

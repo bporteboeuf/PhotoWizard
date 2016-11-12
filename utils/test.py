@@ -26,9 +26,9 @@ def eventClass():
     # Init
     try:
         #print('A')
-        eventA = Event(1,None,'action parameters','eventA')
-        eventB = Event(2,1,'action parameters','eventB')
-        eventC = Event(3,None,'action parameters','eventC')
+        eventA = Event(1,None,'actionA parameters','eventA')
+        eventB = Event(2,1,'actionB parameters','eventB')
+        eventC = Event(3,None,'actionC parameters','eventC')
         score+=1
     except Exception as exception:
         print(exception)
@@ -36,64 +36,68 @@ def eventClass():
     # Class methods
     try:
         #print('B')
-        eventA.getID()
-        score+=1
+        if eventA.getID() == 1:
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('C')
-        eventA.getNext()
-        score+=1
+        if eventA.getNext() == {}:
+            score+=1
     except Exception as exception:
         print(exception)
-    
+ 
     try:
         #print('D')
         eventA.setNext(3)
-        score+=1
+        if 3 in eventA.getNext():
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('E')
-        eventC.getPrevious()
-        score+=1
+        if eventB.getPrevious() == 1:
+            score+=1
     except Exception as exception:
         print(exception)
-
+ 
     try:
         #print('F')
         eventC.setPrevious(1)
-        score+=1
+        if eventC.getPrevious() == 1:
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('G')
-        eventB.getContent()
-        score+=1
+        if eventB.getContent() == 'actionB parameters':
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('H')
         eventB.setContent('action2 params2')
-        score+=1
+        if eventB.getContent() == 'action2 params2':
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('I')
-        eventB.getLabel()
-        score+=1
+        if eventB.getLabel() == 'eventB':
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('J')
         eventB.setLabel('EVENTB')
-        score+=1
+        if eventB.getLabel() == 'EVENTB':
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -127,43 +131,48 @@ def historyClass():
 
     try:
         #print('C')
-        hist.getCurrentState()
-        score+=1
+        if hist.getCurrentState() == 2:
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('D')
-        hist.setCurrentState(2)
-        score+=1
+        hist.setCurrentState(1)
+        if hist.getCurrentState() == 1:
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('E')
-        hist.getEvent(1)
-        score+=1
+        a = hist.getEvent(1)
+        if a.getLabel() == 'eventA':
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('F')
         hist.undo()
-        score+=1
+        if hist.getCurrentState() == 0:
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('G')
         hist.redo()
-        score+=1
+        if hist.getCurrentState() == 1:
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('H')
-        hist.rebase(1)
-        score+=1
+        hist.rebase(2)
+        if hist.getCurrentState() == 2:
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -184,7 +193,8 @@ def historyClass():
     try:
         #print('K')
         hist.clearHistory()
-        score+=1
+        if hist.getEvents() == {}:
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -210,22 +220,23 @@ def pictureClass():
     # Class methods
     try:
         #print('B')
-        (isinstance(image.getImage(),Image.Image))
-        score+=1
+        if (isinstance(image.getImage(),Image.Image)):
+            score+=1
     except Exception as exception:
         print(exception)
    
     try:
         #print('C')
-        (isinstance(image.getSmallImage(),Image.Image))
-        score+=1
+        if (isinstance(image.getSmallImage(),Image.Image)):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('D')
         image.resizeSmall((20,30))
-        score+=1
+        if image.getSmallImage().size == (20,30):
+            score+=1
     except Exception as exception:
         print(exception)
     
