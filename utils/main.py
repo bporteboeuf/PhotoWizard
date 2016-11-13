@@ -52,14 +52,14 @@ def main(args,testmode):
             if First : # The first action displays a small helping message
                 #action = str(getInput(display.action(LANG)))
                 try:
-                    request = str(getInput("\n   h - help      q - quit\n"))
+                    request = str(getInput("\n   h - help      q - quit\n\n > "))
                 except:
                     request = ""
                     next
                 First = False
             else:
                 try:
-                    request = str(getInput(""))
+                    request = str(getInput(' > '))
                 except:
                     request = ""
                     next
@@ -142,6 +142,16 @@ def main(args,testmode):
                         print(e)
                         ok = False
                         print('PhotoWizard Error: Unable to close '+str(fileName)+'\n')
+                
+                elif action == "opened":
+                    try:
+                        filesList = ', '.join(files)
+                        filesList += ' - '+str(current)
+                        display.dispm('opened',filesList,LANG)
+                    except Exception as e:
+                        print(e)
+                        ok = False
+                        print('PhotoWizard Error: Unable to display opened files list')
 
                 elif action == "load":
                     try:
@@ -323,7 +333,12 @@ def main(args,testmode):
                     except Exception as e:
                         print(e)
                         ok = False
-                        print('PhotoWizard Error: Unable to rebase history to event '+str(event))
+                        try:
+                            event = request.split(' ')
+                            event = event[1]
+                            print('PhotoWizard Error: Unable to rebase history to event '+str(event))
+                        except:
+                            print('PhotoWizard Error: Unable to rebase history')
 
                 elif action == "history": # This function is not fully supported yet
                     try:
@@ -367,9 +382,9 @@ def main(args,testmode):
                     try:
                         if not testmode: # We ask the user to try again
                             if tries > 3:
-                                request = str(getInput(helpm.help("idle",LANG)))
+                                request = str(getInput(helpm.help("idle",LANG)+'\n > '))
                             else:
-                                request = str(getInput(""))
+                                request = str(getInput(' > '))
                             tries += 1
                         else: # We pass and move on to the next request for automatic test
                             request = ''

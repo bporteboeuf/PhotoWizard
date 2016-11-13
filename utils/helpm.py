@@ -224,6 +224,12 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\n\nExample: close pic/test1.jpg'
             hmess += '\n'
 
+        elif matter == 'opened':
+            hmess = '\nHELP - OPENED'
+            hmess += '\nThis command displays the list of opened files as well as the name of the current file edited.'
+            hmess += '\n\nExample: opened'
+            hmess += '\n'
+
         elif matter == 'load':
             hmess = '\nHELP - LOAD'
             hmess += '\nThis command loads an XMD file which contains a history of modifications, forks it to your current history and update your current state.'
@@ -464,6 +470,12 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\nCette commande ferme une image donnée et supprime l\'historique correspondant (sauf s\'il a été sauvegardé dans un fichier XMD, bien sûr).'
             hmess += '\nIl suffit de préciser l\'identifiant de votre image, qui est le chemin que vous avez entré pour l\'ouvrir.'
             hmess += '\n\nExemple : close pic/test1.jpg'
+            hmess += '\n'
+
+        elif matter == 'opened':
+            hmess = '\nAIDE - OPENED'
+            hmess += '\nCette commande permet d\'afficher la liste des fichiers ouverts ainsi que le nom du fichier en cours d\'édition.'
+            hmess += '\n\nExemple : opened'
             hmess += '\n'
 
         elif matter == 'load':

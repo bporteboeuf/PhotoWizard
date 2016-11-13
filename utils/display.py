@@ -86,9 +86,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
     # MainFunction
     if state == 'open':
         if language == 'EN':
-            disp(args+' opened')
+            disp(args+' opened\n')
         elif language == 'FR':
-            disp(args+' ouvert')
+            disp(args+' ouvert\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -98,21 +98,48 @@ def dispm(state,args,language): # Displays informations relative to a state or f
     
     elif state == 'close':
         if language == 'EN':
-            disp(args+' closed')
+            disp(args+' closed\n')
         elif language == 'FR':
-            disp(args+' fermé')
+            disp(args+' fermé\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         else:
             raise NameError('PhotoWizard Error: Unsupported language')
-     
+    
+    elif state == 'opened':
+        try:
+            args = args.split(' - ')
+            args0 = args[0]
+            args1 = args[1]
+        except:
+            raise NameError('PhotoWizard Error: Wrong argument format in dispm')
+
+        if language == 'EN':
+            if len(args0) == 0:
+                disp('No file opened yet\n')
+            else:
+                disp('List of opened files: '+args0)
+                disp('Current file: '+args1+'\n')
+        elif language == 'FR':
+            if len(args0) == 0:
+                disp('Aucun fichier ouvert\n')
+            else:
+                disp('Liste des fichiers ouverts: '+args0)
+                disp('Fichier courant : '+args1+'\n')
+        elif language == 'DE':
+            disp('This language is not fully supported yet, please switch to EN or FR in the config file')
+        elif language == 'JA':
+            disp('This language is not fully supported yet, please switch to EN or FR in the config file')
+        else:
+            raise NameError('PhotoWizard Error: Unsupported language')
+    
     elif state == 'export':
         if language == 'EN':
-            disp(args+' exported')
+            disp(args+' exported\n')
         elif language == 'FR':
-            disp(args+' exporté')
+            disp(args+' exporté\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -122,9 +149,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
       
     elif state == 'load':
         if language == 'EN':
-            disp('XMD file '+args+' loaded')
+            disp('XMD file '+args+' loaded\n')
         elif language == 'FR':
-            disp('Fichier XMD '+args+' chargé')
+            disp('Fichier XMD '+args+' chargé\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -134,9 +161,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
    
     elif state == 'save':
         if language == 'EN':
-            disp('XMD file saved to '+args)
+            disp('XMD file saved to '+args+'\n')
         elif language == 'FR':
-            disp('Fichier XMD sauvegardé vers '+args)
+            disp('Fichier XMD sauvegardé vers '+args+'\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -146,9 +173,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
      
     elif state == 'switch':
         if language == 'EN':
-            disp('Switched to '+args)
+            disp('Switched to '+args+'\n')
         elif language == 'FR':
-            disp(args+' sélectionné')
+            disp(args+' sélectionné\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -158,9 +185,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
      
     elif state == 'undo':
         if language == 'EN':
-            disp('Last action revoked')
+            disp('Last action revoked\n')
         elif language == 'FR':
-            disp('Dernière action annulée')
+            disp('Dernière action annulée\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -170,9 +197,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
      
     elif state == 'redo':
         if language == 'EN':
-            disp('Last action restored')
+            disp('Last action restored\n')
         elif language == 'FR':
-            disp('Dernière action rétablie')
+            disp('Dernière action rétablie\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -182,9 +209,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
      
     elif state == 'rebase':
         if language == 'EN':
-            disp('History rebased to '+args)
+            disp('History rebased to '+args+'\n')
         elif language == 'FR':
-            disp('Historique rebasé sur '+args)
+            disp('Historique rebasé sur '+args+'\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
@@ -195,9 +222,9 @@ def dispm(state,args,language): # Displays informations relative to a state or f
     # EveryFunction
     elif state == 'actionCompleted':
         if language == 'EN':
-            disp('Done')
+            disp('Done\n')
         elif language == 'FR':
-            disp('Terminé')
+            disp('Terminé\n')
         elif language == 'DE':
             disp('This language is not fully supported yet, please switch to EN or FR in the config file')
         elif language == 'JA':
