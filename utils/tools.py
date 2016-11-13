@@ -289,6 +289,7 @@ def loadXMD(path,offset): # loads an eXternal MetaData file which basically cont
         f = f.split('<EVENT>')
         f1 = f[2:len(f)-1] # We get rid of the header, the initial state which is already present and the currentState
         events = {}
+        firsts = []
         for event in f1:
             a = event.split('<label>')
             label = str(a[1])
@@ -306,6 +307,10 @@ def loadXMD(path,offset): # loads an eXternal MetaData file which basically cont
                 previous = None
             #print('Previous: ',previous)
             events[ID] = Event(ID,previous,request,label)
+            if (previous is not None) and (previous > offset):
+                events[previous].setNext(ID)
+            if previous == offset:
+                firsts.append(ID)
             #print('Event created.\n')
         current = f[len(f)-1]
         current = current.split('<current>')
@@ -316,7 +321,7 @@ def loadXMD(path,offset): # loads an eXternal MetaData file which basically cont
         print(e)
         raise NameError('PhotoWizard Error: Unable to open XMD file')
 
-    return events,current
+    return events,current,firsts
 
 
 

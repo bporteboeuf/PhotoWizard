@@ -30,6 +30,7 @@ class Picture:
                     tmp = rawpy.imread(name)
                     tmp = numpy.asarray(tmp.postprocess(),dtype=numpy.uint8)
                     self.pic = Image.fromarray(tmp)
+                    rawpy.close()
                 except Exception as e:
                     print(e)
                     raise NameError('PhotoWizard Error: Unable to load file')
@@ -157,8 +158,6 @@ class Picture:
 
     def close(self):
         return
-
-
 
 
     def histogram(self,channel):

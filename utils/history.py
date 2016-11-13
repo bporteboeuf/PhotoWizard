@@ -100,15 +100,17 @@ class History: # Each time a file is opened, a History object is created
 
     def explore(self,ID): # Explores the history, search in deep first, returns a list of lists of ID
         tree = list()
-        nextEvents = self.getEvent(ID).getNext()
-        if nextEvents is not None:
+        #nextEvents = list(self.getEvent(ID).getNext().values())
+        nextEvents = [ID]
+        while nextEvents != []:
             if len(nextEvents) == 1:
-                tree.append(nextEvents)
+                tree.append(' '+str(nextEvents[0])+' - '+str(self.getEvent(nextEvents[0]).getLabel())+' ')
+                nextEvents = list(self.getEvent(nextEvents[0]).getNext().values())
             else:
                 for event in nextEvents:
-                    tree.append(explore(event.getID()))
-        else:      
-            return tree
+                    tree.append(self.explore(event))
+                return tree
+        return tree
 
 
     def toString(self,tree,index): # Converts a tree from a list of lists to a printable string
@@ -117,16 +119,17 @@ class History: # Each time a file is opened, a History object is created
             for elt in tree:
                 if type(elt) is not list:
                     string+="---"+str(elt)
-                    index += 4
+                    index += 3+len(str(elt))
                 else:
-                    string+="\n"+" "*index+"\\"+str(toString(elt,index))
+                    string+="\n"+" "*index+"\\"+str(self.toString(elt,index))
         return string
 
 
 
-    def getFullHistory(self): # Returns the full history as a string
+    def getFullHistory(self): # Returns the full history as a string - used for display
         tree = self.explore(0)
         tree = self.toString(tree,0)
+        tree += '\n\nCurrent State: '+str(self.getCurrentState())+' - '+str(self.getEvent(self.getCurrentState()).getLabel())+'\n'
         return tree
 
 

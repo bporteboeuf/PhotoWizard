@@ -98,6 +98,10 @@ def main(args,testmode):
                     display.disp(helpm.help("idle",LANG))
                 
                 elif action == "q" or action == "quit":
+                    if len(files) > 0:
+                        for elt in files:
+                            images[elt].close()
+                            del images[elt]
                     quitFlag = True
                 
                 elif action == "open":
@@ -170,8 +174,10 @@ def main(args,testmode):
                         for elt in events: # We look for the offset to apply to our new events, so that IDs preserve their unicity
                             if elt > offset:
                                 offset = elt
-                        events2,currentState = loadXMD(fileName,offset)
+                        events2,currentState,firsts = loadXMD(fileName,offset)
                         events.update(events2)
+                        for elt in firsts:
+                            events[0].setNext(elt)
                         h.setEvents(events) # We concatenate the events dictionaries and set it as the new one
                         h.setCurrentState(currentState) # We update the current state
                         images[current].setHistory(h)

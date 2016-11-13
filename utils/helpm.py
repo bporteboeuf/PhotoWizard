@@ -187,7 +187,13 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'history':
             hmess = '\nHELP - HISTORY'
-            hmess += '\nUnfortunately, this function is not fully supported yet.'
+            hmess += '\nThis command displays the history of modifications associated with the current file.'
+            hmess +=  ' Since PhotoWizard can support several branches, the history has a tree shape.'
+            hmess += ' Each state is is characterized by a number (its ID) and a label, and represents a modification on your image.'
+            hmess += '\nYou can always restore a previous state by using REDO or REBASE. You can also save this history with SAVE or load another history with LOAD (this will add this history to your current tree as a new branch, nothing will be erased).'
+            hmess += '\nThose histories are saved under the .XMD format (eXternal MetaData).'
+            hmess += '\n\nExample: history'
+            hmess += '\n'
 
         elif matter == 'undo':
             hmess = '\nHELP - UNDO'
@@ -435,8 +441,13 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'history':
             hmess = '\nAIDE - HISTORY'
-            hmess += '\nMalheureusement, cette fonction n\'est pas encore totalement supportée.'
-
+            hmess += '\nCette commande affiche l\'historique des modifications associées au fichier courant.'
+            hmess +=  ' Comme PhotoWizard est capable de supporter plusieurs branches, l\'historique a une forme d\'arbre.'
+            hmess += ' Chaque état est caractérisé par un numéro (ID) et un label, et représente une modification de l\'image.'
+            hmess += '\nIl est toujours possible de restaurer un état précédent en utilisant REDO ou REBASE. Il est aussi possible de sauvegarder l\'historique avec SAVE ou d\'en importer un avec LOAD (cela l\'ajoutera comme une nouvelle branche à l\'historique actuel et rien ne sera effacé).'
+            hmess += '\nCes historiques sont enregistrés sous le format .XMD (eXternal MetaData).'
+            hmess += '\n\nExemple : history'
+            hmess += '\n'
         elif matter == 'undo':
             hmess = '\nAIDE - UNDO'
             hmess += '\nCette commande annule la dernière modification, jusqu\'à retourner à l\'état initial.'
