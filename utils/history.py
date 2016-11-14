@@ -116,12 +116,17 @@ class History: # Each time a file is opened, a History object is created
     def toString(self,tree,index): # Converts a tree from a list of lists to a printable string
         string = ""
         if tree is not None:
+            first = True
             for elt in tree:
                 if type(elt) is not list:
                     string+="---"+str(elt)
                     index += 3+len(str(elt))
                 else:
-                    string+="\n"+" "*index+"\\"+str(self.toString(elt,index))
+                    if first:
+                        first = False
+                        string+=str(self.toString(elt,index))
+                    else:
+                        string+="\n"+" "*index+"\\"+str(self.toString(elt,index))
         return string
 
 

@@ -17,24 +17,36 @@ from tools import *
 def filterz(img,channel,F): # convolves the image by the 2D-filter F
     
     if (isinstance(img,Image.Image) and isinstance(F,numpy.ndarray) and (type(channel) is str)):
+        
         images = getChannel(img,channel)
         matrices = []
         for elt in images:
+            
             #tmp = signal.convolve(numpy.asarray((elt),dtype=numpy.uint8),F,mode='same',boundary='symm')
             tmp = numpy.asarray(elt,dtype=numpy.uint8)
             a = math.floor(F.shape[0]/2)
             b = math.floor(F.shape[1]/2)
             Atmp = tmp.shape[0]
             Btmp = tmp.shape[1]
+            
             # We extend the array by symmetry before convolution by the kernel F
             tmp = numpy.pad(tmp,((a,a),(b,b)),mode='symmetric')
             tmp = signal.fftconvolve(tmp,F,mode='same')
+           
+            #tmp = signal.convolve(tmp,F,mode='same')
+            if F.dtype==numpy.complex64:
+               tmp = numpy.absolute(tmp)
+           
             # And we crop it down to the original size
             tmp = tmp[a:Atmp+a,b:Btmp+b]
+            
             matrices.append(numpy.asarray(tmp,dtype=numpy.uint8))
+        
         image = recompose(img,channel,matrices)
+    
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in filterz')
+    
     return image
 
 
@@ -181,12 +193,12 @@ def highPass(filterType,parameters): # Generates a high-pass filter
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for diff high-pass filter')
         
-        F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
+        F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.complex64)
         F[0,:] += 1
         F[2*radius,:] += -1
-        F[:,0] += 1
-        F[:,2*radius] += -1
-        F = F/numpy.sum(numpy.abs(F))
+        F[:,0] += 1j
+        F[:,2*radius] += -1j
+        F = F/(2*radius+1)**2
  
     
     #----------- 1D FILTERS ----------#
@@ -202,11 +214,12 @@ def highPass(filterType,parameters): # Generates a high-pass filter
         F = numpy.zeros((2*radius+1,3),dtype=numpy.float16)
         F[:,0] += 1
         F[:,2] += -1
-        F = F/numpy.sum(numpy.abs(F))
+        F = F/(2*radius+1)
         if theta !=0:
             F = rotate(numpy.asarray(F,dtype=numpy.float32),theta)
+            F = numpy.asarray(F,dtype=numpy.float16)
 
-        #print(F)
+        print(F)
 
     else:
         raise NameError('PhotoWizard Error: Unknown high-pass filter type')
@@ -221,27 +234,28 @@ def edgeDetection(img,channel,filterType,parameters,threshold):
     
     if(isinstance(img,Image.Image) and type(filterType) is str and type(parameters) is list and type(threshold) is int):
         
-        #filter mat with a highpass filter
-        image = filterz(img,channel,highPass(filterType,parameters))
-        channels = getChannel(image,channel)
+        if (threshold > 0) and (threshold < 255):
 
-        shape = list(image.size)
-        shape = tuple(shape[::-1])
+            #filter mat with a highpass filter
+            image = filterz(img,channel,highPass(filterType,parameters))
+            channels = getChannel(image,channel)
 
-        image = numpy.zeros(shape,dtype=numpy.uint8)
-        for elt in channels:
-            image += elt
-        image = image/len(channels)
+            shape = list(image.size)
+            shape = tuple(shape[::-1])
 
-        #map the values to grayscale
-        elt = image[0]>threshold
-        image = 128 + (128-image[0]*elt)
-        image = numpy.asarray(image,dtype=numpy.uint8)
+            image = numpy.zeros(shape,dtype=numpy.uint8)
+            for elt in channels:
+                image += elt
+            image = image/len(channels)
 
-        empty = 255*numpy.ones(shape,dtype=numpy.uint8)
+            #map the values to grayscale
+            elt = 255*numpy.asarray(image>threshold,dtype=numpy.uint8)
 
-        image = recompose(img,'ALL',[image,image,image])
-        
+            image = recompose(img,'ALL',[elt,elt,elt])
+
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument format in edgeDetection')
+
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in edgeDetection')
         image = img
@@ -260,7 +274,7 @@ def edgeEnhancement(img,channel,filterType,parameters,threshold,gain):
 
         image = []
         for i in range(0,len(channels_old)):
-            image.append(channels_old[i]*(1-gain)+gain*(channels_new[i]-128))
+            image.append(channels_old[i]*1-gain*((channels_new[i]>0)*channels_old[i]))
 
         image = recompose(img,channel,image)
         
