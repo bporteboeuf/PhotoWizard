@@ -347,22 +347,53 @@ def filtersTest():
 
     try:
         #print('G')
-        f = filters.highPass('DIFF-2D',[5])
+        f = filters.highPass('DIFF-2D',[5,1])
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('H')
-        f = filters.highPass('DIFF-1D',[10,0.])
+        f = filters.highPass('DIFF-1D',[3,1,0.])
         score+=1
     except Exception as exception:
         print(exception)
 
 
-    # Filters application
     try:
         #print('I')
+        f = filters.highPass('SCHARR-2D',[1])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        #print('J')
+        f = filters.highPass('SCHARR-1D',[1,0.])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
+    try:
+        #print('K')
+        f = filters.highPass('CROSS-2D',[1])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+    try:
+        #print('L')
+        f = filters.highPass('CROSS-1D',[1,0.])
+        score+=1
+    except Exception as exception:
+        print(exception)
+
+
+
+    # Filters application
+    try:
+        #print('M')
         f = filters.filterz(img,'R',numpy.zeros((3,3)))
         score+=1
     except Exception as exception:
@@ -371,21 +402,21 @@ def filtersTest():
 
     # Others
     try:
-        #print('J')
-        f = filters.edgeDetection(img,'R','DIFF-2D',[10],100)
+        #print('N')
+        f = filters.edgeDetection(img,'R','DIFF-2D',[1,1],100)
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
-        #print('K')
-        f = filters.edgeEnhancement(img,'R','DIFF-2D',[10],100,.5)
+        #print('O')
+        f = filters.edgeEnhancement(img,'R','DIFF-2D',[1,1],100,.5)
         score+=1
     except Exception as exception:
         print(exception)
 
 
-    return round(1000*score/11)/10
+    return round(1000*score/15)/10
 
 
 

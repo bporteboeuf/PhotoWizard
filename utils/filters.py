@@ -70,7 +70,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
             radius = int(parameters[0])
             a = abs(float(parameters[1]))
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for gaussian low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for GAUSSIAN-2D low-pass filter')
        
         F = []
         for elt in range(-radius,radius+1):
@@ -86,7 +86,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
             radius = int(parameters[0])
             opacity = float(parameters[1])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for MEAN-2D low-pass filter')
         
         F = opacity*numpy.ones((2*radius+1,2*radius+1),dtype=numpy.float16)
         F[radius,radius] = 1
@@ -98,7 +98,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
             radius = int(parameters[0])
             a = abs(float(parameters[1]))
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for poisson low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for POISSON-2D low-pass filter')
 
         F = []
         for elt in range(-radius,radius+1):
@@ -117,7 +117,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
             a = abs(float(parameters[1]))
             theta = float(parameters[2])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for gaussian low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for GAUSSIAN-1D low-pass filter')
        
         F = []
         for elt in range(-radius,radius+1):
@@ -135,7 +135,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
             opacity = float(parameters[1])
             theta = float(parameters[2])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for mean low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for MEAN-1D low-pass filter')
         
         F1 = opacity*numpy.ones((1,2*radius+1),dtype=numpy.float16)
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
@@ -151,7 +151,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
             a = abs(float(parameters[1]))
             theta = float(parameters[2])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for poisson low-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for POISSON-1D low-pass filter')
 
         F = []
         for elt in range(-radius,radius+1):
@@ -190,37 +190,93 @@ def highPass(filterType,parameters): # Generates a high-pass filter
     if filterType == "DIFF-2D":
         try:
             radius = int(parameters[0])
+            opacity = float(parameters[1])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for diff high-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for DIFF-2D high-pass filter')
         
         F = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.complex64)
-        F[0,:] += 1
-        F[2*radius,:] += -1
-        F[:,0] += 1j
-        F[:,2*radius] += -1j
-        F = F/(2*radius+1)**2
- 
+        F[0,:] += 1*opacity
+        F[2*radius,:] += -1*opacity
+        F[:,0] += 1j*opacity
+        F[:,2*radius] += -1j*opacity
+        F[radius,radius] = 1-opacity
+        F = F/(numpy.sqrt(2)*(opacity*2*radius+1-opacity))
+
+
+    elif filterType == 'SCHARR-2D':
+        try:
+            opacity = float(parameters[0])
+        except:
+            raise NameError('PhotoWizard Error: Wrong parameters for SCHARR-2D high-pass filter')
+        
+        F = numpy.asarray([[(1+1j)*3*opacity, 10*opacity, (1-1j)*3*opacity],[1j*10*opacity, 1-opacity, -1j*10*opacity],[-(1+1j)*3*opacity, -10*opacity, -(1-1j)*3*opacity]],dtype=numpy.complex64)
+        F = F/(numpy.sqrt(2)*(1-opacity+13*opacity))
+
+
+    elif filterType == 'CROSS-2D':
+        try:
+            opacity = float(parameters[0])
+        except:
+            raise NameError('PhotoWizard Error: Wrong parameters for CROSS-2D high-pass filter')
+        
+        F = numpy.asarray([[1,1j],[-1j,-1]],dtype=numpy.complex64)
+        F = opacity*F
+        F = F/(numpy.sqrt(2)*opacity)
+
+
     
     #----------- 1D FILTERS ----------#
                # Horizontal #
     elif filterType == "DIFF-1D":
         try:
             radius = int(parameters[0])
-            theta = float(parameters[1])
+            opacity = float(parameters[1])
+            theta = float(parameters[2])
         except:
-            raise NameError('PhotoWizard Error: Wrong parameters for diff high-pass filter')
+            raise NameError('PhotoWizard Error: Wrong parameters for DIFF-1D high-pass filter')
         
         #F1 = numpy.ones((2*radius+1,1),dtype=numpy.float16)
         F = numpy.zeros((2*radius+1,3),dtype=numpy.float16)
-        F[:,0] += 1
-        F[:,2] += -1
-        F = F/(2*radius+1)
+        F[:,0] += 1*opacity
+        F[:,2] += -1*opacity
+        F[radius,1] += 1-opacity
+        F = F/((1-opacity+ opacity*2*radius))
         if theta !=0:
             F = rotate(numpy.asarray(F,dtype=numpy.float32),theta)
             F = numpy.asarray(F,dtype=numpy.float16)
 
-        print(F)
+    
+    elif filterType == 'SCHARR-1D':
+        try:
+            opacity = float(parameters[0])
+            theta = float(parameters[1])
+        except:
+            raise NameError('PhotoWizard Error: Wrong parameters for SCHARR-1D high-pass filter')
+        
+        F = numpy.asarray([[3*opacity, 0, -3*opacity], [10*opacity, 1-opacity, -10*opacity], [3*opacity, 0, -3*opacity]],dtype=numpy.float16)
+        F = F/(13*opacity)
+        if theta !=0:
+            F = rotate(numpy.asarray(F,dtype=numpy.float32),theta)
+            F = numpy.asarray(F,dtype=numpy.float16)
 
+
+
+    elif filterType == 'CROSS-1D':
+        try:
+            opacity = float(parameters[0])
+            theta = (parameters[1])
+        except:
+            raise NameError('PhotoWizard Error: Wrong parameters for CROSS-1D high-pass filter')
+        
+        F = numpy.asarray([[1,1j],[-1j,-1]],dtype=numpy.complex64)
+        F = opacity*F
+        F = F/(opacity)
+        if theta !=0:
+            F = rotate(numpy.asarray(F,dtype=numpy.float32),theta)
+            F = numpy.asarray(F,dtype=numpy.float16)
+
+
+    
     else:
         raise NameError('PhotoWizard Error: Unknown high-pass filter type')
 
