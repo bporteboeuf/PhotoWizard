@@ -244,6 +244,7 @@ def exposure(image,channel,ev):
        
         # A standard measure for exposure value consists of measuring the luminance of a medium 18% gray (ie about 210/255)
         # +1.00 eV means to double the quantity of light, -1.00 eV to divide it by two
+        # Exposure is modified by applying a tone-curve on the image. The curve is smoothed to reduce clipping effects and an offset is added to provide more natural looking results
 
         precision = 8
 
@@ -255,24 +256,60 @@ def exposure(image,channel,ev):
             inputs = numpy.linspace(0,255,round(256/precision))
             X = inputs/255
 
-            alpha = 1 + abs(ev)
+            alpha = 1 + abs(ev) #This is the steep of the curve around 0 if ev > 0 or around 1 if ev < 0
+            beta = numpy.log(alpha)/(6) # This is the absolute value of the offset of the curve around 0 if ev > 0 or around 1 if ev < 0
 
-            if ev > 0:
-                a = alpha-2
-                b = 3-2*alpha
-                c = alpha
-            elif ev < 0:
-                a = alpha-2
-                b = 3-alpha
-                c = 0
-            else:
-                a = 0
-                b = 0
-                c = 1
+            # The curve f needs to satisfy the 5 following conditions, assuming ev > 0, and considering the interval I = [0,1]
+            # 1) f(0) = beta      2) f'(0) = alpha     3) f(1) = 1      4) f' >= 0 sur I     5) f'' <= 0 sur I
+            # It can be shown that no second order polynomial can satisfy all those conditions, and no trivial polynomial of degree three either.
+            # We could however use an exponential curve, but this could not fit the tangent long enough, so we decide to to a continuous piecewise function
 
-            outputs = 255*(a*X**3+b*X**2+c*X)
+            # First, we compute the straight line for exposure correction
+            Y1 = X*alpha + beta
 
+            # And we stop it halfway up
+            xM = .5*(1-beta)/alpha
+            yM = xM*alpha+beta
+
+            # Then we extend it by an exponential function for smoother results and avoid too rough clipping
+            A = 1-yM
+            B = A
+            tau = B/alpha
+            X2 = numpy.zeros(len(X))
+            I = numpy.sum(X<=xM)-1
+            X2[I:] = numpy.linspace(0,1-xM,len(X)-I)
+            Y2 = B*(1-numpy.exp(-X2/tau))
+            diff = numpy.amin(A-Y2)
+
+            # We adjust the parameters B and tau to keep the same steep but reach 1 (in order to satisfy 3,5 and have a smooth transition)
+            while abs(diff) > .001:
+                B = B + diff
+                tau = B/alpha
+                Y2 = B*(1-numpy.exp(-X2/tau))
+                diff = numpy.amin(A-Y2)
+
+            Y2 = Y2+yM
+            Y = Y1*(X<=xM) + Y2*(X>xM) # We merge the two functions into one piecewise function
+
+
+            if ev < 0: # We perform a central symmetry (rotation of pi)
+                Z = X +1j*Y
+                Z = Z - .5*(1+1j)
+                Z = Z*numpy.exp(-1j*numpy.pi)
+                Z = Z + .5*(1+1j)
+                X = numpy.real(Z)
+                Y = numpy.imag(Z)
+                X = X[::-1]
+                Y = Y[::-1]
+
+            inputs = numpy.asarray(255*X,dtype=numpy.uint8)
+            outputs = numpy.asarray(255*Y,dtype=numpy.uint8) # We scale our results
+
+            # And we apply it to our image
+            # We can either do this using the levels function
             img = levels(img,'',list(inputs),list(outputs))
+
+            # Or direclty apply our function to the image converted to an array
 
             matrices.append(img)
         
