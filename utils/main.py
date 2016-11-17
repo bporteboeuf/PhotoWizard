@@ -137,7 +137,7 @@ def main(args,testmode):
                                display.dispm('close',fileName,LANG)
                                display.dispm('switch',str(nextFile),LANG)
                                #print(str(fileName)+' closed; switching to '+str(nextFile)+'\n')
-                               current = images[nextFile]
+                               current = nextFile
                         else:
                             #print(str(fileName)+' closed\n')
                             display.dispm('close',fileName,LANG)
@@ -169,17 +169,7 @@ def main(args,testmode):
                         #print("Loading XMD file "+str(fileName))
                         h = images[current].getHistory()
                         h.rebase(0) # We start by restoring the history to its initial state
-                        events = h.getEvents()
-                        offset = 0
-                        for elt in events: # We look for the offset to apply to our new events, so that IDs preserve their unicity
-                            if elt > offset:
-                                offset = elt
-                        events2,currentState,firsts = loadXMD(fileName,offset)
-                        events.update(events2)
-                        for elt in firsts:
-                            events[0].setNext(elt)
-                        h.setEvents(events) # We concatenate the events dictionaries and set it as the new one
-                        h.setCurrentState(currentState) # We update the current state
+                        h = loadXMD(fileName,h)                       
                         images[current].setHistory(h)
                         images[current].reCompute() # And we update the working copy for faster preview
                         #print('XMD file '+str(fileName)+' loaded\n')
