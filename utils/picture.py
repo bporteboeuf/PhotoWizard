@@ -44,7 +44,8 @@ class Picture:
         
         if self.pic is not None :
             self.smallpic = self.pic
-            self.smallpic = self.smallpic.resize((250,250),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
+            (W,H) = self.pic.size
+            self.smallpic = self.smallpic.resize((800,round(800*H/W)),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
             self.smallpic_ref =  self.smallpic # Keeps a reference copy for any possible history rebase
         else :
             self.smallpic = None
