@@ -281,14 +281,20 @@ def zip(paths): # Compresses files into an archive
 
 
 
-def loadXMD(path,offset): # loads an eXternal MetaData file which basically contains a copy of the history
+def loadXMD(path,history): # loads an eXternal MetaData file which basically contains a copy of the history
     try:
-        offset = int(offset)
+        events = history.getEvents() 
+        offset = 0
+        for elt in events: # We look for the offset to apply to our new events, so that IDs preserve their unicity
+            if elt > offset:
+                offset = elt
+        
+                   
         f0 = open(str(path))
         f = f0.read()
         f = f.split('<EVENT>')
         f1 = f[2:len(f)-1] # We get rid of the header, the initial state which is already present and the currentState
-        events = {}
+        events2 = {}
         firsts = []
         for event in f1:
             a = event.split('<label>')
@@ -306,22 +312,29 @@ def loadXMD(path,offset): # loads an eXternal MetaData file which basically cont
             except:
                 previous = None
             #print('Previous: ',previous)
-            events[ID] = Event(ID,previous,request,label)
+            events2[ID] = Event(ID,previous,request,label)
             if (previous is not None) and (previous > offset):
-                events[previous].setNext(ID)
+                events2[previous].setNext(ID)
             if previous == offset:
                 firsts.append(ID)
             #print('Event created.\n')
-        current = f[len(f)-1]
-        current = current.split('<current>')
-        current = int(current[1])
+        currentState = f[len(f)-1]
+        currentState = currentState.split('<current>')
+        currentState = int(currentState[1])+offset
         #print('Current State: ',current)
         f0.close()
+  
+        events.update(events2)
+        for elt in firsts:
+            events[0].setNext(elt)
+        history.setEvents(events) # We concatenate the events dictionaries and set it as the new one
+        history.setCurrentState(currentState) # We update the current state
+           
     except Exception as e:
         print(e)
         raise NameError('PhotoWizard Error: Unable to open XMD file')
 
-    return events,current,firsts
+    return history
 
 
 

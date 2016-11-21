@@ -9,6 +9,7 @@
 import numpy,math,scipy
 from PIL import Image
 from tools import getChannel,recompose
+from config import *
 
 
 def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (same treatment for every selected channel) or a numpy.ndarray (same treatment for every layer)
@@ -106,7 +107,7 @@ def normalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def equalizeHistogram(image,channel): # Automatic contrast adjustment
     if isinstance(image,Image.Image):
-        precision = 16
+        precision = EQHIST_RESOLUTION
         inputs = numpy.linspace(0,255,round(256/precision))
         
         images = getChannel(image,channel)
@@ -129,7 +130,7 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def logHistogram(image,channel): # Automatic contrast adjustment recover details in low values
     if isinstance(image,Image.Image):
-        precision = 64
+        precision = LOGHIST_RESOLUTION
         inputs = numpy.linspace(0,255,round(256/precision))
         outputs = numpy.log(1+inputs/16)
         outputs = outputs*255/outputs[len(outputs)-1]
@@ -151,7 +152,7 @@ def logHistogram(image,channel): # Automatic contrast adjustment recover details
 
 def expHistogram(image,channel): # Automatic contrast adjustment to recover details in high values
     if isinstance(image,Image.Image):
-        precision = 8
+        precision = EXPHIST_RESOLUTION
         inputs = numpy.linspace(0,255,round(256/precision))
         outputs = numpy.exp(inputs/64)-1
         outputs = outputs*255/outputs[len(outputs)-1]
@@ -172,7 +173,7 @@ def expHistogram(image,channel): # Automatic contrast adjustment to recover deta
 
 def curves(image,channel,inputs,outputs): # S-curve function for more precise levels adjustment
     if (isinstance(image,Image.Image) or isinstance(image,numpy.ndarray)) and (type(inputs) is list) and (type(outputs) is list) and (len(inputs)==len(outputs)):
-        precision = 8
+        precision = CURVES_RESOLUTION
         X = numpy.linspace(0,255,len(inputs))
         X2 = numpy.linspace(0,255,round(256/precision))
         # We interpolate inputs and outputs values to recreate the curves from the point the user selected
@@ -246,7 +247,7 @@ def exposure(image,channel,ev):
         # +1.00 eV means to double the quantity of light, -1.00 eV to divide it by two
         # Exposure is modified by applying a tone-curve on the image. The curve is smoothed to reduce clipping effects and an offset is added to provide more natural looking results
 
-        precision = 8
+        precision = EXPOSURE_RESOLUTION
 
         channels = getChannel(image,channel)
 

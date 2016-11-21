@@ -12,6 +12,8 @@ sys.path.insert(0,'utils/')
 import main,helpm
 from config import *
 
+VER = '0.5' # Current version of the software
+
 
 if __name__ == "__main__" :
 

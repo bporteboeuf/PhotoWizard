@@ -169,8 +169,8 @@ def main(args,testmode):
                         #print("Loading XMD file "+str(fileName))
                         h = images[current].getHistory()
                         h.rebase(0) # We start by restoring the history to its initial state
-                        h = loadXMD(fileName,h)                       
-                        images[current].setHistory(h)
+                        h = loadXMD(fileName,h) # Then we load the XMD file as a new history branch               
+                        images[current].setHistory(h) # We update the history
                         images[current].reCompute() # And we update the working copy for faster preview
                         #print('XMD file '+str(fileName)+' loaded\n')
                         display.dispm('load',fileName,LANG)

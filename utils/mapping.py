@@ -142,6 +142,15 @@ def everyFunction(image,action): # Maps the action in the main or history to the
             except Exception as e:
                 print(e)
                 raise NameError('PhotoWizard Error: Unable to call edgeEnhancement() in everyFunction')
+        elif f == "sharpen":
+            #print(f)
+            try:
+                params = parseInput(params,[str,str,str,list,float])
+                params = params[1:]
+                image = filters.sharpen(image,params[0],params[1],params[2],params[3])
+            except Exception as e:
+                print(e)
+                raise NameError('PhotoWizard Error: Unable to call sharpen() in everyFunction')
         elif f == "rotate":
             #print(f)
             try:
