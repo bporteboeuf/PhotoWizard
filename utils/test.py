@@ -211,7 +211,7 @@ def pictureClass():
 
     # Init
     try:
-        #print('A')
+        #print('A',score)
         image = Picture(1,"pic/test1.jpg")
         score+=1
     except Exception as exception:
@@ -219,71 +219,79 @@ def pictureClass():
 
     # Class methods
     try:
-        #print('B')
+        #print('B',score)
         if (isinstance(image.getImage(),Image.Image)):
             score+=1
     except Exception as exception:
         print(exception)
    
     try:
-        #print('C')
+        #print('C',score)
         if (isinstance(image.getSmallImage(),Image.Image)):
             score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('D')
-        image.resizeSmall((20,30))
-        if image.getSmallImage().size == (20,30):
+        #print('D',score)
+        S1 = image.getSmallImage().size
+        image.resizeSmall((2,3))
+        S2 = image.getSmallImage().size
+        if (round(S1[0]*2) == S2[0]) and (round(S1[1]*3) == S2[1]):
             score+=1
     except Exception as exception:
         print(exception)
     
     try:
-        #print('E')
+        #print('E',score)
         image.getHistory()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('F')
+        #print('F',score)
         image.setHistory(image.getHistory())
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('G')
+        #print('G',score)
         image.reCompute()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('H')
+        #print('H',score)
         image.export('pic/test1-2.jpg')
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('I')
+        #print('I',score)
         image.close()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
-        #print('J')
+        #print('J',score)
         image.histogram('ALL')
         score+=1
     except Exception as exception:
         print(exception)
 
+    try:
+        #print('K',score)
+        image.getScaling()
+        score+=1
+    except Exception as exception:
+        print(exception)
 
-    return round(1000*score/10)/10
+    return round(1000*score/11)/10
 
 
 
@@ -305,56 +313,56 @@ def filtersTest():
     # Filters generation
     try:
         #print('A')
-        f = filters.lowPass('GAUSSIAN-2D',[5,0.5])
+        f = filters.lowPass('GAUSSIAN-2D',[5,0.5],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('B')
-        f = filters.lowPass('GAUSSIAN-1D',[10,.2,0.])
+        f = filters.lowPass('GAUSSIAN-1D',[10,.2,0.],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('C')
-        f = filters.lowPass('MEAN-2D',[3,.5])
+        f = filters.lowPass('MEAN-2D',[3,.5],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('D')
-        f = filters.lowPass('MEAN-1D',[6,1.,0.])
+        f = filters.lowPass('MEAN-1D',[6,1.,0.],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('E')
-        f = filters.lowPass('POISSON-2D',[5,1.])
+        f = filters.lowPass('POISSON-2D',[5,1.],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
         #print('F')
-        f = filters.lowPass('POISSON-1D',[10,0.7,15.3])
+        f = filters.lowPass('POISSON-1D',[10,0.7,15.3],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('G')
-        f = filters.highPass('DIFF-2D',[5,1])
+        f = filters.highPass('DIFF-2D',[5,1],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('H')
-        f = filters.highPass('DIFF-1D',[3,1,0.])
+        f = filters.highPass('DIFF-1D',[3,1,0.],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
@@ -362,14 +370,14 @@ def filtersTest():
 
     try:
         #print('I')
-        f = filters.highPass('SCHARR-2D',[1])
+        f = filters.highPass('SCHARR-2D',[1],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('J')
-        f = filters.highPass('SCHARR-1D',[1,0.])
+        f = filters.highPass('SCHARR-1D',[1,0.],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
@@ -377,14 +385,14 @@ def filtersTest():
 
     try:
         #print('K')
-        f = filters.highPass('CROSS-2D',[1])
+        f = filters.highPass('CROSS-2D',[1],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('L')
-        f = filters.highPass('CROSS-1D',[1,0.])
+        f = filters.highPass('CROSS-1D',[1,0.],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
@@ -403,20 +411,26 @@ def filtersTest():
     # Others
     try:
         #print('N')
-        f = filters.edgeDetection(img,'R','DIFF-2D',[1,1],100)
+        f = filters.edgeDetection(img,'R','DIFF-2D',[1,1],100,(1,1))
         score+=1
     except Exception as exception:
         print(exception)
     
     try:
         #print('O')
-        f = filters.edgeEnhancement(img,'R','DIFF-2D',[1,1],100,.5)
+        f = filters.edgeEnhancement(img,'R','DIFF-2D',[1,1],100,.5,(1,1))
         score+=1
     except Exception as exception:
         print(exception)
 
+    try:
+        #print('P')
+        f = filters.sharpen(img,'R','DIFF-2D',[1,.5],.1,(1,1))
+        score+=1
+    except Exception as exception:
+        print(exception)
 
-    return round(1000*score/15)/10
+    return round(1000*score/16)/10
 
 
 
@@ -566,7 +580,7 @@ def toolsTest():
 
     try:
         #print('D')
-        mapping.everyFunction(img,['resize','resize [50,50]'])
+        mapping.everyFunction(img,['resize','resize [50,50]'],(1,1))
         score+=1
     except Exception as exception:
         print(exception)
@@ -594,7 +608,8 @@ def toolsTest():
 
     try:
         #print('H')
-        tools.loadXMD('pic/test3.xmd',0)
+        hist = History(1)
+        tools.loadXMD('pic/test3.xmd',hist)
         score+=1
     except Exception as exception:
         print(exception)

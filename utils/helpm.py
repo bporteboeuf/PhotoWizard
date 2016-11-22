@@ -25,7 +25,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\nYou can revoke the last action by typing undo or restore it with redo.'
             hmess += '\n\nYou can have more informations on how to use the functionalities by typing [moduleName] -h or [moduleName] --help.'
             hmess += '\n\nList of modules availables:\n\n'
-            hmess += ' -*- '.join(["lowPass","highPass","detectEdges","enhanceEdges","levels","curves","contrast","exposure","blackandwhite","histogram","rotate","crop","resize","normHist","eqHist","expHist","logHist","preview","history"])
+            hmess += ' -*- '.join(["lowPass","highPass","detectEdges","enhanceEdges","sharpen","levels","curves","contrast","exposure","blackandwhite","histogram","rotate","crop","resize","normHist","eqHist","expHist","logHist","preview","history"])
             hmess += '\n'
         
         elif matter == 'levels':
@@ -123,7 +123,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'highPass':
             hmess = '\nHELP - HIGHPASS'
-            hmess += '\nThis module offers the possibility to apply a high-pass filter on your image (essentially a sharpening effet).'
+            hmess += '\nThis module offers the possibility to apply a high-pass filter on your image.'
             hmess += '\nYou first need to specify the filter you want to use. It can currently be: DIFF-2D, SCHARR-2D, CROSS-2D, DIFF-1D, SCHARR-1D, CROSS-1D.'
             hmess += '\nThen you also need to provide the correct parameters for those filters, such as a radius (integer) for DIFF-2D and DIFF-1D, an opacity coefficient (float bewteen 0 and 1) and an angle in degrees (float) for DIFF-1D, SCHARR-1D and CROSS-1D.'
             hmess += '\nFinally, you need to precise the channel on which you want to apply your effect. You can choose between R,G,B,H,S,V or ALL.'
@@ -144,7 +144,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'enhanceEdges':
             hmess = '\nHELP - ENHANCEEGDES'
-            hmess += '\nThis module offers the possibility to enhance edges on your image.'
+            hmess += '\nThis module offers the possibility to enhance edges on your image by darkening them.'
             hmess += '\nThis module works similarly to the HIGHPASS module, except that it has a threshold value and a gain value (or opacity).'
             hmess += '\nYou first need to specify the channel you want to use. You can choose between R,G,B,H,S,V or ALL.'
             hmess += '\nYou then need to specify the filter you want to use. It can currently be: DIFF-2D, SCHARR-2D, CROSS-2D, DIFF-1D, SCHARR-1D, CROSS-1D.'
@@ -152,7 +152,18 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\nFinally, you need to precise the threshold value (integer from 0 to 255) and your gain (float from 0 to 1)'
             hmess += '\n\nExample: enhanceEdges V DIFF-2D [1,1] 100 .85'
             hmess += '\n'
-        
+       
+        elif matter == 'sharpen':
+            hmess = '\nHELP - SHARPEN'
+            hmess += '\nThis module offers the possibility to add a sharpening effect on your image by locally increasing the contrast around the edges.'
+            hmess += '\nThis module works similarly to the HIGHPASS module, except that it has a gain value (or opacity).'
+            hmess += '\nYou first need to specify the channel you want to use. You can choose between R,G,B,H,S,V or ALL.'
+            hmess += '\nYou then need to specify the filter you want to use. It can currently be: DIFF-2D, SCHARR-2D, CROSS-2D, DIFF-1D, SCHARR-1D, CROSS-1D.'
+            hmess += '\nThen you also need to provide the correct parameters for those filters (see HIGHPASS for more details).'
+            hmess += '\nFinally, you need to precise the gain (float from 0 to 1).'
+            hmess += '\n\nExample: sharpen V DIFF-2D [1,.5] .1'
+            hmess += '\n'
+
         elif matter == 'rotate':
             hmess = '\nHELP - ROTATE'
             hmess += '\nThis module offers the possibility to rotate your image counter clockwise by a given angle in degrees (float).'
@@ -274,7 +285,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\nVous pouvez annuler la dernière action en tapan undo ou la restaurer avec redo.'
             hmess += '\n\nPour plus d\'informations sur la façon d\'utiliser les fonctionnalités, taper [moduleName] -h ou [moduleName] --help.'
             hmess += '\n\nListe des modules disponibles:\n\n'
-            hmess += ' -*- '.join(['lowPass','highPass','detectEdges','enhanceEdges','levels','curves','contrast','exposure','blackandwhite','histogram','rotate','crop','resize','normHist','eqHist','expHist','logHist','preview','history'])
+            hmess += ' -*- '.join(['lowPass','highPass','detectEdges','enhanceEdges','sharpen','levels','curves','contrast','exposure','blackandwhite','histogram','rotate','crop','resize','normHist','eqHist','expHist','logHist','preview','history'])
             hmess += '\n'
     
         elif matter == 'levels':
@@ -370,7 +381,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'highPass':
             hmess = '\nAIDE- HIGHPASS'
-            hmess += '\nCe module offre la possibilité d\'appliquer un filtre passe-haut sur une image (soit essentiellement un effet d\'accentuation).'
+            hmess += '\nCe module offre la possibilité d\'appliquer un filtre passe-haut sur une image.'
             hmess += '\nIl faut d\'abord sélectionner le type de filtre à utiliser. Pour l\'instant, vous pouvez choisir parmi : DIFF-2D, SCHARR-2D, CROSS-2D, DIFF-1D, SCHARR-1D, CROSS-1D.'
             hmess += '\nIl faut ensuite fournir les paramètres nécessaires au filtre, comme le rayon (entier) pour DIFF-2D et DIFF-1D, un coefficient d\'opacité (float entre 0 et 1) et un angle en degrés (flottant) pour DIFF-1D, SCHARR-1D, CROSS-1D.'
             hmess += '\nEnfin, il faut préciser le canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
@@ -391,13 +402,24 @@ def help(matter,language): # Matter indicates the matter on which the user needs
 
         elif matter == 'enhanceEdges':
             hmess = 'AIDE - ENHANCEEDGES'
-            hmess += '\nCe module offre la possibilité d\'accetuer les contours sur une image.'
+            hmess += '\nCe module offre la possibilité d\'accentuer les contours sur une image en les assombrissant.'
             hmess += '\nCe module fonctionne de manière similaire au module HIGHPASS sauf qu\'il nécessite également une valeur de seuil et de gain (opacité).'
             hmess += '\nIl faut d\'abord sélectionner le canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
             hmess += '\nIl faut ensuite préciser le type de filtre à utiliser. Pour l\'instant, vous pouvez choisir parmi : DIFF-2D, SCHARR-2D, CROSS-2D, DIFF-1D, SCHARR-1D, CROSS-1D.'
             hmess += '\nIl faut ensuite fournir les paramètres nécessaires au filtre (voir HIGHPASS pour plus d\'informations).'
             hmess += '\nEnfin, il faut renseigner la valeur de seuil (entier de 0 à 255), ainsi que le gain (flottant de 0 à 1).'
             hmess += '\n\nExemple : enhanceEdges V DIFF-2D [1,1] 100 .85'
+            hmess += '\n'
+
+        elif matter == 'sharpen':
+            hmess = '\nAIDE - SHARPEN'
+            hmess += '\nCe module offre la possibilité d\'ajouter un effet d\'accentuation sur une image en augmentant localement le contraste autour des contours.'
+            hmess += '\nCe module fonctionne de manière similaire au module HIGHPASS sauf qu\'il nécessite également une valeur de gain (opacité).'
+            hmess += '\nIl faut d\'abord sélectionner le canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
+            hmess += '\nIl faut ensuite préciser le type de filtre à utiliser. Pour l\'instant, vous pouvez choisir parmi : DIFF-2D, SCHARR-2D, CROSS-2D, DIFF-1D, SCHARR-1D, CROSS-1D.'
+            hmess += '\nIl faut ensuite fournir les paramètres nécessaires au filtre (voir HIGHPASS pour plus d\'informations).'
+            hmess += '\nEnfin, il faut renseigner la valeur du gain (flottant de 0 à 1).'
+            hmess += '\n\nExemple : sharpen V DIFF-2D [1,.5] .1'
             hmess += '\n'
 
         elif matter == 'rotate':

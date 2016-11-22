@@ -11,6 +11,7 @@ import math
 from PIL import Image
 from scipy import signal
 from tools import *
+import levels
 
 
 
@@ -32,7 +33,7 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
             # We extend the array by symmetry before convolution by the kernel F
             tmp = numpy.pad(tmp,((a,a),(b,b)),mode='symmetric')
             tmp = signal.fftconvolve(tmp,F,mode='same')
-           
+
             #tmp = signal.convolve(tmp,F,mode='same')
             if F.dtype==numpy.complex64:
                tmp = numpy.absolute(tmp)
@@ -52,12 +53,13 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
 
 
 
-def lowPass(filterType,parameters): # Generates a low-pass filter
+def lowPass(filterType,parameters,scaling): # Generates a low-pass filter
 
 
     try:
         filterType = str(filterType)
         parameters = list(parameters)
+        scaling = tuple(scaling)
     except:
         raise NameError('PhotoWizard Error: Wrong filter type format')
         filterType = "NC"
@@ -67,14 +69,14 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
     #----------- 2D FILTERS ----------#
     if filterType == "GAUSSIAN-2D":
         try:
-            radius = int(parameters[0])
+            radius = max(1,round(int(parameters[0])*(float(scaling[0])+float(scaling[1]))/2))
             a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for GAUSSIAN-2D low-pass filter')
        
         F = []
         for elt in range(-radius,radius+1):
-            F.append(math.exp(-a*elt**2))
+            F.append(math.exp(-a*(elt/radius)**2))
         F1 = numpy.asarray([F],dtype=numpy.float16)
         F2 = F1.reshape((F1.size,1))
         F = numpy.multiply(F2,F1)
@@ -83,7 +85,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
     elif filterType == "MEAN-2D":
         try:
-            radius = int(parameters[0])
+            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
             opacity = float(parameters[1])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for MEAN-2D low-pass filter')
@@ -95,14 +97,14 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
     elif filterType == "POISSON-2D":
         try:
-            radius = int(parameters[0])
+            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
             a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for POISSON-2D low-pass filter')
 
         F = []
         for elt in range(-radius,radius+1):
-            F.append(a*abs(elt)*math.exp(-a*abs(elt)))
+            F.append(a*abs(elt/radius)*math.exp(-a*abs(elt/radius)))
         F1 = numpy.asarray([F],dtype=numpy.float16)
         F2 = F1.reshape((F1.size,1))
         F = numpy.multiply(F2,F1)
@@ -113,7 +115,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
                # Horizontal #
     elif filterType == "GAUSSIAN-1D":
         try:
-            radius = int(parameters[0])
+            radius =  max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
             a = abs(float(parameters[1]))
             theta = float(parameters[2])
         except:
@@ -121,7 +123,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
        
         F = []
         for elt in range(-radius,radius+1):
-            F.append(math.exp(-a*elt**2))
+            F.append(math.exp(-a*(elt/radius)**2))
         F1 = numpy.asarray([F],dtype=numpy.float16)
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
         F2[radius,:] = F1
@@ -131,7 +133,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
     elif filterType == "MEAN-1D":
         try:
-            radius = int(parameters[0])
+            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
             opacity = float(parameters[1])
             theta = float(parameters[2])
         except:
@@ -147,7 +149,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
     elif filterType == "POISSON-1D":
         try:
-            radius = int(parameters[0])
+            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
             a = abs(float(parameters[1]))
             theta = float(parameters[2])
         except:
@@ -155,7 +157,7 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
         F = []
         for elt in range(-radius,radius+1):
-            F.append(a*abs(elt)*math.exp(-a*abs(elt)))
+            F.append(a*abs(elt/radius)*math.exp(-a*abs(elt/radius)))
         F1 = numpy.asarray([F],dtype=numpy.float16)
         F2 = numpy.zeros((2*radius+1,2*radius+1),dtype=numpy.float16)
         F2[radius,:] = F1
@@ -175,10 +177,12 @@ def lowPass(filterType,parameters): # Generates a low-pass filter
 
 
 
-def highPass(filterType,parameters): # Generates a high-pass filter
+def highPass(filterType,parameters,scaling): # Generates a high-pass filter
 
     try:
         filterType = str(filterType)
+        parameters = list(parameters)
+        scaling = tuple(scaling)
     except:
         raise NameError('PhotoWizard Error: Wrong filter type format')
         filterType = "NC"
@@ -189,7 +193,7 @@ def highPass(filterType,parameters): # Generates a high-pass filter
     
     if filterType == "DIFF-2D":
         try:
-            radius = int(parameters[0])
+            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
             opacity = float(parameters[1])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for DIFF-2D high-pass filter')
@@ -229,21 +233,21 @@ def highPass(filterType,parameters): # Generates a high-pass filter
                # Horizontal #
     elif filterType == "DIFF-1D":
         try:
-            radius = int(parameters[0])
+            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
             opacity = float(parameters[1])
             theta = float(parameters[2])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for DIFF-1D high-pass filter')
         
         #F1 = numpy.ones((2*radius+1,1),dtype=numpy.float16)
-        F = numpy.zeros((2*radius+1,3),dtype=numpy.float16)
+        F = numpy.zeros((2*radius+1,3),dtype=numpy.complex64)
         F[:,0] += 1*opacity
         F[:,2] += -1*opacity
         F[radius,1] += 1-opacity
         F = F/((1-opacity+ opacity*2*radius))
         if theta !=0:
-            F = rotate(numpy.asarray(F,dtype=numpy.float32),theta)
-            F = numpy.asarray(F,dtype=numpy.float16)
+            F = rotate(numpy.asarray(F,dtype=numpy.complex64),theta)
+            F = numpy.asarray(F,dtype=numpy.complex64)
 
     
     elif filterType == 'SCHARR-1D':
@@ -253,11 +257,11 @@ def highPass(filterType,parameters): # Generates a high-pass filter
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for SCHARR-1D high-pass filter')
         
-        F = numpy.asarray([[3*opacity, 0, -3*opacity], [10*opacity, 1-opacity, -10*opacity], [3*opacity, 0, -3*opacity]],dtype=numpy.float16)
+        F = numpy.asarray([[3*opacity, 0, -3*opacity], [10*opacity, 1-opacity, -10*opacity], [3*opacity, 0, -3*opacity]],dtype=numpy.complex64)
         F = F/(13*opacity)
         if theta !=0:
-            F = rotate(numpy.asarray(F,dtype=numpy.float32),theta)
-            F = numpy.asarray(F,dtype=numpy.float16)
+            F = rotate(numpy.asarray(F,dtype=numpy.complex64),theta)
+            F = numpy.asarray(F,dtype=numpy.complex64)
 
 
 
@@ -272,8 +276,8 @@ def highPass(filterType,parameters): # Generates a high-pass filter
         F = opacity*F
         F = F/(opacity)
         if theta !=0:
-            F = rotate(numpy.asarray(F,dtype=numpy.float32),theta)
-            F = numpy.asarray(F,dtype=numpy.float16)
+            F = rotate(numpy.asarray(F,dtype=numpy.complex64),theta)
+            F = numpy.asarray(F,dtype=numpy.complex64)
 
 
     
@@ -286,14 +290,14 @@ def highPass(filterType,parameters): # Generates a high-pass filter
 
 
 
-def edgeDetection(img,channel,filterType,parameters,threshold):
+def edgeDetection(img,channel,filterType,parameters,threshold,scaling):
     
     if(isinstance(img,Image.Image) and type(filterType) is str and type(parameters) is list and type(threshold) is int):
         
         if (threshold > 0) and (threshold < 255):
 
             #filter mat with a highpass filter
-            image = filterz(img,channel,highPass(filterType,parameters))
+            image = filterz(img,channel,highPass(filterType,parameters,scaling))
             channels = getChannel(image,channel)
 
             shape = list(image.size)
@@ -301,7 +305,7 @@ def edgeDetection(img,channel,filterType,parameters,threshold):
 
             image = numpy.zeros(shape,dtype=numpy.uint8)
             for elt in channels:
-                image += elt
+                image += elt # Mapping to 0..255 again
             image = image/len(channels)
 
             #map the values to grayscale
@@ -320,11 +324,11 @@ def edgeDetection(img,channel,filterType,parameters,threshold):
 
 
 
-def edgeEnhancement(img,channel,filterType,parameters,threshold,gain):
+def edgeEnhancement(img,channel,filterType,parameters,threshold,gain,scaling):
      
     if(isinstance(img,Image.Image) and (type(channel) is str) and (type(filterType) is str) and (type(parameters) is list) and (type(threshold) is int) and (type(gain) is float) and (gain<=1) and (gain>=0)):
         
-        image = edgeDetection(img,channel,filterType,parameters,threshold)
+        image = edgeDetection(img,channel,filterType,parameters,threshold,scaling)
         channels_old = getChannel(img,channel)
         channels_new = getChannel(image,channel)
 
@@ -340,6 +344,42 @@ def edgeEnhancement(img,channel,filterType,parameters,threshold,gain):
     
     return image
 
+
+
+def sharpen(img,channel,filterType,parameters,gain,scaling):
+     
+    if(isinstance(img,Image.Image) and (type(channel) is str) and (type(filterType) is str) and (type(parameters) is list) and (type(gain) is float) and (gain<=1) and (gain>=0)):
+        image = filterz(img,channel,highPass(filterType,parameters,scaling))
+        image = levels.normalizeHistogram(image,'ALL')
+        tmp2 = numpy.asarray(image,dtype=numpy.uint8)
+        T = .1
+        a = numpy.mean(tmp2[tmp2>=T*255])
+        if a != 0:
+            tmp2 = tmp2[:,:,0]/a
+        
+        tmp = levels.contrast(img,channel,50)
+        tmp = getChannel(tmp,channel)
+        channels_new = []
+        for elt in tmp:
+            channels_new.append(elt*tmp2)
+
+
+        image = recompose(img,channel,channels_new)
+        channels_old = getChannel(img,channel)
+
+        image = []
+        for i in range(0,len(channels_old)):
+            tmp = channels_old[i]*((tmp2<T)+(tmp2>=T)*(1-gain))+channels_new[min(i,len(channels_new)-1)]*gain
+            tmp = (tmp<0)*0 + (tmp>255)*255 +(tmp>=0)*(tmp<=255)*tmp
+            image.append(tmp)
+
+        image = recompose(img,channel,image)
+       
+    else:
+        raise NameError('PhotoWizard Error: Wrong argument type in sharpen')
+        image = img
+    
+    return image
 
 
 

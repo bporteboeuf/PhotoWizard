@@ -362,7 +362,7 @@ def main(args,testmode):
                         function = action
                         #parameters = parseInput(request,[str,])
                         #everyFunction(image,[function,[parameters]])
-                        img,parameters = mapping.everyFunction(images[current].getSmallImage(),[function,request])
+                        img,parameters = mapping.everyFunction(images[current].getSmallImage(),[function,request],images[current].getScaling())
                         images[current].setSmallImage(img) # We update the working copy
                         h = images[current].getHistory()
                         h.add(request,function)

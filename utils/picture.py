@@ -42,7 +42,9 @@ class Picture:
             self.EXIF = self.pic.info['exif']
         except:
             pass
-        
+       
+        self.scaling = (1,1)
+
         if self.pic is not None :
             self.smallpic = self.pic
             (W,H) = self.pic.size
@@ -52,7 +54,9 @@ class Picture:
             else :
                 b = min(HEIGHT_PREVIEW,H)
                 a = round(b*W/H)
-                
+            
+            self.scaling = (float(a/W),float(b/H)) # Scaling coefficient
+
             self.smallpic = self.smallpic.resize((a,b),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
             self.smallpic_ref =  self.smallpic # Keeps a reference copy for any possible history rebase
         else :
@@ -105,12 +109,29 @@ class Picture:
                     raise NameError('PhotoWizard Error: Wrong argument type, must be integers')
 
                 if (1<100*a<100*100) and (1<=100*b<=100*100):
-                    self.smallpic = resize(self.getSmallImage(),(a,b))
+                    oldScaling = self.getScaling()
+                    shape = (oldScaling[0]*a,oldScaling[1]*b)
+                    self.setScaling(shape)
+                    img = self.getSmallImage()
+                    shape2 = img.size
+                    shape2 = (a*shape2[0],b*shape2[1])
+                    self.smallpic = resize(img,shape2)
                 else:
                     raise NameError('PhotoWizard Error: Wrong argument range, must be between 1/100 and 100')
         return
 
     
+    def getScaling(self):
+        return self.scaling
+
+    def setScaling(self,shape):
+        if (type(shape) is tuple) and (len(shape)==2) and (shape[0]!=0) and (shape[1]!=0):
+            self.scaling = shape
+        else:
+            raise NameError('PhotoWizard Error: Wrong argument in setScaling')
+        return
+   
+
     def getHistory(self):
         return self.History
 
@@ -133,7 +154,7 @@ class Picture:
                 request = request.split(" ")
                 function = request[0]
                 request = " ".join(request)
-                img,parameters = mapping.everyFunction(img,[function,request])
+                img,parameters = mapping.everyFunction(img,[function,request],self.getScaling())
             self.setSmallImage(img)
         except Exception as e:
             print(e)
@@ -149,7 +170,7 @@ class Picture:
                 request = event.getContent()
                 action = request.split(' ')
                 function = action[0]
-                picture,parameters = mapping.everyFunction(picture,[function,request])
+                picture,parameters = mapping.everyFunction(picture,[function,request],(1,1))
             try:
                 picture = picture.convert('RGB')
                 if len(self.EXIF) > 0:
