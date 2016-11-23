@@ -343,7 +343,7 @@ def help(matter,language): # Matter indicates the matter on which the user needs
             hmess += '\nIl faut d\'abord sélectionner le canal sur lequel appliquer l\'effet, au choix parmi R,G,B,H,S,V ou ALL.'
             hmess += '\nIl suffit ensuite de préciser le pourcentage par lequel vous voulez modifier le contraste: +100 pour le doubler ou -50 pour le diviser par 2 par exemple.'
             hmess += '\n\nExemple : contrast ALL 25'
-            hmess ++ '\n'
+            hmess += '\n'
 
         elif matter == 'exposure':
             hmess = '\nAIDE - EXPOSURE'

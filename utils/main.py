@@ -7,10 +7,9 @@
 import sys,os
 sys.path.insert(0,'utils/')
 
-import display,helpm,mapping
+import display,helpm,mapping,loadConfig
 from PIL import Image
 from picture import Picture
-from config import *
 from tools import *
 
 
@@ -23,6 +22,11 @@ def main(args,testmode):
     except:
         raise NameError('PhotoWizard Error: wrong argument type in main')
 
+    try:
+        loadConfig.load()
+    except Exception as e:
+        print(e)
+
 
     if testmode: # We disable any print message
         #f = open(os.devnull, 'w')
@@ -30,7 +34,7 @@ def main(args,testmode):
         args = args[::-1] # And we invert our args for easier access
 
     if not testmode:
-        display.greetings(LANG)
+        display.greetings(loadConfig.LANG)
     
     quitFlag = False
     First = True
@@ -50,7 +54,7 @@ def main(args,testmode):
                 request = ''
         else:
             if First : # The first action displays a small helping message
-                #action = str(getInput(display.action(LANG)))
+                #action = str(getInput(display.action(loadConfig.LANG)))
                 try:
                     request = str(getInput("\n   h - help      q - quit\n\n > "))
                 except:
@@ -82,7 +86,7 @@ def main(args,testmode):
             try: # And we look if any help is needed
                 params = requestList[1]
                 if (str(params) == '-h') or (str(params) == '--help'):
-                    display.disp(helpm.help(action,LANG))
+                    display.disp(helpm.help(action,loadConfig.LANG))
                     helped = True
             except Exception as e:
                 #print(e)
@@ -95,7 +99,7 @@ def main(args,testmode):
 
                 # And we act accordingly
                 if action == "h" or action == "help":
-                    display.disp(helpm.help("idle",LANG))
+                    display.disp(helpm.help("idle",loadConfig.LANG))
                 
                 elif action == "q" or action == "quit":
                     if len(files) > 0:
@@ -115,7 +119,7 @@ def main(args,testmode):
                             files.append(fileName)
                             current = fileName
                             #print(str(fileName) + ' opened\n')
-                            display.dispm('open',fileName,LANG)
+                            display.dispm('open',fileName,loadConfig.LANG)
                         else:
                             current = fileName
                             print('PhotoWizard Error: '+str(fileName)+' is already opened. Switched to '+str(fileName)+'\n')
@@ -134,13 +138,13 @@ def main(args,testmode):
                         files.remove(fileName)
                         if len(files) > 0: # There are still some files opened
                                nextFile = files[len(files)-1]
-                               display.dispm('close',fileName,LANG)
-                               display.dispm('switch',str(nextFile),LANG)
+                               display.dispm('close',fileName,loadConfig.LANG)
+                               display.dispm('switch',str(nextFile),loadConfig.LANG)
                                #print(str(fileName)+' closed; switching to '+str(nextFile)+'\n')
                                current = nextFile
                         else:
                             #print(str(fileName)+' closed\n')
-                            display.dispm('close',fileName,LANG)
+                            display.dispm('close',fileName,loadConfig.LANG)
                             current = ''
                     except Exception as e:
                         print(e)
@@ -151,7 +155,7 @@ def main(args,testmode):
                     try:
                         filesList = ', '.join(files)
                         filesList += ' - '+str(current)
-                        display.dispm('opened',filesList,LANG)
+                        display.dispm('opened',filesList,loadConfig.LANG)
                     except Exception as e:
                         print(e)
                         ok = False
@@ -173,7 +177,7 @@ def main(args,testmode):
                         images[current].setHistory(h) # We update the history
                         images[current].reCompute() # And we update the working copy for faster preview
                         #print('XMD file '+str(fileName)+' loaded\n')
-                        display.dispm('load',fileName,LANG)
+                        display.dispm('load',fileName,loadConfig.LANG)
                     except Exception as e:
                         print(e)
                         ok = False
@@ -191,7 +195,7 @@ def main(args,testmode):
                         #print("Saving xmd file "+str(fileName))
                         saveXMD(fileName,images[current].getHistory())
                         #print('XMD file saved to '+str(fileName)+'\n')
-                        display.dispm('save',fileName,LANG)
+                        display.dispm('save',fileName,loadConfig.LANG)
                     except Exception as e:
                         print(e)
                         ok = False
@@ -209,7 +213,7 @@ def main(args,testmode):
                         #print("Exporting "+str(fileName))
                         images[current].export(fileName)
                         #print(str(fileName)+' exported\n')
-                        display.dispm('export',fileName,LANG)
+                        display.dispm('export',fileName,loadConfig.LANG)
                     except Exception as e:
                         print(e)
                         ok = False
@@ -223,7 +227,7 @@ def main(args,testmode):
                         if fileName in files:
                             current = fileName
                             #print("Switched to "+str(fileName))
-                            display.dispm('switch',fileName,LANG)
+                            display.dispm('switch',fileName,loadConfig.LANG)
                         else:
                             print('PhotoWizard Error: no such file opened')
                     except Exception as e:
@@ -246,7 +250,7 @@ def main(args,testmode):
                             for k in range(0,11):
                                 s = ''
                                 for el in elt:
-                                    if int(el) >= round(255/10*(9-k)) and k != 10 :
+                                    if int(el) > round(255*(9-k)/10) and k != 10 :
                                         s += '#'
                                     elif k != 10:
                                         s += ' '
@@ -285,7 +289,7 @@ def main(args,testmode):
                         images[current].setHistory(h)
                         images[current].reCompute()
                         #print('Last action revoked')
-                        display.dispm('undo','',LANG)
+                        display.dispm('undo','',loadConfig.LANG)
                     except Exception as e:
                         print(e)
                         ok = False
@@ -304,7 +308,7 @@ def main(args,testmode):
                         images[current].setHistory(h)
                         images[current].reCompute()
                         #print('Last action restored')
-                        display.dispm('redo','',LANG)
+                        display.dispm('redo','',loadConfig.LANG)
                     except Exception as e:
                         print(e)
                         ok = False
@@ -325,7 +329,7 @@ def main(args,testmode):
                         images[current].setHistory(h)
                         images[current].reCompute()
                         #print('History rebased to event '+str(event))
-                        display.dispm('rebase',str(event),LANG)
+                        display.dispm('rebase',str(event),loadConfig.LANG)
                     except Exception as e:
                         print(e)
                         ok = False
@@ -367,7 +371,7 @@ def main(args,testmode):
                         h = images[current].getHistory()
                         h.add(request,function)
                         images[current].setHistory(h) # And we update the history
-                        display.dispm('actionCompleted','',LANG)
+                        display.dispm('actionCompleted','',loadConfig.LANG)
                         
                     except Exception as e:
                         print(e)
@@ -378,7 +382,7 @@ def main(args,testmode):
                     try:
                         if not testmode: # We ask the user to try again
                             if tries > 3:
-                                request = str(getInput(helpm.help("idle",LANG)+'\n > '))
+                                request = str(getInput(helpm.help("idle",loadConfig.LANG)+'\n > '))
                             else:
                                 request = str(getInput(' > '))
                             tries += 1
@@ -391,7 +395,7 @@ def main(args,testmode):
 
 
     if not testmode:
-        display.bye(LANG)    
+        display.bye(loadConfig.LANG)    
 
     return
 

@@ -13,7 +13,7 @@ from history import History
 from PIL import Image
 from tools import *
 import mapping
-from config import *
+from loadConfig import *
 
 
 class Picture:

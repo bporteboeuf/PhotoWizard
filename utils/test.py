@@ -10,7 +10,7 @@
 import filters,helpm,history,levels,main,tools,mapping
 from picture import Picture
 from history import History, Event
-from config import *
+from loadConfig import *
 import sys,numpy,scipy,math
 from PIL import Image
 #except:
@@ -468,7 +468,9 @@ def levelsTest():
     try:
         #print('D')
         levels.normalizeHistogram(img,'ALL')
-        score+=1
+        tmp = numpy.asarray(img)
+        if numpy.amin(tmp) == 0 and numpy.amax(tmp) == 255:
+            score+=1
     except Exception as exception:
         print(exception)
 

@@ -12,7 +12,7 @@ sys.path.insert(0,'utils')
 from scipy import ndimage
 from history import History,Event
 from PIL import Image
-from config import *
+from loadConfig import *
 
 
 

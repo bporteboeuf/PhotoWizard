@@ -8,7 +8,7 @@
 
 import levels,filters
 from tools import *
-from config import *
+from loadConfig import *
 
 
 def everyFunction(image,action,scaling): # Maps the action in the main or history to the real image editing functions
