@@ -196,7 +196,7 @@ class Picture:
         precision = 4
         for elt in matrices:
             [H,B] = numpy.histogram(elt,bins=round(256/precision),range=(0,255))
-            hist.append(numpy.round(H*255/numpy.amax(H)))
+            hist.append(numpy.ceil(H*255/numpy.amax(H)))
         #print(hist)
         return hist
 

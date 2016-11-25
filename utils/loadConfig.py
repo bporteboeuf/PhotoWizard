@@ -17,11 +17,10 @@ WIDTH_PREVIEW = 400
 HEIGHT_PREVIEW = 400
 
 CURVES_RESOLUTION = 8
-EQHIST_RESOLUTION = 8
+EQHIST_RESOLUTION = 4
 EXPHIST_RESOLUTION = 8
 EXPOSURE_RESOLUTION = 8
 LOGHIST_RESOLUTION = 8
-NORMHIST_RESOLUTION = 8
 
 
 
@@ -30,7 +29,7 @@ def load():
     try:
         import config
 
-        global LANG,MODE,WIDTH_PREVIEW,HEIGHT_PREVIEW,CURVES_RESOLUTION,EQHIST_RESOLUTION,EXPHIST_RESOLUTION,EXPOSURE_RESOLUTION,LOGHIST_RESOLUTION,NORMHIST_RESOLUTION
+        global LANG,MODE,WIDTH_PREVIEW,HEIGHT_PREVIEW,CURVES_RESOLUTION,EQHIST_RESOLUTION,EXPHIST_RESOLUTION,EXPOSURE_RESOLUTION,LOGHIST_RESOLUTION
     
 
         if config.LANG in ['EN','FR','DE','JA']:
@@ -79,11 +78,6 @@ def load():
             LOGHIST_RESOLUTION = config.LOGHIST_RESOLUTION
         else:
             print('PhotoWizard Error: Wrong value for loghist_resolution - using default settings')
-
-        if (config.NORMHIST_RESOLUTION > 0) and (config.NORMHIST_RESOLUTION < 129):
-            NORMHIST_RESOLUTION = config.NORMHIST_RESOLUTION
-        else:
-            print('PhotoWizard Error: Wrong value for normhist_resolution - using default settings')
 
     except Exception as e:
         print(e)

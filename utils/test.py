@@ -185,8 +185,9 @@ def historyClass():
 
     try:
         #print('J')
-        hist.getFullHistory()
-        score+=1
+        h = hist.getFullHistory()
+        if h == '--- 0 - InitialState --- 1 - eventA --- 2 - eventB \n\nCurrent State: 2 - eventB\n':
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -244,15 +245,17 @@ def pictureClass():
     
     try:
         #print('E',score)
-        image.getHistory()
+        h = image.getHistory()
         score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('F',score)
-        image.setHistory(image.getHistory())
-        score+=1
+        h.add('normHist R','NewEvent')
+        image.setHistory(h)
+        if image.getHistory() == h:
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -286,8 +289,9 @@ def pictureClass():
 
     try:
         #print('K',score)
-        image.getScaling()
-        score+=1
+        s = image.getScaling()
+        if round(s[0]*1000)/1000 == 0.897 and round(s[1]*1000)/1000 == 1.347:
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -313,57 +317,74 @@ def filtersTest():
     # Filters generation
     try:
         #print('A')
-        f = filters.lowPass('GAUSSIAN-2D',[5,0.5],(1,1))
-        score+=1
+        f = filters.lowPass('GAUSSIAN-2D',[1,0.5],(1,1))
+        f2 = numpy.asarray([[ 0.07507324, 0.1237793, 0.07507324], [ 0.1237793, 0.20410156, 0.1237793 ], [ 0.07507324, 0.1237793, 0.07507324]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('B')
-        f = filters.lowPass('GAUSSIAN-1D',[10,.2,0.],(1,1))
-        score+=1
+        f = filters.lowPass('GAUSSIAN-1D',[1,.2,0.],(1,1))
+        f2 = numpy.asarray([[ 0., 0., 0.], [ 0.31054688, 0.37915039, 0.31054688], [ 0., 0., 0.]])
+
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('C')
-        f = filters.lowPass('MEAN-2D',[3,.5],(1,1))
-        score+=1
+        f = filters.lowPass('MEAN-2D',[1,.5],(1,1))
+        f2 = numpy.asarray([[ 0.09997559, 0.09997559, 0.09997559], [ 0.09997559, 0.19995117, 0.09997559], [ 0.09997559, 0.09997559, 0.09997559]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('D')
-        f = filters.lowPass('MEAN-1D',[6,1.,0.],(1,1))
-        score+=1
+        f = filters.lowPass('MEAN-1D',[1,1.,0.],(1,1))
+        f2 = numpy.asarray([[ 0., 0., 0.], [ 0.33325195, 0.33325195, 0.33325195], [ 0., 0., 0. ]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('E')
-        f = filters.lowPass('POISSON-2D',[5,1.],(1,1))
-        score+=1
+        f = filters.lowPass('POISSON-2D',[1,1.],(1,1))
+        f2 = numpy.asarray([[ 0.25, 0., 0.25], [ 0., 0., 0.], [ 0.25, 0., 0.25]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
-    
+ 
     try:
         #print('F')
-        f = filters.lowPass('POISSON-1D',[10,0.7,15.3],(1,1))
-        score+=1
+        f = filters.lowPass('POISSON-1D',[1,0.7,15.3],(1,1))
+        f2 = numpy.asarray([[ 0., 0., 0., 0.,], [ 0., 0.04679966, 0.23986255,  0.], [ 0., 0.23986255, 0.04679966, 0.], [ 0., 0., 0., 0.]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('G')
-        f = filters.highPass('DIFF-2D',[5,1],(1,1))
-        score+=1
+        f = filters.highPass('DIFF-2D',[1,1],(1,1))
+        f2 = numpy.asarray([[ 0.35355338+0.35355338j, 0.35355338+0.j, 0.35355338-0.35355338j], [ 0.00000000+0.35355338j, 0.00000000+0.j, 0.00000000-0.35355338j], [-0.35355338+0.35355338j, -0.35355338+0.j, -0.35355338-0.35355338j]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('H')
-        f = filters.highPass('DIFF-1D',[3,1,0.],(1,1))
-        score+=1
+        f = filters.highPass('DIFF-1D',[1,1,0.],(1,1))
+        f2 = numpy.asarray([[ 0.5+0.j, 0.0+0.j, -0.5+0.j], [ 0.5+0.j, 0.0+0.j, -0.5+0.j], [ 0.5+0.j, 0.0+0.j, -0.5+0.j]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -371,29 +392,36 @@ def filtersTest():
     try:
         #print('I')
         f = filters.highPass('SCHARR-2D',[1],(1,1))
-        score+=1
+        f2 = numpy.asarray([[ 0.16317847+0.16317847j, 0.54392827+0.j, 0.16317847-0.16317847j], [ 0.00000000+0.54392827j, 0.00000000+0.j, 0.00000000-0.54392827j], [-0.16317847-0.16317847j, -0.54392827+0.j, -0.16317847+0.16317847j]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('J')
         f = filters.highPass('SCHARR-1D',[1,0.],(1,1))
-        score+=1
+        f2 = numpy.asarray([[ 0.23076925+0.j, 0.00000000+0.j, -0.23076925+0.j], [ 0.76923078+0.j,  0.00000000+0.j, -0.76923078+0.j], [ 0.23076925+0.j,  0.00000000+0.j, -0.23076925+0.j]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
-
 
     try:
         #print('K')
         f = filters.highPass('CROSS-2D',[1],(1,1))
-        score+=1
+        f2 = numpy.asarray([[ 0.70710677+0.j, 0.00000000+0.70710677j], [ 0.00000000-0.70710677j, -0.70710677+0.j]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
     try:
         #print('L')
         f = filters.highPass('CROSS-1D',[1,0.],(1,1))
-        score+=1
+        f2 = numpy.asarray([[ 1.+0.j, 0.+1.j], [ 0.-1.j, -1.+0.j]])
+        if numpy.allclose(f,f2):
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -402,8 +430,10 @@ def filtersTest():
     # Filters application
     try:
         #print('M')
-        f = filters.filterz(img,'R',numpy.zeros((3,3)))
-        score+=1
+        Id = numpy.diag([0,0,1,0,0])
+        f = filters.filterz(img,'ALL',Id)
+        if numpy.allclose(numpy.asarray(f,dtype=numpy.uint8), numpy.asarray(img,dtype=numpy.uint8),1,1):
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -611,7 +641,7 @@ def toolsTest():
     try:
         #print('H')
         hist = History(1)
-        tools.loadXMD('pic/test3.xmd',hist)
+        tools.loadXMD('pic/test5.xmd',hist)
         score+=1
     except Exception as exception:
         print(exception)
@@ -626,8 +656,9 @@ def toolsTest():
 
     try:
         #print('J')
-        tools.parseInput('a 1 [2,3,4] 3.14',[str,int,list,float])
-        score+=1
+        a = tools.parseInput('a 1 [2,3,4] 3.14',[str,int,list,float])
+        if a == ['a',1,[2.,3.,4.], 3.14]:
+            score+=1
     except Exception as exception:
         print(exception)
 
@@ -640,9 +671,9 @@ def toolsTest():
     except Exception as exception:
         print(exception)
 
-
-
     return round(1000*score/12)/10
+
+
 
 
 ###***--- A FEW USERCASES ---***###
@@ -652,7 +683,7 @@ def userCase1():
 
     score = 0
 
-    actions = ['h','open pic/test1.jpg','histogram ALL','eqHist ALL','histogram ALL','export pic/test1-2.jpg','q']
+    actions = ['h','open pic/test6.jpg','histogram ALL','eqHist ALL','histogram ALL','export pic/test6-2.jpg','q']
     try:
        main.main(actions,True)
        score+=1
@@ -667,7 +698,7 @@ def userCase2():
  
     score = 0
 
-    actions = ['open pic/test3.jpg', 'lowPass GAUSSIAN-2D [10,1] ALL', 'eqHist ALL','undo','normHist ALL','save pic/test3.xmd','q']
+    actions = ['open pic/test5.jpg', 'lowPass GAUSSIAN-2D [10,1] ALL', 'eqHist ALL','undo','normHist ALL','save pic/test5.xmd','q']
     try:
        main.main(actions,True)
        score+=1
