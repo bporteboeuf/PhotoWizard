@@ -29,6 +29,7 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
                 # We first analyze which region of the matrix is in each inputs interval
                 # And we normalize it (affine) so it fits in the corresponding outputs interval
 
+                # We make sure to cover all points
                 if max(inputs)<255:
                     inputs.append(255)
                     outputs.append(255)
@@ -84,19 +85,25 @@ def levels(image,channel,inputs,outputs): # Image can be an Image.Image object (
 
 
 
-def normalizeHistogram(image,channel): # Automatic contrast adjustment
+def normalizeHistogram(image,channel): # Automatic contrast adjustment by extending the dynamic range to a standard 256 width
     if isinstance(image,Image.Image):
+
         images = getChannel(image,channel)
         matrices = []
         for img in images:
+            # We compute the coefficients
             a = numpy.amin(img)
             b = numpy.amax(img)
             if a==b :
                 b = a+1
             alpha = 255/(b-a)
+
+            # And we normalize the picture
             tmp = numpy.asarray((img-a)*alpha,dtype=numpy.uint8)
             matrices.append(tmp)
+
         image = recompose(image,channel,matrices)
+    
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in normalizeHistogram')
 
@@ -107,19 +114,24 @@ def normalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def equalizeHistogram(image,channel): # Automatic contrast adjustment
     if isinstance(image,Image.Image):
+
         precision = EQHIST_RESOLUTION
         inputs = numpy.linspace(0,255,round(256/precision))
         
         images = getChannel(image,channel)
         matrices = []
         for img in images:
+            # We get the histogram
             histogram, bins = numpy.histogram(img,bins=round(256/precision),range=(0,255))
             outputs = numpy.cumsum(histogram)
             outputs = outputs*255/numpy.amax(outputs)
+            # And we use the normalized cumulative summation of it as a tone-curve
             inputs = list(numpy.asarray(inputs,dtype=numpy.uint8))
             outputs = list(numpy.asarray(outputs,dtype=numpy.uint8))
             matrices.append(levels(img,'',list(inputs),list(outputs)))
+
         image = recompose(image,channel,matrices)
+    
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in equalizeHistogram')
 
@@ -130,7 +142,9 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
 
 def logHistogram(image,channel): # Automatic contrast adjustment recover details in low values
     if isinstance(image,Image.Image):
+
         precision = LOGHIST_RESOLUTION
+        # A normalized logarithmic tone-curve is generated
         inputs = numpy.linspace(0,255,round(256/precision))
         outputs = numpy.log(1+inputs/16)
         outputs = outputs*255/outputs[len(outputs)-1]
@@ -141,7 +155,9 @@ def logHistogram(image,channel): # Automatic contrast adjustment recover details
         matrices = []
         for img in images:
             matrices.append(levels(img,'',list(inputs),list(outputs)))
+        
         image = recompose(image,channel,matrices)
+    
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in logHistogram')
 
@@ -152,7 +168,9 @@ def logHistogram(image,channel): # Automatic contrast adjustment recover details
 
 def expHistogram(image,channel): # Automatic contrast adjustment to recover details in high values
     if isinstance(image,Image.Image):
+
         precision = EXPHIST_RESOLUTION
+        # A normalized exponential tone-curve is generated
         inputs = numpy.linspace(0,255,round(256/precision))
         outputs = numpy.exp(inputs/64)-1
         outputs = outputs*255/outputs[len(outputs)-1]
@@ -163,7 +181,9 @@ def expHistogram(image,channel): # Automatic contrast adjustment to recover deta
         matrices = []
         for img in images:
             matrices.append(levels(img,'',list(inputs),list(outputs)))
+
         image = recompose(image,channel,matrices)
+    
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in expHistogram')
 
@@ -173,6 +193,7 @@ def expHistogram(image,channel): # Automatic contrast adjustment to recover deta
 
 def curves(image,channel,inputs,outputs): # S-curve function for more precise levels adjustment
     if (isinstance(image,Image.Image) or isinstance(image,numpy.ndarray)) and (type(inputs) is list) and (type(outputs) is list) and (len(inputs)==len(outputs)):
+
         precision = CURVES_RESOLUTION
         X = numpy.linspace(0,255,len(inputs))
         X2 = numpy.linspace(0,255,round(256/precision))
@@ -201,6 +222,7 @@ def curves(image,channel,inputs,outputs): # S-curve function for more precise le
             image = recompose(image,channel,matrices)
         else:
             image = matrices
+   
     else:
         raise NameError('PhotoWizard Error: Wrong argument format in curves')
     
@@ -217,10 +239,11 @@ def contrast(image,channel,percentage): # Increases the contrast of the image by
 
         matrices = []
         for img in channels:
-            a = numpy.amin(img) + 1
-            b = numpy.amax(img) + 1
+            #a = numpy.amin(img) + 1
+            #b = numpy.amax(img) + 1
             m = numpy.mean(img)
 
+            # We compute the coefficient
             alpha = (1+percentage/100)
             
             img = img*alpha - m*percentage/100 # We maitain the mean value
@@ -323,7 +346,7 @@ def exposure(image,channel,ev):
 
 
 
-def blackAndWhite(image,channel):
+def blackAndWhite(image,channel): # Converts a picture or part of it to a black and white image (grayscale)
 
     if (isinstance(image,Image.Image)) and (type(channel) is str):
        
@@ -342,4 +365,5 @@ def blackAndWhite(image,channel):
         raise NameError('PhotoWizard Error: Wrong argument format in blackAndWhite')
  
     return image
+
 

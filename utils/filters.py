@@ -19,7 +19,7 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
     
     if (isinstance(img,Image.Image) and isinstance(F,numpy.ndarray) and (type(channel) is str)):
         
-        images = getChannel(img,channel)
+        images = getChannel(img,channel) # We extract the desired channel
         matrices = []
         for elt in images:
             
@@ -32,7 +32,7 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
             
             # We extend the array by symmetry before convolution by the kernel F
             tmp = numpy.pad(tmp,((a,a),(b,b)),mode='symmetric')
-            tmp = signal.fftconvolve(tmp,F,mode='same')
+            tmp = signal.fftconvolve(tmp,F,mode='same') # Convolution in the frequency domain is much faster for large arrays
 
             #tmp = signal.convolve(tmp,F,mode='same')
             if F.dtype==numpy.complex64:
@@ -43,7 +43,7 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
             
             matrices.append(numpy.asarray(tmp,dtype=numpy.uint8))
         
-        image = recompose(img,channel,matrices)
+        image = recompose(img,channel,matrices) # And we recompose the final image
     
     else:
         raise NameError('PhotoWizard Error: Wrong argument type in filterz')
@@ -328,13 +328,14 @@ def edgeEnhancement(img,channel,filterType,parameters,threshold,gain,scaling):
      
     if(isinstance(img,Image.Image) and (type(channel) is str) and (type(filterType) is str) and (type(parameters) is list) and (type(threshold) is int) and (type(gain) is float) and (gain<=1) and (gain>=0)):
         
+        # We detect the edges
         image = edgeDetection(img,channel,filterType,parameters,threshold,scaling)
         channels_old = getChannel(img,channel)
         channels_new = getChannel(image,channel)
 
         image = []
         for i in range(0,len(channels_old)):
-            image.append(channels_old[i]*1-gain*((channels_new[i]>0)*channels_old[i]))
+            image.append(channels_old[i]*1-gain*((channels_new[i]>0)*channels_old[i])) # And we darken the concerned areas
 
         image = recompose(img,channel,image)
         
@@ -349,19 +350,23 @@ def edgeEnhancement(img,channel,filterType,parameters,threshold,gain,scaling):
 def sharpen(img,channel,filterType,parameters,gain,scaling):
      
     if(isinstance(img,Image.Image) and (type(channel) is str) and (type(filterType) is str) and (type(parameters) is list) and (type(gain) is float) and (gain<=1) and (gain>=0)):
+        # We apply a high-pass filter
         image = filterz(img,channel,highPass(filterType,parameters,scaling))
         image = levels.normalizeHistogram(image,'ALL')
         tmp2 = numpy.asarray(image,dtype=numpy.uint8)
+
+        # And define a threshold to limit the noise
         T = .1
         a = numpy.mean(tmp2[tmp2>=T*255])
         if a != 0:
             tmp2 = tmp2[:,:,0]/a
         
+        # We increase the contrast on a copy of the original image
         tmp = levels.contrast(img,channel,50)
         tmp = getChannel(tmp,channel)
         channels_new = []
         for elt in tmp:
-            channels_new.append(elt*tmp2)
+            channels_new.append(elt*tmp2) # And get the corresponding areas
 
 
         image = recompose(img,channel,channels_new)
@@ -369,8 +374,8 @@ def sharpen(img,channel,filterType,parameters,gain,scaling):
 
         image = []
         for i in range(0,len(channels_old)):
-            tmp = channels_old[i]*((tmp2<T)+(tmp2>=T)*(1-gain))+channels_new[min(i,len(channels_new)-1)]*gain
-            tmp = (tmp<0)*0 + (tmp>255)*255 +(tmp>=0)*(tmp<=255)*tmp
+            tmp = channels_old[i]*((tmp2<T)+(tmp2>=T)*(1-gain))+channels_new[min(i,len(channels_new)-1)]*gain # We merge the pictures together
+            tmp = (tmp<0)*0 + (tmp>255)*255 +(tmp>=0)*(tmp<=255)*tmp # And make sure that the result is between 0 and 255
             image.append(tmp)
 
         image = recompose(img,channel,image)

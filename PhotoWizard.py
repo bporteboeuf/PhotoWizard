@@ -12,7 +12,7 @@ sys.path.insert(0,'utils/')
 import main,helpm
 from config import *
 
-VER = '0.5' # Current version of the software
+VER = '0.6' # Current version of the software
 
 
 if __name__ == "__main__" :
@@ -32,9 +32,12 @@ if __name__ == "__main__" :
             raise NameError('PhotoWizard Error: Wrong format for launching options')
             options = ""
 
+        
         start = False
         for elt in options:
             
+            # We analyse the launching options
+
             if elt == "-":
                 start = True
             
@@ -58,7 +61,6 @@ if __name__ == "__main__" :
                     print("PhotoWizard Error: Graphical User Interface not implemented yet")
                     main.main(sys.argv,False)
                     launched = True
-
 
     if not launched:
         if MODE == "g":

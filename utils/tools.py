@@ -17,7 +17,7 @@ from loadConfig import *
 
 
 
-def getChannel(image,channel): # Channel can be H, S, V, R, G, B or ALL - Note: if BW, should use V or ALL?
+def getChannel(image,channel): # Extracts the desired channel of an image - Channel can be H, S, V, R, G, B or ALL
  
     if isinstance(image,Image.Image) and (type(channel) is str):
         if len(channel) == 1:
@@ -169,6 +169,8 @@ def getInput(message): # Gets input from user - message is a message to display
         return string
 
 
+
+
 def parseInput(string,expected): # Parses a string input to find the corresponding objects - expect is a list of expected types such as : [list,str,int,float]
     if type(string) is str and type(expected) is list:
         #print(string,expected)
@@ -221,6 +223,7 @@ def parseInput(string,expected): # Parses a string input to find the correspondi
 
 
 
+
 def resize(img,size): # Resizes an image to a given size and returns an Image.Image object
     if not isinstance(img, Image.Image):
         try:
@@ -240,6 +243,7 @@ def resize(img,size): # Resizes an image to a given size and returns an Image.Im
     img = img.resize((W,H),Image.ANTIALIAS)
 
     return img
+
 
 
 
@@ -297,6 +301,7 @@ def loadXMD(path,history): # loads an eXternal MetaData file which basically con
         events2 = {}
         firsts = []
         for event in f1:
+            # We instantiate the associated event
             a = event.split('<label>')
             label = str(a[1])
             #print('Label: ',label)
@@ -312,12 +317,14 @@ def loadXMD(path,history): # loads an eXternal MetaData file which basically con
             except:
                 previous = None
             #print('Previous: ',previous)
+
             events2[ID] = Event(ID,previous,request,label)
             if (previous is not None) and (previous > offset):
                 events2[previous].setNext(ID)
             if previous == offset:
-                firsts.append(ID)
+                firsts.append(ID) # Firsts events will be connected to the initial state as a new branch
             #print('Event created.\n')
+
         currentState = f[len(f)-1]
         currentState = currentState.split('<current>')
         currentState = int(currentState[1])+offset

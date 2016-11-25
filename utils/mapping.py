@@ -8,7 +8,7 @@
 
 import levels,filters
 from tools import *
-from loadConfig import *
+from loadConfig import * # Precision settings import
 
 
 def everyFunction(image,action,scaling): # Maps the action in the main or history to the real image editing functions
@@ -22,8 +22,10 @@ def everyFunction(image,action,scaling): # Maps the action in the main or histor
             f = ""
             params = []
 
+
         if f == 'InitState': # This is the initialization state for the history
             image = image # We keep the image intact
+
 
         elif f == "levels":
             #print(f)

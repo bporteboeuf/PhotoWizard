@@ -16,26 +16,34 @@ from tools import *
 
 def main(args,testmode):
 
+    # We first check wether it has been launched in test mode or not
     try:
         testmode = bool(testmode)
         args = list(args)
     except:
         raise NameError('PhotoWizard Error: wrong argument type in main')
 
+    # We then try to load the configuration file, which handles all default settings
     try:
         loadConfig.load()
     except Exception as e:
         print(e)
 
 
-    if testmode: # We disable any print message
+    if testmode: 
+        # We disable any print message
         #f = open(os.devnull, 'w')
         #sys.stdout = f
-        args = args[::-1] # And we invert our args for easier access
+        
+        # And we invert our args for easier access
+        args = args[::-1]
+
 
     if not testmode:
         display.greetings(loadConfig.LANG)
-    
+
+
+    # Initialization
     quitFlag = False
     First = True
 
@@ -61,7 +69,7 @@ def main(args,testmode):
                     request = ""
                     next
                 First = False
-            else:
+            else: # Normal use, we try to get the user's input
                 try:
                     request = str(getInput(' > '))
                 except:
@@ -72,6 +80,7 @@ def main(args,testmode):
         tries = 0
         ok = False
         while not ok: # ie while the input can not be properly understood
+            
             ok = True
         
             #print('ACTIONS: ',args[::-1])
@@ -83,7 +92,7 @@ def main(args,testmode):
             action = requestList[0]
 
             helped = False
-            try: # And we look if any help is needed
+            try: # And we look if any help is needed, in which case a help message is displayed and no action is executed
                 params = requestList[1]
                 if (str(params) == '-h') or (str(params) == '--help'):
                     display.disp(helpm.help(action,loadConfig.LANG))
@@ -96,8 +105,10 @@ def main(args,testmode):
             #print(request)
 
             if not helped:
-
                 # And we act accordingly
+
+                # Here is a switch for the actions that are linked to the main in itself (such as the files management for instance)
+
                 if action == "h" or action == "help":
                     display.disp(helpm.help("idle",loadConfig.LANG))
                 
@@ -115,7 +126,7 @@ def main(args,testmode):
                         if fileName not in files:
                             #print("Opening "+str(fileName))
                             ID_max += 1
-                            images[fileName] = Picture(ID_max,fileName)
+                            images[fileName] = Picture(ID_max,fileName) # We create a new object
                             files.append(fileName)
                             current = fileName
                             #print(str(fileName) + ' opened\n')
@@ -132,7 +143,7 @@ def main(args,testmode):
                     try:
                         fileName0 = parseInput(request,[str,str])
                         fileName0 = fileName0[1]
-                        if fileName0 == 'ALL':
+                        if fileName0 == 'ALL': # We close all opened files
                             fileName = list(files)
                         else:
                             fileName = [fileName0]
@@ -140,7 +151,7 @@ def main(args,testmode):
                         for elt in fileName:
                             #print("Closing "+str(fileName))
                             images[elt].close()
-                            del images[elt]
+                            del images[elt] # The object is deleted
                             files.remove(elt)
                             if (len(files) > 0) and len(fileName) == 1: # There are still some files opened and we are not closing them all
                                 nextFile = files[len(files)-1]
@@ -347,7 +358,7 @@ def main(args,testmode):
                         except:
                             print('PhotoWizard Error: Unable to rebase history')
 
-                elif action == "history": # This function is not fully supported yet
+                elif action == "history": # Displays the current history
                     try:
 
                         if current == '':
@@ -361,6 +372,8 @@ def main(args,testmode):
                         ok = False
                         print('PhotoWizard Error: Unable to preview history')
 
+
+
                 else: # We assume the wanted module is not part of the main functions and try to access it with our modules mapping function: everyFunction
                     
                     try:
@@ -369,10 +382,8 @@ def main(args,testmode):
                             raise NameError('PhotoWizard Error: No picture opened')
                         
                         # We try to compute the resized copy of the picture
-                        image = Image.Image
                         function = action
-                        #parameters = parseInput(request,[str,])
-                        #everyFunction(image,[function,[parameters]])
+                        # The action is mapped to the proper image processing modules
                         img,parameters = mapping.everyFunction(images[current].getSmallImage(),[function,request],images[current].getScaling())
                         images[current].setSmallImage(img) # We update the working copy
                         h = images[current].getHistory()
@@ -389,7 +400,7 @@ def main(args,testmode):
                     try:
                         if not testmode: # We ask the user to try again
                             if tries > 3:
-                                request = str(getInput(helpm.help("idle",loadConfig.LANG)+'\n > '))
+                                request = str(getInput(helpm.help("idle",loadConfig.LANG)+'\n > ')) # A help message is displayed
                             else:
                                 request = str(getInput(' > '))
                             tries += 1

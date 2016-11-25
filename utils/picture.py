@@ -39,7 +39,7 @@ class Picture:
             raise NameError('PhotoWizard Error: Unable to find file')
         
         try:
-            self.EXIF = self.pic.info['exif']
+            self.EXIF = self.pic.info['exif'] # EXIF values are stored and fed back to the file encoder for export
         except:
             pass
        
@@ -55,7 +55,7 @@ class Picture:
                 b = min(HEIGHT_PREVIEW,H)
                 a = round(b*W/H)
             
-            self.scaling = (float(a/W),float(b/H)) # Scaling coefficient
+            self.scaling = (float(a/W),float(b/H)) # Scaling coefficient for the preview (useful when using filters)
 
             self.smallpic = self.smallpic.resize((a,b),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
             self.smallpic_ref =  self.smallpic # Keeps a reference copy for any possible history rebase
@@ -109,6 +109,7 @@ class Picture:
                     raise NameError('PhotoWizard Error: Wrong argument type, must be integers')
 
                 if (1<100*a<100*100) and (1<=100*b<=100*100):
+                    # We compute the new shape
                     oldScaling = self.getScaling()
                     shape = (oldScaling[0]*a,oldScaling[1]*b)
                     self.setScaling(shape)
@@ -162,7 +163,7 @@ class Picture:
         return
 
 
-    def export(self,path):
+    def export(self,path): # Computes the actions in the history on the original full-size image, starting from the current node towards the root, and saves it
         try:
             hist = self.getHistory().getHistory()
             picture = self.getImage()
@@ -174,7 +175,7 @@ class Picture:
             try:
                 picture = picture.convert('RGB')
                 if len(self.EXIF) > 0:
-                    picture.save(path,quality=90,optimize=True,progressive=True,exif=self.EXIF)
+                    picture.save(path,quality=90,optimize=True,progressive=True,exif=self.EXIF) # If possible, we try to conserve EXIF infos
                 else:
                     picture.save(path,quality=90,optimize=True,progressive=True)
             except Exception as e:
@@ -190,7 +191,7 @@ class Picture:
         return
 
 
-    def histogram(self,channel):
+    def histogram(self,channel): # Returns a normalized histogram
         matrices = getChannel(self.getSmallImage(),channel)
         hist = []
         precision = 4
@@ -201,7 +202,7 @@ class Picture:
         return hist
 
 
-    def preview(self):
+    def preview(self): # Displays a pop-up window to preview the current image
         self.getSmallImage().show() # temporary
         return
 

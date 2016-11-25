@@ -9,6 +9,7 @@
 
 
 # This module aims at resolving dependencies for PhotoWizard
+# Because it tries to install dependancies using pip, this script should be run with admin privileges
 
 
 string = "\n\n#/////////////////////////////#\n# - P H O T O   W I Z A R D - #\n#/////////////////////////////#\n\n"
@@ -38,7 +39,7 @@ def install(package):
 def main() :
     print("Updating pip...")
     update()
-    print("Installing dependancies for PhoWizard...")
+    print("Installing dependancies for PhotoWizard...")
     install('Pillow')
     install('Numpy')
     install('Scipy')

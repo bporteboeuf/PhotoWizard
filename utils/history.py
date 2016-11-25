@@ -90,7 +90,7 @@ class History: # Each time a file is opened, a History object is created
                 return None
 
 
-    def rebase(self,ID): # Restores the current state to a previous history version, in a given branch and at a given index
+    def rebase(self,ID): # Restores the current state to a previous history version, at a given index
         if (type(ID) is int) and (ID >= 0):
             self.currentState = ID
         else:

@@ -83,7 +83,8 @@ def dispm(state,args,language): # Displays informations relative to a state or f
         state = ''
         language = ''
 
-    # MainFunction
+
+    # Main Functions
     if state == 'open':
         if language == 'EN':
             disp(args+' opened\n')
@@ -219,6 +220,7 @@ def dispm(state,args,language): # Displays informations relative to a state or f
         else:
             raise NameError('PhotoWizard Error: Unsupported language')
     
+
     # EveryFunction
     elif state == 'actionCompleted':
         if language == 'EN':
