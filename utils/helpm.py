@@ -231,8 +231,8 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'close':
             hmess = '\nHELP - CLOSE'
             hmess += '\nThis command closes a given picture and deleted the attached history (if not saved in an XMD file, of course).'
-            hmess += '\nYou just need to specify the ID of your picture, which is the path you have entered to open it in the first place.'
-            hmess += '\n\nExample: close pic/test1.jpg'
+            hmess += '\nYou just need to specify the ID of your picture, which is the path you have entered to open it in the first place, or ALL to close all opened files.'
+            hmess += '\n\nExamples: close pic/test1.jpg          close ALL'
             hmess += '\n'
 
         elif matter == 'opened':
@@ -488,8 +488,8 @@ def help(matter,language): # Matter indicates the matter on which the user needs
         elif matter == 'close':
             hmess = '\nAIDE - CLOSE'
             hmess += '\nCette commande ferme une image donnée et supprime l\'historique correspondant (sauf s\'il a été sauvegardé dans un fichier XMD, bien sûr).'
-            hmess += '\nIl suffit de préciser l\'identifiant de votre image, qui est le chemin que vous avez entré pour l\'ouvrir.'
-            hmess += '\n\nExemple : close pic/test1.jpg'
+            hmess += '\nIl suffit de préciser l\'identifiant de votre image, qui est le chemin que vous avez entré pour l\'ouvrir, ou ALL pour fermer tous les fichiers ouverts.'
+            hmess += '\n\nExemple : close pic/test1.jpg          close ALL'
             hmess += '\n'
 
         elif matter == 'opened':

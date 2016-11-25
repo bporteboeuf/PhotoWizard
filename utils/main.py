@@ -130,26 +130,33 @@ def main(args,testmode):
                 
                 elif action == "close":
                     try:
-                        fileName = parseInput(request,[str,str])
-                        fileName = fileName[1]
-                        #print("Closing "+str(fileName))
-                        images[fileName].close()
-                        del images[fileName]
-                        files.remove(fileName)
-                        if len(files) > 0: # There are still some files opened
-                               nextFile = files[len(files)-1]
-                               display.dispm('close',fileName,loadConfig.LANG)
-                               display.dispm('switch',str(nextFile),loadConfig.LANG)
-                               #print(str(fileName)+' closed; switching to '+str(nextFile)+'\n')
-                               current = nextFile
+                        fileName0 = parseInput(request,[str,str])
+                        fileName0 = fileName0[1]
+                        if fileName0 == 'ALL':
+                            fileName = list(files)
                         else:
-                            #print(str(fileName)+' closed\n')
-                            display.dispm('close',fileName,loadConfig.LANG)
-                            current = ''
+                            fileName = [fileName0]
+                       
+                        for elt in fileName:
+                            #print("Closing "+str(fileName))
+                            images[elt].close()
+                            del images[elt]
+                            files.remove(elt)
+                            if (len(files) > 0) and len(fileName) == 1: # There are still some files opened and we are not closing them all
+                                nextFile = files[len(files)-1]
+                                display.dispm('close',elt,loadConfig.LANG)
+                                display.dispm('switch',str(nextFile),loadConfig.LANG)
+                                #print(str(fileName)+' closed; switching to '+str(nextFile)+'\n')
+                                current = nextFile
+                            else:
+                                #print(str(fileName)+' closed\n')
+                                display.dispm('close',elt,loadConfig.LANG)
+                                current = ''
+                    
                     except Exception as e:
-                        print(e)
+                        #print(e)
                         ok = False
-                        print('PhotoWizard Error: Unable to close '+str(fileName)+'\n')
+                        print('PhotoWizard Error: Unable to close '+str(fileName0)+'\n')
                 
                 elif action == "opened":
                     try:
