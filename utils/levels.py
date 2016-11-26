@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+
 #/////////////////////////////#
 # - P H O T O   W I Z A R D - #
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 
-# -*- coding: utf-8 -*-
 
 # This module contains levels related functions
 
@@ -122,7 +123,7 @@ def equalizeHistogram(image,channel): # Automatic contrast adjustment
         matrices = []
         for img in images:
             # We get the histogram
-            histogram, bins = numpy.histogram(img,bins=round(256/precision),range=(0,255))
+            histogram, bins = numpy.histogram(img,bins=int(round(256/precision)),range=(0,255))
             outputs = numpy.cumsum(histogram)
             outputs = outputs*255/numpy.amax(outputs)
             # And we use the normalized cumulative summation of it as a tone-curve

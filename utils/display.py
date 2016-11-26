@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+
 #/////////////////////////////#
 # - P H O T O   W I Z A R D - #
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 
-# -*- coding: utf-8 -*-
 
 # This module displays various contents in the shell
 
@@ -29,17 +30,17 @@ def greetings(language): # Displays welcoming message
         language = ''
 
     if str(language) == "EN" :
-        string0 = "        W E L C O M E\n"
+        string0 = "         W E L C O M E\n"
     elif str(language) == "FR" :
-        string0 = "      B I E N V E N U E\n"
+        string0 = "       B I E N V E N U E\n"
     elif str(language) == "DE" :
-        string0 = "      W I L K O M M E N\n"
+        string0 = "       W I L K O M M E N\n"
     elif str(language) == "JA" :
-        string0 = "            歓迎\n"
+        string0 = "             歓迎\n"
     else :
         raise NameError('PhotoWizard Error: Unsupported language')
  
-    string = "\n\n#/////////////////////////////#\n# - P H O T O   W I Z A R D - #\n#/////////////////////////////#\n\n"+string0
+    string = "\n\n #/////////////////////////////#\n # - P H O T O   W I Z A R D - #\n #/////////////////////////////#\n\n"+string0
     disp(string)
 
     return
@@ -56,13 +57,13 @@ def bye(language): # Displays message before quiting
         language = ''
 
     if str(language) == "EN" :
-        string = "\n\n    S E E   Y O U   S O O N\n\n"
+        string = "\n\n     S E E   Y O U   S O O N\n\n"
     elif str(language) == "FR" :
-        string = "\n\n       À   B I E N T Ô T\n\n"
+        string = "\n\n        À   B I E N T Ô T\n\n"
     elif str(language) == "DE" :
-        string = "\n\n        T C H Ü S S\n\n"
+        string = "\n\n         T C H Ü S S\n\n"
     elif str(language) == "JA" :
-        string = "\n\n        さ よ な ら\n\n"
+        string = "\n\n         さ よ な ら\n\n"
     else :
         raise NameError('PhotoWizard Error: Unsupported language')
  

@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+
 #/////////////////////////////#
 # - P H O T O   W I Z A R D - #
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 
-# -*- coding: utf-8 -*-
 
 # This module contains different filters related functionalities
 
@@ -25,8 +26,8 @@ def filterz(img,channel,F): # convolves the image by the 2D-filter F
             
             #tmp = signal.convolve(numpy.asarray((elt),dtype=numpy.uint8),F,mode='same',boundary='symm')
             tmp = numpy.asarray(elt,dtype=numpy.uint8)
-            a = math.floor(F.shape[0]/2)
-            b = math.floor(F.shape[1]/2)
+            a = int(math.floor(F.shape[0]/2))
+            b = int(math.floor(F.shape[1]/2))
             Atmp = tmp.shape[0]
             Btmp = tmp.shape[1]
             
@@ -69,7 +70,7 @@ def lowPass(filterType,parameters,scaling): # Generates a low-pass filter
     #----------- 2D FILTERS ----------#
     if filterType == "GAUSSIAN-2D":
         try:
-            radius = max(1,round(int(parameters[0])*(float(scaling[0])+float(scaling[1]))/2))
+            radius = int(max(1,round(int(parameters[0])*(float(scaling[0])+float(scaling[1]))/2)))
             a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for GAUSSIAN-2D low-pass filter')
@@ -85,7 +86,7 @@ def lowPass(filterType,parameters,scaling): # Generates a low-pass filter
 
     elif filterType == "MEAN-2D":
         try:
-            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
+            radius = int(max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2)))
             opacity = float(parameters[1])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for MEAN-2D low-pass filter')
@@ -97,7 +98,7 @@ def lowPass(filterType,parameters,scaling): # Generates a low-pass filter
 
     elif filterType == "POISSON-2D":
         try:
-            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
+            radius = int(max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2)))
             a = abs(float(parameters[1]))
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for POISSON-2D low-pass filter')
@@ -115,7 +116,7 @@ def lowPass(filterType,parameters,scaling): # Generates a low-pass filter
                # Horizontal #
     elif filterType == "GAUSSIAN-1D":
         try:
-            radius =  max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
+            radius =  int(max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2)))
             a = abs(float(parameters[1]))
             theta = float(parameters[2])
         except:
@@ -133,7 +134,7 @@ def lowPass(filterType,parameters,scaling): # Generates a low-pass filter
 
     elif filterType == "MEAN-1D":
         try:
-            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
+            radius = int(max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2)))
             opacity = float(parameters[1])
             theta = float(parameters[2])
         except:
@@ -149,7 +150,7 @@ def lowPass(filterType,parameters,scaling): # Generates a low-pass filter
 
     elif filterType == "POISSON-1D":
         try:
-            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
+            radius = int(max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2)))
             a = abs(float(parameters[1]))
             theta = float(parameters[2])
         except:
@@ -193,7 +194,7 @@ def highPass(filterType,parameters,scaling): # Generates a high-pass filter
     
     if filterType == "DIFF-2D":
         try:
-            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
+            radius = int(max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2)))
             opacity = float(parameters[1])
         except:
             raise NameError('PhotoWizard Error: Wrong parameters for DIFF-2D high-pass filter')
@@ -233,7 +234,7 @@ def highPass(filterType,parameters,scaling): # Generates a high-pass filter
                # Horizontal #
     elif filterType == "DIFF-1D":
         try:
-            radius = max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2))
+            radius = int(max(1,round(int(parameters[0])*(int(scaling[0])+int(scaling[1]))/2)))
             opacity = float(parameters[1])
             theta = float(parameters[2])
         except:

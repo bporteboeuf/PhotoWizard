@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+
 #/////////////////////////////#
 # - P H O T O   W I Z A R D - #
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 
-# -*- coding: utf-8 -*-
 
 # This module generates various help messages in the shell
 

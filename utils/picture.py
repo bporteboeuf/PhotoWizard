@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+
 #/////////////////////////////#
 # - P H O T O   W I Z A R D - #
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 
-# -*- coding: utf-8 -*-
 
 # This module defines the picture class
 
@@ -43,19 +44,19 @@ class Picture:
         except:
             pass
        
-        self.scaling = (1,1)
+        self.scaling = (int(1),int(1))
 
         if self.pic is not None :
             self.smallpic = self.pic
             (W,H) = self.pic.size
             if W < H:
-                a = min(WIDTH_PREVIEW,W)
-                a = round(a*H/W)
+                a = int(min(WIDTH_PREVIEW,W))
+                a = int(round(a*H/W))
             else :
-                b = min(HEIGHT_PREVIEW,H)
-                a = round(b*W/H)
+                b = int(min(HEIGHT_PREVIEW,H))
+                a = int(round(b*W/H))
             
-            self.scaling = (float(a/W),float(b/H)) # Scaling coefficient for the preview (useful when using filters)
+            self.scaling = (float(a)/float(W),float(b)/float(H)) # Scaling coefficient for the preview (useful when using filters)
 
             self.smallpic = self.smallpic.resize((a,b),Image.ANTIALIAS) # Makes a resized copy of the original image for optimized computing
             self.smallpic_ref =  self.smallpic # Keeps a reference copy for any possible history rebase
@@ -65,12 +66,15 @@ class Picture:
         return
 
 
+
     def getImage(self):
         return self.pic
 
 
+
     def getSmallImage(self):
         return self.smallpic
+
 
     
     def setSmallImage(self,image):
@@ -81,8 +85,10 @@ class Picture:
         return
 
 
+
     def getSmallImageRef(self):
         return self.smallpic_ref
+
 
 
     def setSmallImageRef(self,image):
@@ -91,6 +97,7 @@ class Picture:
         else:
             raise NameError('PhotoWizard Error: Wrong argument type in setSmallImageRef')
         return
+
 
 
     def resizeSmall(self,size): # Resizes the working miniature picture according to a given relative size (range 1/100 to 100)
@@ -111,7 +118,7 @@ class Picture:
                 if (1<100*a<100*100) and (1<=100*b<=100*100):
                     # We compute the new shape
                     oldScaling = self.getScaling()
-                    shape = (oldScaling[0]*a,oldScaling[1]*b)
+                    shape = (float(oldScaling[0]*a),float(oldScaling[1]*b))
                     self.setScaling(shape)
                     img = self.getSmallImage()
                     shape2 = img.size
@@ -121,9 +128,12 @@ class Picture:
                     raise NameError('PhotoWizard Error: Wrong argument range, must be between 1/100 and 100')
         return
 
-    
+
+
     def getScaling(self):
         return self.scaling
+
+
 
     def setScaling(self,shape):
         if (type(shape) is tuple) and (len(shape)==2) and (shape[0]!=0) and (shape[1]!=0):
@@ -131,10 +141,12 @@ class Picture:
         else:
             raise NameError('PhotoWizard Error: Wrong argument in setScaling')
         return
-   
+
+
 
     def getHistory(self):
         return self.History
+
 
 
     def setHistory(self,hist):
@@ -143,6 +155,7 @@ class Picture:
         else:
             raise NameError('PhotoWizard Error: Wrong argument type in setHistory')
         return
+
 
 
     def reCompute(self): # Recompute the miniature image according to the current history
@@ -161,6 +174,7 @@ class Picture:
             print(e)
             raise NameError('PhotoWizard Error: Unable to reCompute')
         return
+
 
 
     def export(self,path): # Computes the actions in the history on the original full-size image, starting from the current node towards the root, and saves it
@@ -187,8 +201,10 @@ class Picture:
         return
 
 
+
     def close(self):
         return
+
 
 
     def histogram(self,channel): # Returns a normalized histogram
@@ -196,10 +212,11 @@ class Picture:
         hist = []
         precision = 4
         for elt in matrices:
-            [H,B] = numpy.histogram(elt,bins=round(256/precision),range=(0,255))
+            [H,B] = numpy.histogram(elt,bins=int(round(256/precision)),range=(0,255))
             hist.append(numpy.ceil(H*255/numpy.amax(H)))
         #print(hist)
         return hist
+
 
 
     def preview(self): # Displays a pop-up window to preview the current image

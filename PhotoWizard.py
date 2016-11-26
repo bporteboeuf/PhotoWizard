@@ -1,8 +1,10 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 #/////////////////////////////#
 # - P H O T O   W I Z A R D - #
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 
-# -*- coding: utf-8 -*-
 
 # This script is the one the user will launch. It will either launch the command line version or the GUI version.
 
@@ -22,6 +24,10 @@ if __name__ == "__main__" :
     # -h : Help
     # -c : Console mode
     # -g : Graphical User Interface mode
+
+    if sys.version_info[0] < 3:
+        print('PhotoWizard Warning: Python 2 compatibility mode launched - try running it with Python 3 for a better user experience')
+
 
     launched = False
     

@@ -1,20 +1,22 @@
+# -*- coding: utf-8 -*-
+
 #/////////////////////////////#
 # - P H O T O   W I Z A R D - #
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 
-# -*- coding: utf-8 -*-
 
 # This module contains tests for the whole software
 
-#try:
-import filters,helpm,history,levels,main,tools,mapping
-from picture import Picture
-from history import History, Event
-from loadConfig import *
-import sys,numpy,scipy,math
-from PIL import Image
-#except:
-#   raise NameError('PhotoWizard Error: unable to load dependencies')
+try:
+    import filters,helpm,history,levels,main,tools,mapping
+    from picture import Picture
+    from history import History, Event
+    from loadConfig import *
+    import sys,numpy,scipy,math
+    from PIL import Image
+except Exception as e:
+    print(e)
+    raise NameError('PhotoWizard Error: unable to load dependencies')
 
 
 
@@ -213,7 +215,7 @@ def pictureClass():
     # Init
     try:
         #print('A',score)
-        image = Picture(1,"pic/test1.jpg")
+        image = Picture(int(1),"pic/test1.jpg")
         score+=1
     except Exception as exception:
         print(exception)
