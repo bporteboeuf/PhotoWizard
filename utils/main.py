@@ -34,15 +34,9 @@ def main(args,testmode):
 
 
     if testmode: 
-        # We disable any print message
-        #f = open(os.devnull, 'w')
-        #sys.stdout = f
-        
-        # And we invert our args for easier access
+        # We invert our args for easier access
         args = args[::-1]
-
-
-    if not testmode:
+    else testmode:
         display.greetings(loadConfig.LANG)
 
 
@@ -417,7 +411,7 @@ def main(args,testmode):
 
     if not testmode:
         display.bye(loadConfig.LANG)    
-
+        
     return
 
 
