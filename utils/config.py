@@ -10,7 +10,7 @@
 
 LANG = "EN"   # Language: Possible settings currently are DE, EN, FR or JA - default is EN
 
-MODE = "c"    # Default mode: c for console, g for GUI - default is c
+MODE = "g"    # Default mode: c for console, g for GUI - default is c
 
 WIDTH_PREVIEW = 400    # Default minimum width for preview - default is 400
 HEIGHT_PREVIEW = 400   # Default minimum height for preview - default is 400
@@ -20,6 +20,10 @@ EQHIST_RESOLUTION = 4     # Resolution (range 1 to 128) in the equalizeHistogram
 EXPHIST_RESOLUTION = 8    # Resolution (range 1 to 128) in the expHistogram function: the lower the slower and the more accurate - default is 8
 EXPOSURE_RESOLUTION = 8   # Resolution (range 1 to 128) in the exposure function: the lower the slower and the more accurate - default is 8
 LOGHIST_RESOLUTION = 8    # Resolution (range 1 to 128) in the logHistogram function: the lower the slower and the more accurate - default is 8
+
+FRAME_BACKGROUND = "#2c2929" # "dark gray"
+WIDGET_BACKGROUND = "#565252" # "medium gray"
+WIDGET_FOREGROUND =  "#ffffff" # "white"
 
 
 

@@ -11,7 +11,7 @@
 
 import sys
 sys.path.insert(0,'utils/')
-import main,helpm
+import main,helpm,gui_main
 from config import *
 
 VER = '0.6' # Current version of the software
@@ -70,8 +70,9 @@ if __name__ == "__main__" :
 
     if not launched:
         if MODE == "g":
-            print("PhotoWizard Error: Graphical User Interface not implemented yet")
-            main.main(sys.argv,False)
+            #print("PhotoWizard Error: Graphical User Interface not implemented yet")
+            #main.main(sys.argv,False)
+            gui_main.main(sys.argv)
         elif MODE == "c":
             main.main(sys.argv,False)
         else:
