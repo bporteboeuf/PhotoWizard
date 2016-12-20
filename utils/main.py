@@ -36,7 +36,7 @@ def main(args,testmode):
     if testmode: 
         # We invert our args for easier access
         args = args[::-1]
-    else testmode:
+    else:
         display.greetings(loadConfig.LANG)
 
 

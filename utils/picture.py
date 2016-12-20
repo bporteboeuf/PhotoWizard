@@ -24,10 +24,12 @@ class Picture:
         self.History = History(ID)
         self.EXIF = {}
         self.pic = None
+        
         if os.path.exists(name):
             try:
                 self.pic = Image.open(name)
-            except:
+            except Exception as e:
+                print(e)
                 try:
                     tmp = rawpy.imread(name)
                     tmp = numpy.asarray(tmp.postprocess(),dtype=numpy.uint8)
@@ -38,7 +40,7 @@ class Picture:
                     raise NameError('PhotoWizard Error: Unable to load file')
         else:
             raise NameError('PhotoWizard Error: Unable to find file')
-        
+
         try:
             self.EXIF = self.pic.info['exif'] # EXIF values are stored and fed back to the file encoder for export
         except:
@@ -51,7 +53,7 @@ class Picture:
             (W,H) = self.pic.size
             if W < H:
                 a = int(min(WIDTH_PREVIEW,W))
-                a = int(round(a*H/W))
+                b = int(round(a*H/W))
             else :
                 b = int(min(HEIGHT_PREVIEW,H))
                 a = int(round(b*W/H))
